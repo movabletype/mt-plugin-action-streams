@@ -7,7 +7,7 @@ our @EXPORT_OK = qw( classes_for_type );
 use HTTP::Date qw( str2time );
 
 use MT::Util qw( encode_html encode_url );
-use MT::I18N;
+use MT::I18N qw( encode_text );
 
 use ActionStreams::Scraper;
 
@@ -140,8 +140,10 @@ sub update_events {
     local $profile{url} = $stream->{url};
     die "Oops, no url?" if !$profile{url};
     die "Oops, no ident?" if !$profile{ident};
-    require MT::I18N;
-    my $ident = encode_url(MT::I18N::encode_text($profile{ident}, undef, 'utf-8'));
+    my $ident = $profile{ident};
+    $ident = MT->VERSION >= 5 ? encode_url( $ident, 'utf-8' )
+           :                    encode_url( encode_text( $ident, undef, 'utf-8'), 'utf-8' )
+           ;
     $profile{url} =~ s/ {{ident}} / $ident /xmsge;
 
     my $items;
@@ -383,14 +385,19 @@ sub fetch_xpath {
             if ($key eq 'tags') {
                 my @outvals = $item->findnodes($val)
                     or next VALUE;
-
-                $item_data{$key} = [ grep { $_ } map { MT::I18N::utf8_off($_->getNodeValue) } @outvals ];
+                $item_data{$key} = [
+                    grep {$_} map {
+                        MT->VERSION < 5.0
+                            ? MT::I18N::utf8_off( $_->getNodeValue )
+                            : $_->getNodeValue
+                        } @outvals
+                ];
             }
             else {
                 my $outval = $item->findvalue($val)
                     or next VALUE;
 
-                $outval = MT::I18N::utf8_off("$outval");
+                $outval = MT->VERSION < 5.0 ? MT::I18N::utf8_off("$outval") : "$outval";
                 if ($outval && ($key eq 'created_on' || $key eq 'modified_on')) {
                     # try both RFC 822/1123 and ISO 8601 formats
                     my $out_timestamp;
@@ -502,10 +509,14 @@ sub fetch_scraper {
         next ITEM if !ref $item || ref $item ne 'HASH';
         for my $field (keys %$item) {
             if ($field eq 'tags') {
-                $item->{$field} = [ map { MT::I18N::utf8_off( "$_" ) } @{ $item->{$field} } ];
+                if ( MT->VERSION < 5.0 ) {
+                    $item->{$field} = [ map { MT::I18N::utf8_off( "$_" ) } @{ $item->{$field} } ];
+                }
             }
             elsif (defined $item->{$field}) {
-                $item->{$field} = MT::I18N::utf8_off( q{} . $item->{$field} );
+                if ( MT->VERSION < 5.0 ) {
+                    $item->{$field} = MT::I18N::utf8_off( q{} . $item->{$field} );
+                }
             }
             else {
                 delete $item->{$field};
