@@ -58,7 +58,8 @@ facebook:
     ident_label: User ID
     ident_example: 12345
     service_type: network
-    ident_hint: You can find your Facebook user ID in your profile URL. For example: http://www.facebook.com/profile.php?id=12345
+    ident_hint: |-
+        You can find your Facebook user ID in your profile URL. For example: http://www.facebook.com/profile.php?id=12345
 ffffound:
     name: FFFFOUND!
     url: http://ffffound.com/home/{{ident}}/found/
@@ -81,7 +82,8 @@ goodreads:
     url: http://www.goodreads.com/user/show/{{ident}}
     ident_label: User ID
     ident_example: 12345
-    ident_hint: You can find your Goodreads user ID in your profile URL. For example: http://www.goodreads.com/user/show/12345
+    ident_hint: |-
+        You can find your Goodreads user ID in your profile URL. For example: http://www.goodreads.com/user/show/12345
 googlereader:
     name: Google Reader
     url: http://www.google.com/reader/shared/{{ident}}
@@ -118,7 +120,8 @@ istockphoto:
     url: http://www.istockphoto.com/user_view.php?id={{ident}}
     ident_label: User ID
     ident_example: 123456
-    ident_hint: You can find your iStockphoto user ID in your profile URL. For example: http://www.istockphoto.com/user_view.php?id=123456
+    ident_hint: |-
+        You can find your iStockphoto user ID in your profile URL. For example: http://www.istockphoto.com/user_view.php?id=123456
 iusethis:
     name: IUseThis
     url: http://osx.iusethis.com/user/{{ident}}
@@ -216,7 +219,8 @@ orkut:
     ident_label: User ID
     ident_example: 1234567890123456789
     service_type: network
-    ident_hint: You can find your Orkut user ID in your profile URL. For example: http://www.orkut.com/Main#Profile.aspx?rl=ls&uid=1234567890123456789
+    ident_hint: |-
+        You can find your Orkut user ID in your profile URL. For example: http://www.orkut.com/Main#Profile.aspx?rl=ls&uid=1234567890123456789
 pandora:
     name: Pandora
     url: http://pandora.com/people/{{ident}}
@@ -230,7 +234,8 @@ p0pulist:
     url: http://p0p.com/list/hot_list/{{ident}}
     ident_label: User ID
     ident_example: 12345
-    ident_hint: You can find your p0p user ID in your Hot List URL. For example: http://p0pulist.com/list/hot_list/12345
+    ident_hint: |-
+        You can find your p0p user ID in your Hot List URL. For example: http://p0pulist.com/list/hot_list/12345
 pownce:
     name: Pownce
     url: http://pownce.com/{{ident}}/
@@ -255,7 +260,8 @@ sonicliving:
     url: http://www.sonicliving.com/user/{{ident}}/
     ident_label: User ID
     ident_example: 12345
-    ident_hint: You can find your SonicLiving user ID in your Share & Subscribe URL. For example: http://sonicliving.com/user/12345/feeds
+    ident_hint: |-
+        You can find your SonicLiving user ID in your Share & Subscribe URL. For example: http://sonicliving.com/user/12345/feeds
 steam:
     name: Steam
     url: http://steamcommunity.com/id/{{ident}}
@@ -274,7 +280,8 @@ tribe:
     service_type: network
     ident_label: User ID
     ident_example: dcdc61ed-696a-40b5-80c1-e9a9809a726a
-    ident_hint: You can find your Tribe user ID in your profile URL. For example: http://people.tribe.net/dcdc61ed-696a-40b5-80c1-e9a9809a726a
+    ident_hint: |-
+        You can find your Tribe user ID in your profile URL. For example: http://people.tribe.net/dcdc61ed-696a-40b5-80c1-e9a9809a726a
 tumblr:
     name: Tumblr
     url: http://{{ident}}.tumblr.com
@@ -313,7 +320,8 @@ virb:
     service_type: network
     ident_label: User ID
     ident_example: 2756504321310091
-    ident_hint: You can find your Virb user ID in your home URL. For example: http://www.virb.com/backend/2756504321310091/your_home
+    ident_hint: |-
+        You can find your Virb user ID in your home URL. For example: http://www.virb.com/backend/2756504321310091/your_home
 vox:
     name: Vox
     url: http://{{ident}}.vox.com/
