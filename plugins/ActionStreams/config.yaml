@@ -136,10 +136,6 @@ template_sets:
                     label: Main Index (Recent Actions)
                     outfile: index.html
                     rebuild_me: 1
-                archive:
-                    label: Action Archive
-                    outfile: archive.html
-                    rebuild_me: 1
                 styles:
                     label: Stylesheet
                     outfile: styles.css
