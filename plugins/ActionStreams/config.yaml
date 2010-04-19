@@ -175,6 +175,25 @@ template_sets:
                     label: 2-column layout - Sidebar
                     widgets:
                         - Find Authors Elsewhere
+themes:
+    streams:
+        id: Streams
+        label: Action Streams Theme
+        description: <__trans phrase="Action Streams Theme.">
+        author_name: Six Apart, Ltd.
+        author_link: http://www.sixapart.com/
+        version: 2.3
+        class: both
+        l10n_class: ActionStreams::L10N
+        thumbnail_file: thumb.png
+        thumbnail_file_medium: thumb-medium.png
+        thumbnail_file_small: thumb-small.png
+        elements:
+            template_set:
+                component: core
+                importer: template_set
+                name: Template Set
+                data: streams
 upgrade_functions:
     enable_existing_streams:
         version_limit: 9
