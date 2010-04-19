@@ -11,8 +11,15 @@ settings:
     rebuild_for_action_stream_events:
         Default: 0
         Scope: blog
+    do_auto_expire_events:
+        Default: 0
+        Scope: system
+    events_expire_interval:
+        Default: 0
+        Scope: system
 l10n_class: ActionStreams::L10N
 blog_config_template: blog_config_template.tmpl
+system_config_template: sys_config_template.tmpl
 
 init_app: $ActionStreams::ActionStreams::Init::init_app
 applications:
@@ -62,6 +69,7 @@ callbacks:
     pre_build_action_streams_event.typepad_comments:        $ActionStreams::ActionStreams::Fix::typepad_comment_titles
     pre_build_action_streams_event.wists_wists:             $ActionStreams::ActionStreams::Fix::wists_thumb
     filter_action_streams_event.nytimes_links:              $ActionStreams::ActionStreams::Fix::nytimes_links_titles
+    filter_action_streams_event:                            $ActionStreams::ActionStreams::Event::filter_by_auto_expire_interval
 object_types:
     profileevent: ActionStreams::Event
     as: ActionStreams::Event
@@ -111,6 +119,10 @@ tasks:
         frequency: 1800
         label: Poll for new events
         code: $ActionStreams::ActionStreams::Plugin::update_events
+    ExpireEvents:
+        frequency: sub { 60 * 60 * 24 }
+        label: Expire old events
+        code: $ActionStreams::ActionStreams::Plugin::expire_old_events
 task_workers:
     UpdateEvents:
         label: Update Events

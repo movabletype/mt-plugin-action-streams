@@ -749,6 +749,24 @@ sub update_events {
     $mt->run_callbacks('post_action_streams_task', $mt);
 }
 
+sub expire_old_events {
+    my $plugin = MT->component('ActionStreams');
+    my $settings = $plugin->get_config_hash;
+    $settings->{do_auto_expire_events} or return 1;
+    my $days = $settings->{events_expire_interval};
+    my $expire_ts = epoch2ts( undef, time - 24 * 60 * 60 * $days );
+    my $event_class = MT->model('profileevent');
+    my $expired = $event_class->remove(
+        { created_on => [ undef, $expire_ts ],
+          class      => '*',  },
+        { range => { created_on => 1 } } )
+            or die $event_class->errstr;
+    MT->log(
+        $plugin->translate( "[_1] action streams events are expired", $expired )
+    ) if $expired;
+    1;
+}
+
 sub update_events_for_profile {
     my ($author, $profile, %param) = @_;
     my $type = $profile->{type};

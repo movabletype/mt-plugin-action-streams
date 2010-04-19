@@ -6,7 +6,7 @@ use base qw( MT::Object MT::Taggable MT::Scorable );
 our @EXPORT_OK = qw( classes_for_type );
 use HTTP::Date qw( str2time );
 
-use MT::Util qw( encode_html encode_url );
+use MT::Util qw( encode_html encode_url ts2epoch );
 use MT::I18N qw( encode_text );
 
 use ActionStreams::Scraper;
@@ -471,6 +471,16 @@ sub build_results {
     }
 
     1;
+}
+
+sub filter_by_auto_expire_interval {
+    my ($cb, $mt, $item, $event, $author, $profile) = @_;
+    my $plugin = MT->component('ActionStreams');
+    my $settings = $plugin->get_config_hash;
+    $settings->{do_auto_expire_events} or return 1;
+    my $days = $settings->{events_expire_interval};
+    my $created_on = $item->{created_on} or return 1;
+    time - 24 * 60 * 60 * $days < ts2epoch(undef, $created_on);
 }
 
 sub save {
