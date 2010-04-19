@@ -183,7 +183,7 @@ themes:
         author_name: Six Apart, Ltd.
         author_link: http://www.sixapart.com/
         version: 2.3
-        class: both
+        class: blog
         l10n_class: ActionStreams::L10N
         thumbnail_file: thumb.png
         thumbnail_file_medium: thumb-medium.png
