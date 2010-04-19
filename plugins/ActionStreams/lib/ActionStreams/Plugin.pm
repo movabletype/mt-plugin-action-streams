@@ -220,6 +220,7 @@ sub list_profileevent {
     $params{id}   = $params{edit_author_id} = $author->id;
     $params{name} = $params{edit_author_name} = $author->name;
     $params{service_styles} = \@service_styles_loop;
+    $params{as_tmpl_version} = $MT::VERSION;
     $app->listing({
         type     => 'profileevent',
         terms    => \%terms,
@@ -407,6 +408,7 @@ sub other_profiles {
     my %params = map { $_ => $author->$_ } qw( id name );
     $params{edit_author_id}   = $params{id};
     $params{edit_author_name} = $params{name};
+    $params{as_tmpl_version} = $MT::VERSION;
 
     my %messages = map { $_ => $app->param($_) ? 1 : 0 }
         (qw( added removed updated edited ));
