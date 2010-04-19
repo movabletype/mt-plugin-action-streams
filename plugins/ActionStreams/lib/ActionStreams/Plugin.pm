@@ -716,6 +716,7 @@ sub widget_recent {
 sub widget_blog_dashboard_only {
     my ($page, $scope) = @_;
     return if $scope eq 'dashboard:system';
+    return if $scope =~ /blog/ && !MT->app->blog->is_blog;
     return 1;
 }
 
