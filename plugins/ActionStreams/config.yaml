@@ -44,7 +44,7 @@ applications:
         callbacks:
             post_add_profile: $ActionStreams::ActionStreams::Plugin::profile_first_update_events
 callbacks:
-    MT::App::CMS::template_param.edit_author: $ActionStreams::ActionStreams::Plugin::users_content_nav
+    MT::App::CMS::template_param.users_content_nav: $ActionStreams::ActionStreams::Plugin::users_content_nav
     MT::App::CMS::template_param.list_member: $ActionStreams::ActionStreams::Plugin::param_list_member
     MT::App::CMS::template_param.other_profiles: $ActionStreams::ActionStreams::Plugin::users_content_nav
     MT::App::CMS::template_param.list_profileevent: $ActionStreams::ActionStreams::Plugin::users_content_nav

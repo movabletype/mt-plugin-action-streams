@@ -9,34 +9,26 @@ use MT::Util qw( relative_date offset_time epoch2ts ts2epoch format_ts );
 sub users_content_nav {
     my ($cb, $app, $param, $tmpl) = @_;
 
-    my $author_id = $app->param('id') or return;
+    my $author_id = $app->param('id') || $app->param('author_id') or return 1;
     my $author = MT->model('author')->load( $author_id )
         or return $cb->error('failed to load author');
     $param->{edit_author} = 1 if $author->type == MT::Author::AUTHOR();
 
+    my $vars = $tmpl->getElementsByTagName('setvartemplate');
+    my $var = $vars->[0];
+    my $menu_var = $tmpl->createElement('setvartemplate', { name => 'line_items', function => 'push' });
     my $menu_str = <<"EOF";
-    <__trans_section component="actionstreams"><mt:if var="USER_VIEW">
-        <li><a href="<mt:var name="SCRIPT_URL">?__mode=other_profiles&amp;id=<mt:var name="EDIT_AUTHOR_ID" escape="url">"><b><__trans phrase="Other Profiles"></b></a></li>
-        <li><a href="<mt:var name="SCRIPT_URL">?__mode=list_profileevent&amp;id=<mt:var name="EDIT_AUTHOR_ID" escape="url">"><b><__trans phrase="Action Stream"></b></a></li>
+    <__trans_section component="actionstreams"><mt:if name="object_type" eq="author"><mt:if name="USER_VIEW">
+        <li<mt:if name="other_profiles"> class="active"><em><mt:else>></mt:if><a href="<mt:var name="SCRIPT_URL">?__mode=other_profiles&amp;id=<mt:var name="EDIT_AUTHOR_ID" escape="url">"><__trans phrase="Other Profiles"></a><mt:if name="other_profiles"></em></mt:if></li>
+        <li<mt:if name="list_profileevent"> class="active"><em><mt:else>></mt:if><a href="<mt:var name="SCRIPT_URL">?__mode=list_profileevent&amp;id=<mt:var name="EDIT_AUTHOR_ID" escape="url">"><__trans phrase="Action Stream"></a><mt:if name="list_profileevent"></em></mt:if></li>
     <mt:else>
-        <li<mt:if name="other_profiles"> class="active"</mt:if>><a href="<mt:var name="SCRIPT_URL">?__mode=other_profiles&amp;id=<mt:var name="id" escape="url">"><b><__trans phrase="Other Profiles"></b></a></li>
-        <li<mt:if name="list_profileevent"> class="active"</mt:if>><a href="<mt:var name="SCRIPT_URL">?__mode=list_profileevent&amp;id=<mt:var name="id" escape="url">"><b><__trans phrase="Action Stream"></b></a></li>
-    </mt:if></__trans_section>
+        <li<mt:if name="other_profiles"> class="active"><em><mt:else>></mt:if><a href="<mt:var name="SCRIPT_URL">?__mode=other_profiles&amp;id=<mt:var name="id" escape="url">"><__trans phrase="Other Profiles"></a><mt:if name="other_profiles"></em></mt:if></li>
+        <li<mt:if name="list_profileevent"> class="active"><em><mt:else>></mt:if><a href="<mt:var name="SCRIPT_URL">?__mode=list_profileevent&amp;id=<mt:var name="id" escape="url">"><__trans phrase="Action Stream"></a><mt:if name="other_profiles"></em></mt:if></li>
+    </mt:if></mt:if></__trans_section>
 EOF
+    $menu_var->innerHTML($menu_str);
+    $tmpl->insertAfter($menu_var, $var);
 
-    require MT::Builder;
-    my $builder = MT::Builder->new;
-    my $ctx = $tmpl->context();
-    my $menu_tokens = $builder->compile( $ctx, $menu_str )
-        or return $cb->error($builder->errstr);
-
-    if ( $param->{line_items} ) {
-        push @{ $param->{line_items} }, bless $menu_tokens, 'MT::Template::Tokens';
-    }
-    else {
-        $ctx->{__stash}{vars}{line_items} = [ bless $menu_tokens, 'MT::Template::Tokens' ];
-        $param->{line_items} = [ bless $menu_tokens, 'MT::Template::Tokens' ];
-    }
     if ( ( $app->mode eq 'other_profiles' ) || ( $app->mode eq 'list_profileevent' ) ) {
         $param->{profile_inactive} = 1;
     }
