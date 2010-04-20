@@ -3,14 +3,15 @@
     label="<__trans phrase="Expireing Events">"
     hint="<__trans phrase="If selected, old events data would be removed automatically.">"
     show_hint="1">
-    <label><input type="checkbox" name="do_auto_expire_events" id="do_auto_expire_events" value="1"<mt:if name="do_auto_expire_events"> checked="checked"</mt:if> /> <__trans phrase="Enable expiring"></label>
+    <label><input type="checkbox" name="do_auto_expire_events" id="do_auto_expire_events" value="1"<mt:if name="do_auto_expire_events"> checked="checked"</mt:if> onclick="toggleSubPrefs(this)" /> <__trans phrase="Enable expiring"></label>
 </mtapp:setting>
 
+<div id="do_auto_expire_events_prefs"<mt:unless name="do_auto_expire_events">class="hidden"</mt:unless>>
 <mtapp:setting
     id="events_expire_interval"
     label="<__trans phrase="Expireing Interval">"
     hint="<__trans phrase="Specify the days to wait for auto expire.">"
     show_hint="1">
-    <label><input name="events_expire_interval" id="events_expire_interval" value="<mt:if name="events_expire_interval"><mt:var name="events_expire_interval"><mt:else>0</mt:if>" /> <__trans phrase="days for expireing"></label>
+    <label><input type="text" name="events_expire_interval" size="4" id="events_expire_interval" class="smaller-text" value="<mt:if name="events_expire_interval"><mt:var name="events_expire_interval"><mt:else>0</mt:if>" /> <__trans phrase="days for expireing"></label>
 </mtapp:setting>
-
+</div>
