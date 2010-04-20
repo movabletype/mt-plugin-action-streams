@@ -70,10 +70,27 @@ function verifyDelete( delete_item ){
     </mt:if>
 </mt:setvarblock>
 
+<mt:if name="as_tmpl_version" ge="5">
+<mt:unless name="blog_id">
+    <mt:setvarblock name="related_content">
+        <mtapp:widget
+            id="user-properties"
+            label="<__trans phrase="User properties">">
+            <mt:include name="include/users_content_nav.tmpl">
+        </mtapp:widget>
+    </mt:setvarblock>
+</mt:unless>
+<mt:setvarblock name="content_header">
+    <ul class="action-link-list">
+        <li>
+            <a class="icon-left icon-create mt-open-dialog" href="<mt:var script_url>?__mode=dialog_add_profile&amp;author_id=<mt:var name="edit_author_id">&amp;return_args=<mt:var name="return_args" escape="url">"><__trans phrase="Add Profile"></a>
+        </li>
+    </ul>
+</mt:setvarblock>
+<mt:else>
 <mt:setvarblock name="content_nav">
     <mt:include name="include/users_content_nav.tmpl">
 </mt:setvarblock>
-
 <mt:setvarblock name="content_header">
     <ul class="action-link-list">
         <li>
@@ -81,17 +98,19 @@ function verifyDelete( delete_item ){
         </li>
     </ul>
 </mt:setvarblock>
+</mt:if>
 
 <mt:setvarblock name="action_buttons">
-    <a href="javascript:void(0)"
-        onclick="doRemoveItems(getByID('profile-listing-form'), '<__trans phrase="profile">', '<__trans phrase="profiles">', null, null, { mode: 'remove_other_profile' }); return false"
+    <button
         accesskey="x"
+        onclick="doRemoveItems(getByID('profile-listing-form'), '<__trans phrase="profile">', '<__trans phrase="profiles">', null, null, { mode: 'remove_other_profile' }); return false"
         title="<__trans phrase="Delete selected profiles (x)">"
-        ><__trans phrase="Delete"></a>
-    <a href="javascript:void(0)"
+        class="mt-delete-items"
+        ><__trans phrase="Delete"></button>
+    <button
         onclick="doForMarkedInThisWindow(getByID('profile-listing-form'), '<__trans phrase="profile">', '<__trans phrase="profiles">', 'id', 'itemset_update_profiles', null, '<__trans phrase="to update">'); return false"
         title="<__trans phrase="Scan now for new actions">"
-        ><__trans phrase="Update Now"></a>
+        ><__trans phrase="Update Now"></button>
 </mt:setvarblock>
 <mt:var name="position_actions_top" value="1">
 
@@ -99,20 +118,32 @@ function verifyDelete( delete_item ){
 
 <mtapp:listing type="profile" loop="profiles" empty_message="<__trans phrase="No profiles were found.">" hide_pager="1">
     <mt:if __first__>
-        <thead>
+        <mt:setvarblock name="table-header">
             <tr>
                 <th class="cb"><input type="checkbox" name="id-head" value="all" class="select" /></th>
-                <th class="service"><span class="service-icon"><__trans phrase="Service"></span></th>
+                <th class="service primary-col"><span class="service-icon"><__trans phrase="Service"></span></th>
                 <th class="userid"><__trans phrase="Username"></th>
                 <th class="view"><__trans phrase="View"></th>
             </tr>
+        </mt:setvarblock name="table-header">
+        <thead>
+            <mt:var name="table-header">
         </thead>
+<mt:If name="as_tmpl_version" ge="5">
+        <tfoot>
+            <mt:var name="table-header">
+        </tfoot>
+</mt:if>
         <tbody>
     </mt:if>
 
     <tr class="<mt:if __odd__>odd<mt:else>even</mt:if>">
         <td class="cb"><input type="checkbox" name="id" class="select" value="<mt:var name="edit_author_id" escape="html">:<mt:var name="type" escape="html">:<mt:var name="ident" escape="html">" /></td>
+<mt:if name="as_tmpl_version" ge="5">
+        <td class="service network"><span class="service-icon service-<mt:var name="type">"><a href="<mt:var name="script_url">?__mode=dialog_edit_profile&amp;author_id=<mt:var name="edit_author_id">&amp;profile_type=<mt:var name="type" escape="url">&amp;profile_ident=<mt:var name="ident" escape="url">&amp;return_args=<mt:var name="return_args" escape="url">%26author_id=<mt:var name="edit_author_id">" class="mt-open-dialog"><mt:var name="label" escape="html"></a></span></td>
+<mt:else>
         <td class="service network"><span class="service-icon service-<mt:var name="type">"><a href="javascript:void(0)" onclick="return openDialog(this.form, 'dialog_edit_profile', 'author_id=<mt:var name="edit_author_id">&amp;profile_type=<mt:var name="type" escape="url">&amp;profile_ident=<mt:var name="ident" escape="url">&amp;return_args=<mt:var name="return_args" escape="url">%26author_id=<mt:var name="edit_author_id">')"><mt:var name="label" escape="html"></a></span></td>
+</mt:if>
         <td class="userid"><mt:var name="ident" escape="html"></td>
         <td class="view si status-view">
             <a href="<mt:var name="uri" escape="html">" target="<__trans phrase="external_link_target">" title="<__trans phrase="View Profile">"><img src="<mt:var name="static_uri">images/spacer.gif" alt="<__trans phrase="View Profile">" width="13" height="9" /></a>
@@ -125,4 +156,3 @@ function verifyDelete( delete_item ){
 </mtapp:listing>
 
 <mt:include name="include/footer.tmpl">
-

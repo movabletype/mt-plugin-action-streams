@@ -97,9 +97,21 @@
     </style>
 </mt:setvarblock>
 
+<mt:if name="as_tmpl_version" ge="5">
+<mt:unless name="blog_id">
+    <mt:setvarblock name="related_content">
+        <mtapp:widget
+            id="user-properties"
+            label="<__trans phrase="User properties">">
+            <mt:include name="include/users_content_nav.tmpl">
+        </mtapp:widget>
+    </mt:setvarblock>
+</mt:unless>
+<mt:else>
 <mt:setvarblock name="content_nav">
     <mt:include name="include/users_content_nav.tmpl">
 </mt:setvarblock>
+</mt:if>
 
 <mt:setvarblock name="system_msg">
     <mt:if name="saved_deleted">
@@ -144,6 +156,20 @@
 </mt:setvarblock>
 
 <mt:setvarblock name="action_buttons">
+    <button
+        onclick="doForMarkedInThisWindow(getByID('profileevent-listing-form'), '<__trans phrase="event">', '<__trans phrase="events">', 'id', 'itemset_hide_events'); return false"
+        accesskey="h"
+        title="<__trans phrase="Hide selected events (h)">"
+        ><__trans phrase="Hide"></button>
+    <button
+        onclick="doForMarkedInThisWindow(getByID('profileevent-listing-form'), '<__trans phrase="event">', '<__trans phrase="events">', 'id', 'itemset_show_events'); return false"
+        accesskey="s"
+        title="<__trans phrase="Show selected events (s)">"
+        ><__trans phrase="Show"></button>
+</mt:setvarblock>
+
+<mt:Ignore>
+<mt:setvarblock name="action_buttons">
     <a href="javascript:void(0)"
         onclick="doForMarkedInThisWindow(getByID('profileevent-listing-form'), '<__trans phrase="event">', '<__trans phrase="events">', 'id', 'itemset_hide_events'); return false"
         accesskey="h"
@@ -155,6 +181,7 @@
         title="<__trans phrase="Show selected events (h)">"
         ><__trans phrase="Show"></a>
 </mt:setvarblock>
+</mt:Ignore>
 
 <mt:include name="include/header.tmpl">
 
@@ -208,9 +235,21 @@
             </span>
 
             <span class="buttons">
-                <a href="javascript:void(0)"
-                    id="filter-button"
+                <button
                     onclick="return execFilter(getByID('filter-select-form'))"
+                    id="filter-button"
+                    type="submit"
+                    ><__trans phrase="Filter"></button>
+                <button
+                    onclick="toggleFilter(); return false"
+                    type="submit"
+                    ><__trans phrase="Cancel"></button>
+            </span>
+<mt:Ignore>
+            <span class="buttons">
+                <a href="javascript:void(0)"
+                    onclick="return execFilter(getByID('filter-select-form'))"
+                    id="filter-button"
                     type="submit"
                     ><__trans phrase="Filter"></a>
                 <a href="javascript:void(0)"
@@ -218,6 +257,7 @@
                     type="submit"
                     ><__trans phrase="Cancel"></a>
             </span>
+</mt:Ignore>
         </div>
     </div>
 </form>
@@ -226,18 +266,26 @@
 
 <mtapp:listing type="profileevent" default="<__trans phrase="No events could be found.">" empty_message="<__trans phrase="No events could be found.">">
     <mt:if name="__first__">
-        <thead>
+        <mt:setvarblock name="table-header">
             <tr>
                 <th class="cb"><input type="checkbox" id="select-all-checkbox" name="id-head" value="all" class="select" /></th>
-                <th class="status">
+                <th class="status si">
                     <img src="<mt:var name="static_uri">images/status_icons/invert-flag.gif" alt="<__trans phrase="Status">" title="<__trans phrase="Status">" width="9" height="9" />
                 </th>
-                <th class="event"><__trans phrase="Event"></th>
+                <th class="event primary-col"><__trans phrase="Event"></th>
                 <th class="service"><span class="service-icon"><__trans phrase="Service"></span></th>
                 <th class="date"><__trans phrase="Created"></th>
                 <th class="view"><__trans phrase="View"></th>
             </tr>
+        </mt:setvarblock>
+        <thead>
+            <mt:var name="table-header">
         </thead>
+<mt:if name="as_tmpl_version" ge="5">
+        <tfoot>
+            <mt:var name="table-header">
+        </tfoot>
+</mt:if>
         <tbody>
     </mt:if>
     <tr class="<mt:if name="__odd__">odd<mt:else>even</mt:if>">
