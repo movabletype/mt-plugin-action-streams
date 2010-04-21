@@ -11,6 +11,64 @@ use base 'ActionStreams::L10N::en_us';
 use vars qw( %Lexicon );
 %Lexicon = (
 
+## plugins/ActionStreams/blog_tmpl/elsewhere.mtml
+    'Find [_1] Elsewhere' => '[_1]の利用サービス',
+
+## plugins/ActionStreams/blog_tmpl/banner_footer.mtml
+
+## plugins/ActionStreams/bl3og_tmpl/actions.mtml
+    'Recent Actions' => '最近のアクション',
+
+## plugins/ActionStreams/blog_tmpl/main_index.mtml
+
+## plugins/ActionStreams/blog_tmpl/sidebar.mtml
+
+## plugins/ActionStreams/blog_tmpl/archive.mtml
+
+## plugins/ActionStreams/config.yaml
+    'Manages authors\' accounts and actions on sites elsewhere around the web' => 'ユーザーがウェブで利用しているサービスのアカウントとアクションを管理します',
+    'Are you sure you want to hide EVERY event in EVERY action stream?' => '全アクションストリームの全イベントを非表示にしてよろしいですか?',
+    'Are you sure you want to show EVERY event in EVERY action stream?' => '全アクションストリームの全イベントを表示にしてよろしいですか?',
+    'Deleted events that are still available from the remote service will be added back in the next scan. Only events that are no longer available from your profile will remain deleted. Are you sure you want to delete the selected event(s)?' => 'イベントを削除してもリモートサービスは有効となっています。次の更新調査時に追加されます。ユーザプロフィールからイベントを無効にすれば削除されます。選択したイベントを削除してよろしいですか?',
+    'Hide All' => '全て非表示',
+    'Show All' => '全て表示',
+    'Poll for new events' => '新しいイベントの獲得',
+    'Update Events' => 'イベントの更新',
+    'Main Index (Recent Actions)' => 'メインインデックス(最近のアクション)',
+    'Action Archive' => 'アクションアーカイブ',
+    'Feed - Recent Activity' => 'フィード - 最近のアクティビティー',
+    'Find Authors Elsewhere' => 'ユーザーの利用サービス',
+    'Enabling default action streams for selected profiles...' => '選択したプロフィールの既存アクションストリームを有効にしています...',
+
+## plugins/ActionStreams/lib/ActionStreams/Tags.pm
+    'No user [_1]' => 'ユーザー([_1])は見つかりません',
+
+## plugins/ActionStreams/lib/ActionStreams/Plugin.pm
+    'Other Profiles' => '利用サービス',
+    'Profiles' => 'プロフィール',
+    'Action Stream' => 'アクションストリーム',
+    'Profiles' => 'プロフィール',
+    'Actions from the service [_1]' => 'サービス([_1])のアクション',
+    'Actions that are shown' => '表示アクション',
+    'Actions that are hidden' => '非表示アクション',
+    'No such event [_1]' => '[_1]イベントはありません',
+    '[_1] Profile' => '[_1]',
+
+## plugins/ActionStreams/lib/ActionStreams/Event.pm
+    '[_1] updating [_2] events for [_3]' => '[_3]の[_2]イベントを更新しています: [_1]',
+    'Error updating events for [_1]\'s [_2] stream (type [_3] ident [_4]): [_5]' => '[_1]の[_2]ストリーム([_3]タイプの[_4])の更新に失敗しました: [_5]',
+    'Could not load class [_1] for stream [_2] [_3]: [_4]' => '[_2]([_3])ストリームの[_1]クラスのロードができません: [_4]',
+    'No URL to fetch for [_1] results' => '[_1]の更新情報のURLが設定されていません',
+    'Could not fetch [_1]: [_2]' => '[_1]の更新に失敗しました: [_2]',
+    'Aborted fetching [_1]: [_2]' => '[_1]の更新を中止しました: [_2]',
+
+## plugins/ActionStreams/lib/ActionStreams/Upgrade.pm
+    'Updating classification of [_1] [_2] actions...' => '[_1]の[_2]アクションの分類を更新中...',
+    'Renaming "[_1]" data of [_2] [_3] actions...' => '[_2]の[_3]アクションデータを"[_1]"に変更中...',
+
+## plugins/ActionStreams/lib/ActionStreams/Worker.pm
+    'No such author with ID [_1]' => 'ユーザーID([_1])は見つかりません。',
+
 ## plugins/ActionStreams/services.yaml
     '1up.com' => '1up.com',
     '43Things' => '43Things',
@@ -109,130 +167,6 @@ use vars qw( %Lexicon );
     'Yelp' => 'Yelp',
     'YouTube' => 'YouTube',
     'Zooomr' => 'Zooomr',
-
-## plugins/ActionStreams/blog_tmpl/elsewhere.mtml
-    'Find [_1] Elsewhere' => '[_1]の利用サービス',
-
-## plugins/ActionStreams/blog_tmpl/banner_footer.mtml
-
-## plugins/ActionStreams/bl3og_tmpl/actions.mtml
-    'Recent Actions' => '最近のアクション',
-
-## plugins/ActionStreams/blog_tmpl/main_index.mtml
-
-## plugins/ActionStreams/blog_tmpl/sidebar.mtml
-
-## plugins/ActionStreams/blog_tmpl/archive.mtml
-
-## plugins/ActionStreams/tmpl/blog_config_template.tmpl
-    'Rebuild Indexes' => 'インデックス再構築',
-    'If selected, this blog\'s indexes will be rebuilt when new action stream events are discovered.' => '新しいアクションストリームイベントが見つかった時に、ブログのインデックスを再構築する。',
-    'Enable rebuilding' => '再構築を有効にする',
-
-## plugins/ActionStreams/tmpl/dialog_edit_profile.tmpl
-    'Your user name or ID is required.' => 'ユーザー名またはIDが必須です。',
-    'Edit a profile on a social networking or instant messaging service.' => 'SNSやIMサービスなどのプロファイルを編集します。',
-    'Service' => 'サービス',
-    'Enter your account on the selected service.' => '選択したサービスのアカウントを入力してください。',
-    'For example:' => '例: ',
-    'Action Streams' => 'アクションストリーム',
-    'Select the action streams to collect from the selected service.' => '選択したサービスから集めるアクションストリームをチェックしてください。',
-    'No streams are available for this service.' => 'このサービスでは利用できるストリームがありません。',
-
-## plugins/ActionStreams/tmpl/list_profileevent.tmpl
-    'Action Stream' => 'アクションストリーム',
-    'The selected events were deleted.' => '選択したイベントは削除されました。',
-    'The selected events were hidden.' => '選択したイベントを非表示にしました。',
-    'The selected events were shown.' => '選択したイベントを表示にしました。',
-    'All action stream events were hidden.' => '全アクションストリームイベントを非表示にしました。',
-    'All action stream events were shown.' => '全アクションストリームイベントを表示にしました。',
-    'event' => 'イベント',
-    'events' => 'イベント',
-    'Hide selected events (h)' => '選択したイベントを非表示にする (h)',
-    'Hide' => '非表示',
-    'Show selected events (h)' => '選択したイベントを表示にする (h)',
-    'Show' => '表示',
-    'All stream actions' => 'すべてのストリームアクション',
-    'Show only actions where' => 'アクションを表示: ',
-    'service' => 'サービス',
-    'visibility' => '表示/非表示',
-    'hidden' => '非表示',
-    'shown' => '表示',
-    'No events could be found.' => 'イベントが見つかりません。',
-    'Event' => 'イベント',
-    'Shown' => '表示',
-    'Hidden' => '非表示',
-    'View action link' => 'アクションリンク表示',
-
-## plugins/ActionStreams/tmpl/widget_recent.mtml
-    'Your Recent Actions' => '最近のアクション',
-    'blog this' => '記事作成',
-
-## plugins/ActionStreams/tmpl/dialog_add_profile.tmpl
-    'Add a profile on a social networking or instant messaging service.' => 'ソーシャルネットワーク、またはインスタントメッセージサービスのプロフィールを追加します。',
-    'Select a service where you already have an account.' => 'アカウントをもっているサービスを選択してください。',
-    'Add Profile (s)' => 'プロフィール追加 (s)',
-
-## plugins/ActionStreams/tmpl/other_profiles.tmpl
-    'Other Profiles' => '利用サービス',
-    'The selected profile was added.' => '選択したプロフィールは追加されました。',
-    'The selected profiles were removed.' => '選択したプロフィールは削除されました。',
-    'The selected profiles were scanned for updates.' => '選択したプロフィールの更新を調べました。',
-    'The changes to the profile have been saved.' => 'プロフィールの変更が保存されました。',
-    'Add Profile' => 'プロフィール追加',
-    'profile' => 'プロフィール',
-    'profiles' => 'プロフィール',
-    'Delete selected profiles (x)' => '選択したプロフィール削除(x)',
-    'to update' => '更新',
-    'Scan now for new actions' => '新しいアクションを調べる',
-    'Update Now' => '今すぐ更新する',
-    'No profiles were found.' => 'プロフィールが見つかりません。',
-    'external_link_target' => '外部リンクターゲット',
-    'View Profile' => 'プロフィール表示',
-
-## plugins/ActionStreams/config.yaml
-    'Manages authors\' accounts and actions on sites elsewhere around the web' => 'ユーザーがウェブで利用しているサービスのアカウントとアクションを管理します',
-    'Are you sure you want to hide EVERY event in EVERY action stream?' => '全アクションストリームの全イベントを非表示にしてよろしいですか?',
-    'Are you sure you want to show EVERY event in EVERY action stream?' => '全アクションストリームの全イベントを表示にしてよろしいですか?',
-    'Deleted events that are still available from the remote service will be added back in the next scan. Only events that are no longer available from your profile will remain deleted. Are you sure you want to delete the selected event(s)?' => 'イベントを削除してもリモートサービスは有効となっています。次の更新調査時に追加されます。ユーザプロフィールからイベントを無効にすれば削除されます。選択したイベントを削除してよろしいですか?',
-    'Hide All' => '全て非表示',
-    'Show All' => '全て表示',
-    'Poll for new events' => '新しいイベントの獲得',
-    'Update Events' => 'イベントの更新',
-    'Main Index (Recent Actions)' => 'メインインデックス(最近のアクション)',
-    'Action Archive' => 'アクションアーカイブ',
-    'Feed - Recent Activity' => 'フィード - 最近のアクティビティー',
-    'Find Authors Elsewhere' => 'ユーザーの利用サービス',
-    'Enabling default action streams for selected profiles...' => '選択したプロフィールの既存アクションストリームを有効にしています...',
-
-## plugins/ActionStreams/lib/ActionStreams/Tags.pm
-    'No user [_1]' => 'ユーザー([_1])は見つかりません',
-
-## plugins/ActionStreams/lib/ActionStreams/Plugin.pm
-    'Other Profiles' => '利用サービス',
-    'Profiles' => 'プロフィール',
-    'Action Stream' => 'アクションストリーム',
-    'Profiles' => 'プロフィール',
-    'Actions from the service [_1]' => 'サービス([_1])のアクション',
-    'Actions that are shown' => '表示アクション',
-    'Actions that are hidden' => '非表示アクション',
-    'No such event [_1]' => '[_1]イベントはありません',
-    '[_1] Profile' => '[_1]',
-
-## plugins/ActionStreams/lib/ActionStreams/Event.pm
-    '[_1] updating [_2] events for [_3]' => '[_3]の[_2]イベントを更新しています: [_1]',
-    'Error updating events for [_1]\'s [_2] stream (type [_3] ident [_4]): [_5]' => '[_1]の[_2]ストリーム([_3]タイプの[_4])の更新に失敗しました: [_5]',
-    'Could not load class [_1] for stream [_2] [_3]: [_4]' => '[_2]([_3])ストリームの[_1]クラスのロードができません: [_4]',
-    'No URL to fetch for [_1] results' => '[_1]の更新情報のURLが設定されていません',
-    'Could not fetch [_1]: [_2]' => '[_1]の更新に失敗しました: [_2]',
-    'Aborted fetching [_1]: [_2]' => '[_1]の更新を中止しました: [_2]',
-
-## plugins/ActionStreams/lib/ActionStreams/Upgrade.pm
-    'Updating classification of [_1] [_2] actions...' => '[_1]の[_2]アクションの分類を更新中...',
-    'Renaming "[_1]" data of [_2] [_3] actions...' => '[_2]の[_3]アクションデータを"[_1]"に変更中...',
-
-## plugins/ActionStreams/lib/ActionStreams/Worker.pm
-    'No such author with ID [_1]' => 'ユーザーID([_1])は見つかりません。',
 
 ## plugins/ActionStreams/streams.yaml
     'Currently Playing' => '現在プレー中',
@@ -413,6 +347,72 @@ use vars qw( %Lexicon );
     'Places you reviewed' => 'レビューした場所',
     'Videos you saved as favorites' => 'お気に入りにしたビデオ',
     '[_1] posted <a href="[_2]">[_3]</a> to YouTube' => '[_1]はYouTubeに<a href="[_2]">[_3]</a>を投稿しました',
+
+## plugins/ActionStreams/tmpl/blog_config_template.tmpl
+    'Rebuild Indexes' => 'インデックス再構築',
+    'If selected, this blog\'s indexes will be rebuilt when new action stream events are discovered.' => '新しいアクションストリームイベントが見つかった時に、ブログのインデックスを再構築する。',
+    'Enable rebuilding' => '再構築を有効にする',
+
+## plugins/ActionStreams/tmpl/dialog_edit_profile.tmpl
+    'Your user name or ID is required.' => 'ユーザー名またはIDが必須です。',
+    'Edit a profile on a social networking or instant messaging service.' => 'SNSやIMサービスなどのプロファイルを編集します。',
+    'Service' => 'サービス',
+    'Enter your account on the selected service.' => '選択したサービスのアカウントを入力してください。',
+    'For example:' => '例: ',
+    'Action Streams' => 'アクションストリーム',
+    'Select the action streams to collect from the selected service.' => '選択したサービスから集めるアクションストリームをチェックしてください。',
+    'No streams are available for this service.' => 'このサービスでは利用できるストリームがありません。',
+
+## plugins/ActionStreams/tmpl/list_profileevent.tmpl
+    'Action Stream' => 'アクションストリーム',
+    'The selected events were deleted.' => '選択したイベントは削除されました。',
+    'The selected events were hidden.' => '選択したイベントを非表示にしました。',
+    'The selected events were shown.' => '選択したイベントを表示にしました。',
+    'All action stream events were hidden.' => '全アクションストリームイベントを非表示にしました。',
+    'All action stream events were shown.' => '全アクションストリームイベントを表示にしました。',
+    'event' => 'イベント',
+    'events' => 'イベント',
+    'Hide selected events (h)' => '選択したイベントを非表示にする (h)',
+    'Hide' => '非表示',
+    'Show selected events (h)' => '選択したイベントを表示にする (h)',
+    'Show' => '表示',
+    'All stream actions' => 'すべてのストリームアクション',
+    'Show only actions where' => 'アクションを表示: ',
+    'service' => 'サービス',
+    'visibility' => '表示/非表示',
+    'hidden' => '非表示',
+    'shown' => '表示',
+    'No events could be found.' => 'イベントが見つかりません。',
+    'Event' => 'イベント',
+    'Shown' => '表示',
+    'Hidden' => '非表示',
+    'View action link' => 'アクションリンク表示',
+
+## plugins/ActionStreams/tmpl/widget_recent.mtml
+    'Your Recent Actions' => '最近のアクション',
+    'blog this' => '記事作成',
+
+## plugins/ActionStreams/tmpl/dialog_add_profile.tmpl
+    'Add a profile on a social networking or instant messaging service.' => 'ソーシャルネットワーク、またはインスタントメッセージサービスのプロフィールを追加します。',
+    'Select a service where you already have an account.' => 'アカウントをもっているサービスを選択してください。',
+    'Add Profile (s)' => 'プロフィール追加 (s)',
+
+## plugins/ActionStreams/tmpl/other_profiles.tmpl
+    'Other Profiles' => '利用サービス',
+    'The selected profile was added.' => '選択したプロフィールは追加されました。',
+    'The selected profiles were removed.' => '選択したプロフィールは削除されました。',
+    'The selected profiles were scanned for updates.' => '選択したプロフィールの更新を調べました。',
+    'The changes to the profile have been saved.' => 'プロフィールの変更が保存されました。',
+    'Add Profile' => 'プロフィール追加',
+    'profile' => 'プロフィール',
+    'profiles' => 'プロフィール',
+    'Delete selected profiles (x)' => '選択したプロフィール削除(x)',
+    'to update' => '更新',
+    'Scan now for new actions' => '新しいアクションを調べる',
+    'Update Now' => '今すぐ更新する',
+    'No profiles were found.' => 'プロフィールが見つかりません。',
+    'external_link_target' => '外部リンクターゲット',
+    'View Profile' => 'プロフィール表示',
 
 ## plugins/CommunityActionStreams/config.yaml
     '[_1] <a href="[_2]">commented</a> on <a href="[_3]">[_4]</a>' => '[_1]は<a href="[_3]">[_4]</a>に<a href="[_2]">コメント</a>しました',
