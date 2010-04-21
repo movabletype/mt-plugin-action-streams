@@ -37,6 +37,19 @@ applications:
             itemset_show_events:     $ActionStreams::ActionStreams::Plugin::itemset_show_events
             itemset_hide_all_events: $ActionStreams::ActionStreams::Plugin::itemset_hide_all_events
             itemset_show_all_events: $ActionStreams::ActionStreams::Plugin::itemset_show_all_events
+        menus:
+            user:other_profiles:
+                order: 10000
+                mode: other_profiles
+                view:
+                    - system
+                display: 0
+            user:action_stream:
+                order: 10000
+                mode: list_profileevent
+                view:
+                    - system
+                display: 0
     community:
         methods:
             profile_add_external_profile:    $ActionStreams::ActionStreams::Plugin::profile_add_external_profile

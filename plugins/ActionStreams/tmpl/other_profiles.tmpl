@@ -70,7 +70,7 @@ function verifyDelete( delete_item ){
     </mt:if>
 </mt:setvarblock>
 
-<mt:if name="as_tmpl_version" ge="5">
+<mt:if name="mt_version" ge="5">
 <mt:unless name="blog_id">
     <mt:setvarblock name="related_content">
         <mtapp:widget
@@ -129,7 +129,7 @@ function verifyDelete( delete_item ){
         <thead>
             <mt:var name="table-header">
         </thead>
-<mt:If name="as_tmpl_version" ge="5">
+<mt:If name="mt_version" ge="5">
         <tfoot>
             <mt:var name="table-header">
         </tfoot>
@@ -139,7 +139,7 @@ function verifyDelete( delete_item ){
 
     <tr class="<mt:if __odd__>odd<mt:else>even</mt:if>">
         <td class="cb"><input type="checkbox" name="id" class="select" value="<mt:var name="edit_author_id" escape="html">:<mt:var name="type" escape="html">:<mt:var name="ident" escape="html">" /></td>
-<mt:if name="as_tmpl_version" ge="5">
+<mt:if name="mt_version" ge="5">
         <td class="service network"><span class="service-icon service-<mt:var name="type">"><a href="<mt:var name="script_url">?__mode=dialog_edit_profile&amp;author_id=<mt:var name="edit_author_id">&amp;profile_type=<mt:var name="type" escape="url">&amp;profile_ident=<mt:var name="ident" escape="url">&amp;return_args=<mt:var name="return_args" escape="url">%26author_id=<mt:var name="edit_author_id">" class="mt-open-dialog"><mt:var name="label" escape="html"></a></span></td>
 <mt:else>
         <td class="service network"><span class="service-icon service-<mt:var name="type">"><a href="javascript:void(0)" onclick="return openDialog(this.form, 'dialog_edit_profile', 'author_id=<mt:var name="edit_author_id">&amp;profile_type=<mt:var name="type" escape="url">&amp;profile_ident=<mt:var name="ident" escape="url">&amp;return_args=<mt:var name="return_args" escape="url">%26author_id=<mt:var name="edit_author_id">')"><mt:var name="label" escape="html"></a></span></td>
