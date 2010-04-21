@@ -18,13 +18,25 @@ sub users_content_nav {
     my $var = $vars->[0];
     my $menu_var = $tmpl->createElement('setvartemplate', { name => 'line_items', function => 'push' });
     my $menu_str = <<"EOF";
-    <__trans_section component="actionstreams"><mt:if name="object_type" eq="author"><mt:if name="USER_VIEW">
-        <li<mt:if name="other_profiles"> class="active"><em><mt:else>></mt:if><a href="<mt:var name="SCRIPT_URL">?__mode=other_profiles&amp;id=<mt:var name="EDIT_AUTHOR_ID" escape="url">"><__trans phrase="Other Profiles"></a><mt:if name="other_profiles"></em></mt:if></li>
-        <li<mt:if name="list_profileevent"> class="active"><em><mt:else>></mt:if><a href="<mt:var name="SCRIPT_URL">?__mode=list_profileevent&amp;id=<mt:var name="EDIT_AUTHOR_ID" escape="url">"><__trans phrase="Action Stream"></a><mt:if name="list_profileevent"></em></mt:if></li>
+    <__trans_section component="actionstreams">
+    <mt:if name="mt_version" ge="5">
+        <mt:if name="user_view">
+        <li><a href="<mt:var name="SCRIPT_URL">?__mode=other_profiles&amp;id=<mt:var name="EDIT_AUTHOR_ID" escape="url">&amp;author_id=<mt:var name="EDIT_AUTHOR_ID" escape="url">"><__trans phrase="Other Profiles"></a></li>
+        <li><a href="<mt:var name="SCRIPT_URL">?__mode=list_profileevent&amp;id=<mt:var name="EDIT_AUTHOR_ID" escape="url">&amp;author_id=<mt:var name="EDIT_AUTHOR_ID" escape="url">"><__trans phrase="Action Stream"></a></li>
+        <mt:else>
+        <li<mt:if name="other_profiles"> class="active"><em><mt:else>></mt:if><a href="<mt:var name="SCRIPT_URL">?__mode=other_profiles&amp;id=<mt:var name="id" escape="url">&amp;author_id=<mt:var name="id" escape="url">"><__trans phrase="Other Profiles"></a><mt:if name="other_profiles"></em></mt:if></li>
+        <li<mt:if name="list_profileevent"> class="active"><em><mt:else>></mt:if><a href="<mt:var name="SCRIPT_URL">?__mode=list_profileevent&amp;id=<mt:var name="id" escape="url">&amp;author_id=<mt:var name="id" escape="url">"><__trans phrase="Action Stream"></a><mt:if name="list_profileevent"></em></mt:if></li>
+        </mt:if>
     <mt:else>
-        <li<mt:if name="other_profiles"> class="active"><em><mt:else>></mt:if><a href="<mt:var name="SCRIPT_URL">?__mode=other_profiles&amp;id=<mt:var name="id" escape="url">"><__trans phrase="Other Profiles"></a><mt:if name="other_profiles"></em></mt:if></li>
-        <li<mt:if name="list_profileevent"> class="active"><em><mt:else>></mt:if><a href="<mt:var name="SCRIPT_URL">?__mode=list_profileevent&amp;id=<mt:var name="id" escape="url">"><__trans phrase="Action Stream"></a><mt:if name="other_profiles"></em></mt:if></li>
-    </mt:if></mt:if></__trans_section>
+        <mt:if name="user_view">
+        <li><a href="<mt:var name="SCRIPT_URL">?__mode=other_profiles&amp;id=<mt:var name="EDIT_AUTHOR_ID" escape="url">"><b><__trans phrase="Other Profiles"></b></a></li>
+        <li><a href="<mt:var name="SCRIPT_URL">?__mode=list_profileevent&amp;id=<mt:var name="EDIT_AUTHOR_ID" escape="url">"><b><__trans phrase="Action Stream"></a></b></li>
+        <mt:else>
+        <li<mt:if name="other_profiles"> class="active"</mt:if>><a href="<mt:var name="SCRIPT_URL">?__mode=other_profiles&amp;id=<mt:var name="id" escape="url">"><b><__trans phrase="Other Profiles"></b></a></li>
+        <li<mt:if name="list_profileevent"> class="active"</mt:if>><a href="<mt:var name="SCRIPT_URL">?__mode=list_profileevent&amp;id=<mt:var name="id" escape="url">"><b><__trans phrase="Action Stream"></b></a></li>
+        </mt:if>
+    </mt:if>
+    </__trans_section>
 EOF
     $menu_var->innerHTML($menu_str);
     $tmpl->insertAfter($menu_var, $var);
