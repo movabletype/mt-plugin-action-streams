@@ -722,6 +722,7 @@ sub widget_recent {
 
 sub widget_blog_dashboard_only {
     my ($page, $scope) = @_;
+    return 1 if MT->VERSION < 5;
     return if $scope eq 'dashboard:system';
     return if $scope =~ /blog/ && !MT->app->blog->is_blog;
     return 1;
