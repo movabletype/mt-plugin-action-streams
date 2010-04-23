@@ -11,112 +11,48 @@ use base 'ActionStreams::L10N::en_us';
 use vars qw( %Lexicon );
 %Lexicon = (
 
-## plugins/ActionStreams/blog_tmpl/actions.mtml
-    'Recent Actions' => '最近のアクション',
-
-## plugins/ActionStreams/blog_tmpl/banner_footer.mtml
-    '_POWERED_BY' => 'Powered by <a href="http://www.sixapart.jp/movabletype/"><$MTProductName$></a>',
-    'This blog is licensed under a <a href="[_1]">Creative Commons License</a>.' => 'このブログは<a href="[_1]">クリエイティブ・コモンズ</a>でライセンスされています。',
-
-## plugins/ActionStreams/blog_tmpl/banner_header.mtml
-
 ## plugins/ActionStreams/blog_tmpl/elsewhere.mtml
     'Find [_1] Elsewhere' => '[_1]の利用サービス',
 
-## plugins/ActionStreams/blog_tmpl/feed_recent.mtml
+## plugins/ActionStreams/blog_tmpl/banner_footer.mtml
 
-## plugins/ActionStreams/blog_tmpl/html_head.mtml
+## plugins/ActionStreams/bl3og_tmpl/actions.mtml
+    'Recent Actions' => '最近のアクション',
 
 ## plugins/ActionStreams/blog_tmpl/main_index.mtml
-    'HTML Head' => 'HTMLヘッダー',
-    'Banner Header' => 'バナーヘッダー',
-    'Sidebar' => 'サイドバー',
-    'Banner Footer' => 'バナーフッター',
 
 ## plugins/ActionStreams/blog_tmpl/sidebar.mtml
-    '2-column layout - Sidebar' => '2カラムのサイドバー',
 
-## plugins/ActionStreams/blog_tmpl/styles.mtml
+## plugins/ActionStreams/blog_tmpl/archive.mtml
 
 ## plugins/ActionStreams/config.yaml
     'Manages authors\' accounts and actions on sites elsewhere around the web' => 'ユーザーがウェブで利用しているサービスのアカウントとアクションを管理します',
-    'Action Streams Theme.' => 'アクションストリームテーマ',
     'Are you sure you want to hide EVERY event in EVERY action stream?' => '全アクションストリームの全イベントを非表示にしてよろしいですか?',
     'Are you sure you want to show EVERY event in EVERY action stream?' => '全アクションストリームの全イベントを表示にしてよろしいですか?',
     'Deleted events that are still available from the remote service will be added back in the next scan. Only events that are no longer available from your profile will remain deleted. Are you sure you want to delete the selected event(s)?' => 'イベントを削除してもリモートサービスは有効となっています。次の更新調査時に追加されます。ユーザプロフィールからイベントを無効にすれば削除されます。選択したイベントを削除してよろしいですか?',
     'Hide All' => '全て非表示',
     'Show All' => '全て表示',
-    'Delete' => '削除',
     'Poll for new events' => '新しいイベントの獲得',
-    'Expire old events' => '古いイベントの削除',
     'Update Events' => 'イベントの更新',
-    'Recent Actions' => '最近のアクション',
-    'Action Stream' => 'アクションストリーム',
     'Main Index (Recent Actions)' => 'メインインデックス(最近のアクション)',
-    'Stylesheet' => 'スタイルシート',
+    'Action Archive' => 'アクションアーカイブ',
     'Feed - Recent Activity' => 'フィード - 最近のアクティビティー',
-    'HTML Head' => 'HTMLヘッダー',
-    'Banner Header' => 'バナーヘッダー',
-    'Banner Footer' => 'バナーフッター',
-    'Sidebar' => 'サイドバー',
     'Find Authors Elsewhere' => 'ユーザーの利用サービス',
-    '2-column layout - Sidebar' => '2カラムのサイドバー',
-    'Action Streams Theme' => 'アクションストリームテーマ',
     'Enabling default action streams for selected profiles...' => '選択したプロフィールの既存アクションストリームを有効にしています...',
 
-## plugins/ActionStreams/doc/example_templates/indexes/action-stream-archive.mtml
+## plugins/ActionStreams/lib/ActionStreams/Tags.pm
+    'No user [_1]' => 'ユーザー([_1])は見つかりません',
 
-## plugins/ActionStreams/doc/example_templates/indexes/action-stream-index.mtml
-
-## plugins/ActionStreams/doc/example_templates/widgets/author-action-stream.mtml
-
-## plugins/ActionStreams/doc/example_templates/widgets/author-find-me-elsewhere.mtml
-
-## plugins/ActionStreams/extlib/HTML/AsSubs.pm
-
-## plugins/ActionStreams/extlib/HTML/Element.pm
-
-## plugins/ActionStreams/extlib/HTML/Element/traverse.pm
-
-## plugins/ActionStreams/extlib/HTML/Parse.pm
-
-## plugins/ActionStreams/extlib/HTML/Selector/XPath.pm
-
-## plugins/ActionStreams/extlib/HTML/Tree.pm
-
-## plugins/ActionStreams/extlib/HTML/TreeBuilder.pm
-
-## plugins/ActionStreams/extlib/HTML/TreeBuilder/XPath.pm
-
-## plugins/ActionStreams/extlib/HTTP/Response/Encoding.pm
-
-## plugins/ActionStreams/extlib/Web/Scraper.pm
-
-## plugins/ActionStreams/extlib/Web/Scraper/Filter.pm
-
-## plugins/ActionStreams/extlib/XML/XPathEngine.pm
-
-## plugins/ActionStreams/extlib/XML/XPathEngine/Boolean.pm
-
-## plugins/ActionStreams/extlib/XML/XPathEngine/Expr.pm
-
-## plugins/ActionStreams/extlib/XML/XPathEngine/Function.pm
-
-## plugins/ActionStreams/extlib/XML/XPathEngine/Literal.pm
-
-## plugins/ActionStreams/extlib/XML/XPathEngine/LocationPath.pm
-
-## plugins/ActionStreams/extlib/XML/XPathEngine/NodeSet.pm
-
-## plugins/ActionStreams/extlib/XML/XPathEngine/Number.pm
-
-## plugins/ActionStreams/extlib/XML/XPathEngine/Root.pm
-
-## plugins/ActionStreams/extlib/XML/XPathEngine/Step.pm
-
-## plugins/ActionStreams/extlib/XML/XPathEngine/Variable.pm
-
-## plugins/ActionStreams/ja.pm
+## plugins/ActionStreams/lib/ActionStreams/Plugin.pm
+    'Other Profiles' => '利用サービス',
+    'Profiles' => 'プロフィール',
+    'Action Stream' => 'アクションストリーム',
+    'Profiles' => 'プロフィール',
+    'Actions from the service [_1]' => 'サービス([_1])のアクション',
+    'Actions that are shown' => '表示アクション',
+    'Actions that are hidden' => '非表示アクション',
+    'No such event [_1]' => '[_1]イベントはありません',
+    '[_1] Profile' => '[_1]',
 
 ## plugins/ActionStreams/lib/ActionStreams/Event.pm
     '[_1] updating [_2] events for [_3]' => '[_3]の[_2]イベントを更新しています: [_1]',
@@ -126,68 +62,9 @@ use vars qw( %Lexicon );
     'Could not fetch [_1]: [_2]' => '[_1]の更新に失敗しました: [_2]',
     'Aborted fetching [_1]: [_2]' => '[_1]の更新を中止しました: [_2]',
 
-## plugins/ActionStreams/lib/ActionStreams/Event/BlurstAchievements.pm
-
-## plugins/ActionStreams/lib/ActionStreams/Event/Identica.pm
-
-## plugins/ActionStreams/lib/ActionStreams/Event/OneupPlaying.pm
-
-## plugins/ActionStreams/lib/ActionStreams/Event/Steam.pm
-
-## plugins/ActionStreams/lib/ActionStreams/Event/Twitter.pm
-
-## plugins/ActionStreams/lib/ActionStreams/Event/TwitterFavorite.pm
-
-## plugins/ActionStreams/lib/ActionStreams/Event/TwitterTweet.pm
-
-## plugins/ActionStreams/lib/ActionStreams/Event/Vox.pm
-
-## plugins/ActionStreams/lib/ActionStreams/Event/Website.pm
-
-## plugins/ActionStreams/lib/ActionStreams/Event/XboxGamerscore.pm
-
-## plugins/ActionStreams/lib/ActionStreams/Fix.pm
-
-## plugins/ActionStreams/lib/ActionStreams/Init.pm
-
-## plugins/ActionStreams/lib/ActionStreams/L10N.pm
-
-## plugins/ActionStreams/lib/ActionStreams/L10N/de.pm
-
-## plugins/ActionStreams/lib/ActionStreams/L10N/en_us.pm
-
-## plugins/ActionStreams/lib/ActionStreams/L10N/es.pm
-
-## plugins/ActionStreams/lib/ActionStreams/L10N/fr.pm
-
-## plugins/ActionStreams/lib/ActionStreams/L10N/ja.pm
-
-## plugins/ActionStreams/lib/ActionStreams/L10N/nl.pm
-
-## plugins/ActionStreams/lib/ActionStreams/Plugin.pm
-    'Other Profiles' => '利用サービス',
-    'Action Stream' => 'アクションストリーム',
-    'Profiles' => 'プロフィール',
-    'Actions from the service [_1]' => 'サービス([_1])のアクション',
-    'Actions that are shown' => '表示アクション',
-    'Actions that are hidden' => '非表示アクション',
-    'No such event [_1]' => '[_1]イベントはありません',
-    '[_1] Profile' => '[_1]',
-    'Invalid request.' => '不正な要求です。',
-    '[_1] action streams events are expired' => '[_1]個のアクションデータが削除されました',
-
-## plugins/ActionStreams/lib/ActionStreams/Scraper.pm
-
-## plugins/ActionStreams/lib/ActionStreams/Tags.pm
-    'No user [_1]' => 'ユーザー([_1])は見つかりません',
-
 ## plugins/ActionStreams/lib/ActionStreams/Upgrade.pm
     'Updating classification of [_1] [_2] actions...' => '[_1]の[_2]アクションの分類を更新中...',
     'Renaming "[_1]" data of [_2] [_3] actions...' => '[_2]の[_3]アクションデータを"[_1]"に変更中...',
-
-## plugins/ActionStreams/lib/ActionStreams/UserAgent/Adapter.pm
-
-## plugins/ActionStreams/lib/ActionStreams/UserAgent/Cache.pm
 
 ## plugins/ActionStreams/lib/ActionStreams/Worker.pm
     'No such author with ID [_1]' => 'ユーザーID([_1])は見つかりません。',
@@ -195,12 +72,9 @@ use vars qw( %Lexicon );
 ## plugins/ActionStreams/services.yaml
     '1up.com' => '1up.com',
     '43Things' => '43Things',
-    'AIM' => 'AIM',
     'Screen name' => '表示名',
     'backtype' => 'backtype',
     'Bebo' => 'Bebo',
-    'Blurst' => 'Blurst',
-    'Username' => 'ユーザー名',
     'Catster' => 'Catster',
     'COLOURlovers' => 'COLOURlovers',
     'Cork\'\'d\'' => 'Cork\'\'d\'',
@@ -212,12 +86,18 @@ use vars qw( %Lexicon );
     'Dopplr' => 'Dopplr',
     'Facebook' => 'Facebook',
     'User ID' => 'ユーザーID',
+    'You can find your Facebook userid within your profile URL.  For example, http://www.facebook.com/profile.php?id=24400320.' => 'FacebookのユーザーIDはプロフィールのURL内にあります。例: http://www.facebook.com/profile.php?id=24400320',
     'FFFFOUND!' => 'FFFFOUND!',
     'Flickr' => 'Flickr',
-    'Enter your Flickr user ID that has a "@" in it. Your Flickr user ID is NOT the username in the URL of your photo stream.' => '"@"が含まれるFlickrのユーザーIDを入力してください。フォトストリームのURLに含まれるユーザーネームとは異なります。',
+    'Enter your Flickr userid which contains "@" in it, e.g. 36381329@N00.  Flickr userid is NOT the username in the URL of your photostream.' => 'FlickrのユーザーID(@を含む)を入力してください。 例: 36381329@N00 FlickrのユーザーIDはphotostreamのURL内のIDではありません。',
     'FriendFeed' => 'FriendFeed',
     'Gametap' => 'Gametap',
+    'Google Blogs' => 'Google Blogs',
+    'Search term' => '検索ワード',
+    'Google News' => 'Google News',
+    'Search for' => '検索 ',
     'Goodreads' => 'Goodreads',
+    'You can find your Goodreads userid within your profile URL. For example, http://www.goodreads.com/user/show/123456.' => 'GoodreadsのユーザーIDはプロフィールのURLにあります。例: http://www.goodreads.com/user/show/123456',
     'Google Reader' => 'Google Reader',
     'Sharing ID' => '共有ID',
     'Hi5' => 'Hi5',
@@ -226,8 +106,8 @@ use vars qw( %Lexicon );
     'UIN' => 'UIN',
     'Identi.ca' => 'Identi.ca',
     'Iminta' => 'Iminta',
-    'Instructables' => 'Instructables',
-    'iStockphoto' => 'iStockPhoto', # Translate - Case
+    'iStockPhoto' => 'iStockPhoto',
+    'You can find your istockphoto userid within your profile URL.  For example, http://www.istockphoto.com/user_view.php?id=1234567.' => 'istockphotoのユーザーIDはプロフィールのURLにあります。例: http://www.istockphoto.com/user_view.php?id=1234567',
     'IUseThis' => 'IUseThis',
     'iwatchthis' => 'iwatchthis',
     'Jabber' => 'Jabber',
@@ -237,10 +117,7 @@ use vars qw( %Lexicon );
     'Last.fm' => 'Last.fm',
     'LinkedIn' => 'LinkedIn',
     'Profile URL' => 'プロフィールID',
-    'LiveJournal' => 'LiveJournal',
     'Ma.gnolia' => 'Ma.gnolia',
-    'MetaFilter' => 'MetaFilter',
-    'User Number' => 'ユーザー番号',
     'MOG' => 'MOG',
     'MSN Messenger\'' => 'MSN Messenger\'',
     'Multiply' => 'Multiply',
@@ -252,34 +129,35 @@ use vars qw( %Lexicon );
     'Newsvine' => 'Newsvine',
     'Ning' => 'Ning',
     'Social Network URL' => 'ソーシャルネットワークURL',
-    'New York Times (TimesPeople)' => 'New York Times (TimePeople)',
-    'Activity URL' => 'プロフィールページのURL',
     'Ohloh' => 'Ohloh',
     'Orkut' => 'Orkut',
+    'You can find your orkut uid within your profile URL. For example, http://www.orkut.com/Main#Profile.aspx?rl=ls&uid=1234567890123456789' => 'orkutのユーザーIDはプロフィールのURL内にあります。例: http://www.orkut.com/Main#Profile.aspx?rl=ls&uid=1234567890123456789',
     'Pandora' => 'Pandora',
     'Picasa Web Albums' => 'Picasa Web Albums',
-    'p0p' => 'p0p',
+    'p0pulist' => 'p0pulist',
+    'You can find your p0pulist user id within your Hot List URL. for example, http://p0pulist.com/list/hot_list/10000' => 'p0pulistのユーザーIDはHot ListのURL内にあります。例: http://p0pulist.com/list/hot_list/10000',
     'Pownce' => 'Pownce',
     'Reddit' => 'Reddit',
     'Skype' => 'Skype',
     'SlideShare' => 'SlideShare',
     'Smugmug' => 'Smugmug',
     'SonicLiving' => 'SonicLiving',
+    'You can find your SonicLiving userid within your share&subscribe URL. For example, http://sonicliving.com/user/12345/feeds' => 'SonicLivingのユーザーIDはshare&subscribeのURLにあります。例: http://sonicliving.com/user/12345/feeds',
     'Steam' => 'Steam',
     'StumbleUpon' => 'StumbleUpon',
     'Tabblo' => 'Tabblo',
-    'Technorati' => 'Techonrati',
+    'Blank should be replaced by positive sign (+).' => '空白は + で置き換えてください。',
     'Tribe' => 'Tribe',
+    'You can find your tribe userid within your profile URL.  For example, http://people.tribe.net/dcdc61ed-696a-40b5-80c1-e9a9809a726a.' => 'tribeのユーザーIDはプロフィールのURLにあります。例: http://people.tribe.net/dcdc61ed-696a-40b5-80c1-e9a9809a726a',
     'Tumblr' => 'Tumblr',
-    'URL' => 'URL',
     'Twitter' => 'Twitter',
-    'TypePad' => 'TypePad',
+    'TwitterSearch' => 'TwitterSearch',
     'Uncrate' => 'Uncrate',
     'Upcoming' => 'Upcoming',
     'Viddler' => 'Viddler',
     'Vimeo' => 'Vimeo',
     'Virb' => 'Virb',
-    'Vox' => 'Vox',
+    'You can find your VIRB userid within your home URL.  For example, http://www.virb.com/backend/2756504321310091/your_home.' => 'VIRBのユーザーIDはホームのURLにあります。例: http://www.virb.com/backend/2756504321310091/your_home',
     'Vox name' => 'Voxユーザー名',
     'Website' => 'Website',
     'Wists' => 'Wists',
@@ -293,165 +171,200 @@ use vars qw( %Lexicon );
 ## plugins/ActionStreams/streams.yaml
     'Currently Playing' => '現在プレー中',
     'The games in your collection you\'re currently playing' => 'コレクションの中で現在プレーしているゲーム',
-    'Comments' => 'コメント',
     'Comments you have made on the web' => 'ウェブで投稿したコメント',
-    'Achievements' => '実績',
-    'Achievements earned in Blurst games' => 'Blurstゲームの実績',
+    '[_1] commented on <a href="[_2]">[_3]</a>' => '[_1]は<a href="[_2]">[_3]</a>にコメントしました',
     'Colors' => 'カラー',
     'Colors you saved' => '保存したカラー',
+    '[_1] saved the color <a href="[_2]">[_3]</a>' => '[_1]はカラー(<a href="[_2]">[_3]</a>)を保存しました',
     'Palettes' => 'パレット',
     'Palettes you saved' => '保存したパレット',
+    '[_1] saved the palette <a href="[_2]">[_3]</a>' => '[_1]はパレット(<a href="[_2]">[_3]</a>)を保存しました',
     'Patterns' => 'パターン',
     'Patterns you saved' => '保存したパターン',
+    '[_1] saved the pattern <a href="[_2]">[_3]</a>' => '[_1]はパターン(<a href="[_2]">[_3]</a>)を保存しました',
     'Favorite Palettes' => 'お気に入りのパレット',
     'Palettes you saved as favorites' => '保存したお気に入りのパレット',
+    '[_1] saved <a href="[_2]">[_3]</a> as a favorite palette' => '[_1]はお気に入りのパレット(<a href="[_2]">[_3]</a>)を保存しました。',
     'Reviews' => 'レビュー',
     'Your wine reviews' => 'ワインレビュー',
+    '[_1] reviewed <a href="[_2]">[_3]</a>' => '[_1]は<a href="[_2]">[_3]</a>をレビューしました',
     'Cellar' => 'セラー',
     'Wines you own' => '所有しているワイン',
+    '[_1] owns <a href="[_2]">[_3]</a>' => '[_1]は<a href="[_2]">[_3]</a>を所有します',
     'Shopping List' => '買物リスト',
     'Wines you want to buy' => '買いたいワイン',
+    '[_1] wants <a href="[_2]">[_3]</a>' => '[_1]は<a href="[_2]">[_3]</a>を求めてます',
     'Links' => 'リンク',
     'Your public links' => '公開リンク',
+    '[_1] saved the link <a href="[_2]">[_3]</a>' => '[_1]はリンク(<a href="[_2]">[_3]</a>)を保存しました',
     'Dugg' => 'ダグ',
     'Links you dugg' => 'ダグしたリンク',
+    '[_1] dugg the link <a href="[_2]">[_3]</a>' => '[_1]はリンク(<a href="[_2]">[_3]</a>)をダグしました',
     'Submissions' => '承認',
     'Links you submitted' => '承認したリンク',
+    '[_1] submitted the link <a href="[_2]">[_3]</a>' => '[_1]はリンク(<a href="[_2]">[_3]</a>)を投稿しました',
     'Found' => '見つけた',
     'Photos you found' => '見つけた写真',
+    '[_1] ffffound <a href="[_2]">[_3]</a>' => '[_1]は<a href="[_2]">[_3]</a>を見つけました',
     'Favorites' => 'お気に入り',
     'Photos you marked as favorites' => 'お気に入りにした写真',
+    '[_1] saved <a href="[_2]">[_3]</a> as a favorite photo' => '[_1]はお気に入りの写真(<a href="[_2]">[_3]</a>)を保存しました',
     'Photos' => '写真',
     'Photos you posted' => '保存した写真',
+    '[_1] posted <a href="[_2]">[_3]</a>' => '[_1]は<a href="[_2]">[_3]</a>を投稿しました',
     'Likes' => 'リンク',
     'Things from your friends that you "like"' => '好みのユーザーの物',
+    '[_1] likes <a href="[_2]">[_3]</a>' => '[_1]は<a href="[_2]">[_3]</a>をリンクします',
     'Leaderboard scores' => 'リーダーボードスコア',
     'Your high scores in games with leaderboards' => 'リーダーボードのゲームのハイスコア',
+    '[_1] scored <strong>[_2]</strong> in <a href="[_3]">[_4]</a>' => '[_1]は<a href="[_3]">[_4]</a>の<strong>[_2]</strong>に点数をつけました',
+    'Posts' => '記事',
+    'Blog posts about your search term' => '検索ワードについてのブログ記事',
+    'Google Blog Search result: <a href="[_2]">[_3]</a>' => 'Googleブログ検索結果: <a href="[_2]">[_3]</a>',
+    'Stories' => 'ストーリー',
+    'News Stories matching your search' => '検索での新しいストーリーとの一致',
+    'Google News search result: <a href="[_2]">[_3]</a>' => 'Googleニュース検索結果: <a href="[_2]">[_3]</a>',
     'To read' => 'これから読む',
     'Books on your "to-read" shelf' => '本棚のこれから読む本',
+    '[_1] saved <a href="[_2]"><i>[_3]</i> by [_4]</a> to read' => '[_1]は読み物(<a href="[_2]">[_4]の<i>[_3]</i></a>)を保存しました',
     'Reading' => '読んでいる',
     'Books on your "currently-reading" shelf' => '本棚の読んでいる本',
+    '[_1] started reading <a href="[_2]"><i>[_3]</i> by [_4]</a>' => '[_1]は<a href="[_2]">[_4]の<i>[_3]</i></a>を読み始めました',
     'Read' => '読む',
     'Books on your "read" shelf' => '本棚の読む本',
+    '[_1] finished reading <a href="[_2]"><i>[_3]</i> by [_4]</a>' => '[_1]は<a href="[_2]">[_4]の<i>[_3]</i></a>を読み終わりました',
     'Shared' => '共有',
     'Your shared items' => '共有アイテム',
+    '[_1] shared <a href="[_2]">[_3]</a> from <a href="[_4]">[_5]</a>' => '[_1]は<a href="[_4]">[_5]</a>の<a href="[_2]">[_3]</a>を共有しました',
     'Deliveries' => '配布',
     'Icon sets you were delivered' => '配布されたアイコンセット',
+    '[_1] received the icon set <a href="[_2]">[_3]</a>' => '[_1]はアイコンセット(<a href="[_2]">[_3]</a>)を受け取りました',
     'Notices' => '通知',
     'Notices you posted' => '投稿した通知',
+    '[_1] <a href="[_2]">said</a>, &ldquo;[_3]&rdquo;' => '[_1]は&ldquo;[_3]&rdquo;と<a href="[_2]">言いました</a>',
     'Intas' => 'Intas',
     'Links you saved' => '保存したリンク',
-    'Instructables you saved as favorites' => 'お気に入りにしたInstructables',
+    '[_1] is inta <a href="[_2]">[_3]</a>' => '[_1]はインタ(<a href="[_2]">[_3]</a>)です',
     'Photos you posted that were approved' => '承認した投稿した写真',
     'Recent events' => '最近のイベント',
     'Events from your recent events feed' => '最近のイベントフィードのイベント',
+    '[_1] <a href="[_2]">[_3]</a>' => '[_1] <a href="[_2]">[_3]</a>',
     'Apps you use' => '使用アプリ',
     'The applications you saved as ones you use' => '使用するアプリケーション',
+    '[_1] started using <a href="[_2]">[_3]</a>[quant,_4, (and loves it),,]' => '[_1]は<a href="[_2]">[_3]</a>([quant,_4, (大好き),,])を使い始めました',
     'Videos you saved as watched' => '見たビデオ',
+    '[_1] saved <a href="[_2]">[_3]</a> as a favorite video' => '[_1]はお気に入りのビデオ(<a href="[_2]">[_3]</a>)を保存しました',
     'Jaikus' => 'Jaikus',
     'Jaikus you posted' => '投稿したJaikus',
+    '[_1] <a href="[_2]">jaiku\'\'d</a>, "[_3]"' => '[_1]は"[_3]"を<a href="[_2]">Jaiku</a>しました',
     'Games you saved as favorites' => 'お気に入りにしたゲーム',
+    '[_1] saved <a href="[_2]">[_3]</a> as a favorite game' => '[_1]はお気に入りのゲーム(<a href="[_2]">[_3]</a>)を保存しました',
+    'Achievements' => '成果',
     'Achievements you won' => '獲得した成果',
+    '[_1] won the <strong>[_2]</strong> in <a href="[_3]">[_4]</a>' => '[_1]は<a href="[_3]">[_4]</a>の<strong>[_2]</strong>を獲得しました',
     'Tracks' => '曲',
     'Songs you recently listened to (High spam potential!)' => '最近聞いた歌(スパムの可能性あり)',
+    '[_1] heard <a href="[_2]">[_3]</a>' => '[_1]は<a href="[_2]">[_3]</a>を聞きました',
     'Loved Tracks' => '大好きな曲',
     'Songs you marked as "loved"' => '大好きとマークした歌',
+    '[_1] loved <a href="[_2]">[_3]</a> by [_4]' => '[_1]は[_4]の<a href="[_2]">[_3]</a>が大好きになりました',
     'Journal Entries' => 'ジャーナル記事',
     'Your recent journal entries' => '最近のジャーナル記事',
     'Events' => 'イベント',
     'The events you said you\'ll be attending' => '参加表明したイベント',
-    'Posts' => '記事',
+    '[_1] is attending <a href="[_2]">[_3]</a>' => '[_1]は<a href="[_2]">[_3]</a>に参加します',
     'Your public posts to your journal' => '公開投稿のジャーナル',
-    'Posts you saved as favorites' => 'お気に入りにした投稿',
     'Queue' => '待ちリスト',
     'Movies you added to your rental queue' => 'レンタルリストに入れた映画',
+    '[_1] queued <a href="[_2]">[_3]</a>' => '[_1]は<a href="[_2]">[_3]</a>を待ちました',
     'Recent Movies' => '最近の映画',
     'Recent Rental Activity' => '最近のレンタル活動',
-    'Recommendations' => 'お勧め',
-    'Recommendations in your TimesPeople activities' => 'TimesPeopleでのお勧め',
+    '[_1] is watching <a href="[_2]">[_3]</a>' => '[_1]は<a href="[_2]">[_3]</a>を見ています',
     'Kudos' => 'Kudos',
     'Kudos you have received' => '受け取ったKudos',
+    '[_1] received kudos from <a href="[_2]">[_3]</a>' => '[_1]は<a href="[_2]">[_3]</a>から称賛を得ました',
     'Favorite Songs' => 'お気に入りの歌',
     'Songs you marked as favorites' => 'お気に入りにした歌',
+    '[_1] saved <a href="[_2]">[_3]</a> as a favorite song' => '[_1]はお気に入りの歌(<a href="[_2]">[_3]</a>)を保存しました',
     'Favorite Artists' => 'お気に入りのアーティスト',
     'Artists you marked as favorites' => 'お気に入りにしたアーティスト',
+    '[_1] saved <a href="[_2]">[_3]</a> as a favorite artist' => '[_1]はお気に入りのアーティスト(<a href="[_2]">[_3]</a>)を保存しました',
     'Stations' => 'ステーション',
     'Radio stations you added' => '追加したラジオステーション',
+    '[_1] added a new radio station named <a href="[_2]">[_3]</a>' => '[_1]は新しいラジオステーション(<a href="[_2]">[_3]</a>)を追加しました',
     'List' => 'リスト',
     'Things you put in your list' => 'リストに入れた物',
+    '[_1] is enjoying <a href="[_2]">[_3]</a>' => '[_1]は<a href="[_2]">[_3]</a>を楽しんでいます',
     'Notes' => 'メモ',
     'Your public notes' => '公開メモ',
+    '[_1] <a href="[_2]">posted</a>, "[_3]"' => '[_1]は"[_3]"を<a href="[_2]">投稿</a>しました',
     'Comments you posted' => '投稿したコメント',
+    '[_1] commented on <a href="[_2]">[_3]</a> at Reddit' => '[_1]はRedditで<a href="[_2]">[_3]</a>にコメントしました',
     'Articles you submitted' => '投稿した記事',
+    '[_1] submitted <a href="[_2]">[_3]</a> to Reddit' => '[_1]はRedditに<a href="[_2]">[_3]</a>を投稿しました',
     'Articles you liked (your votes must be public)' => '好きな記事(公開にしています)',
+    '[_1] liked <a href="[_2]">[_3]</a> from Reddit' => '[_1]はRedditの<a href="[_2]">[_3]</a>が好きになりました',
     'Dislikes' => '嫌い',
     'Articles you disliked (your votes must be public)' => '嫌いな記事(公開にしています)',
+    '[_1] disliked <a href="[_2]">[_3]</a> on Reddit' => '[_1]はRedditの<a href="[_2]">[_3]</a>が嫌いになりました',
     'Slideshows you saved as favorites' => 'お気に入りにしたスライドショー',
+    '[_1] saved <a href="[_2]">[_3]</a> as a favorite slideshow' => '[_1]はお気に入りのスライドショー(<a href="[_2]">[_3]</a>)を保存しました',
     'Slideshows' => 'スライドショー',
     'Slideshows you posted' => '投稿したスライドショー',
+    '[_1] posted the slideshow <a href="[_2]">[_3]</a>' => '[_1]はスライドショー(<a href="[_2]">[_3]</a>)を保存しました',
+    '[_1] posted <a href="[_2]">a photo</a>' => '[_1]は<a href="[_2]">写真</a>を保存しました',
     'Your achievements for achievement-enabled games' => '成果の出るゲームでの成果',
+    '[_1] won the <strong>[_2]</strong> achievement in <a href="http://steamcommunity.com/id/[_3]/stats/[_4]?tab=achievements">[_5]</a>' => '[_1]は<a href="http://steamcommunity.com/id/[_3]/stats/[_4]?tab=achievements">[_5]</a>で成果(<strong>[_2]</strong>)を獲得しました',
+    'Technorati blog search result: <a href="[_2]">[_3]</a>' => 'Technoratiブログ検索結果: <a href="[_2]">[_3]</a>',
     'Stuff' => '物',
     'Things you posted' => '投稿した物',
     'Tweets' => 'Tweet',
     'Your public tweets' => '公開tweet',
+    '[_1] <a href="[_2]">tweeted</a>, "[_3]"' => '[_1]は"[_3]"を<a href="[_2]">tweet</a>しました',
     'Public tweets you saved as favorites' => 'お気に入りにした公開tweet',
+    '[_1] saved <a href="[_2]">[_3]\'\'s tweet</a>, "[_4]" as a favorite' => '[_1]はお気に入りの<a href="[_2]">[_3]のtweet</a>("[_4]")を保存しました',
+    'Tweets about your search term' => '検索ワードについてのTweet',
+    'Twitter Search result: <a href="[_2]">[_3]</a>' => 'Twitter検索結果: <a href="[_2]">[_3]</a>',
+    '[_1] left a comment on <a href="[_2]">[_3]</a>' => '[_1]は<a href="[_2]">[_3]</a>にコメントを残しました',
     'Saved' => '保存',
     'Things you saved as favorites' => 'お気に入りにした物',
+    '[_1] saved <a href="[_2]">[_3]</a> on Uncrate' => '[_1]はUncrateの<a href="[_2]">[_3]</a>を保存しました',
     'Events you are watching or attending' => '見ているまたは参加しているイベント',
-    'Videos' => 'ビデオ',
+    '[_1] is attending <a href="[_2]">[_3]</a> at [_4]' => '[_1]は[_4]で<a href="[_2]">[_3]</a>に参加しています',
     'Videos you posted' => '投稿したビデオ',
     'Videos you liked' => 'リンクしたビデオ',
+    '[_1] liked <a href="[_2]">[_3]</a>' => '[_1]は<a href="[_2]">[_3]</a>が好きになりました',
     'Public assets you saved as favorites' => 'お気に入りにした公開アイテム',
+    '[_1] saved <a href="[_2]">[_3]</a> as a favorite' => '[_1]はお気に入り(<a href="[_2]">[_3]</a>)を保存しました',
     'Your public photos in your Vox library' => 'Voxの公開写真',
     'Your public posts to your Vox' => 'Voxの公開記事',
     'The posts available from the website\'s feed' => 'ウェブサイトのフィードで有効な記事',
-    'Wists' => 'Wists',
+    '[_1] posted <a href="[_2]">[_3]</a> on <a href="[_4]">[_5]</a>' => '[_1]は<a href="[_4]">[_5]</a>で<a href="[_2]">[_3]</a>を投稿しました',
     'Stuff you saved' => '保存した物',
     'Gamerscore' => 'ゲームスコア',
     'Notes when your gamerscore passes an even number' => 'ゲームスコアが同点をこえた時のメモ',
+    '[_1] passed <strong>[_2]</strong> gamerscore <a href="[_3]">on Xbox Live</a>' => '[_1]は<a href="[_3]">Xbox Live</a>でゲームスコア(<strong>[_2]</strong>)を渡しました',
     'Places you reviewed' => 'レビューした場所',
     'Videos you saved as favorites' => 'お気に入りにしたビデオ',
+    '[_1] posted <a href="[_2]">[_3]</a> to YouTube' => '[_1]はYouTubeに<a href="[_2]">[_3]</a>を投稿しました',
 
 ## plugins/ActionStreams/tmpl/blog_config_template.tmpl
     'Rebuild Indexes' => 'インデックス再構築',
     'If selected, this blog\'s indexes will be rebuilt when new action stream events are discovered.' => '新しいアクションストリームイベントが見つかった時に、ブログのインデックスを再構築する。',
     'Enable rebuilding' => '再構築を有効にする',
 
-## plugins/ActionStreams/tmpl/dialog_add_profile.tmpl
-    'Add Profile' => 'プロフィール追加',
-    'Your user name or ID is required.' => 'ユーザー名またはIDが必須です。',
-    'Add a profile on a social networking or instant messaging service.' => 'ソーシャルネットワーク、またはインスタントメッセージサービスのプロフィールを追加します。',
-    'Service' => 'サービス',
-    'Select a service where you already have an account.' => 'アカウントをもっているサービスを選択してください。',
-    'Username' => 'ユーザー名',
-    'Enter your account on the selected service.' => '選択したサービスのアカウントを入力してください。',
-    'For example:' => '例: ',
-    'Action Streams' => 'アクションストリーム',
-    'Select the action streams to collect from the selected service.' => '選択したサービスから集めるアクションストリームをチェックしてください。',
-    'No streams are available for this service.' => 'このサービスでは利用できるストリームがありません。',
-    'Add Profile (s)' => 'プロフィール追加 (s)',
-    'Cancel (x)' => 'キャンセル (x)',
-    'Cancel' => 'キャンセル',
-
 ## plugins/ActionStreams/tmpl/dialog_edit_profile.tmpl
-    'Edit Profile' => 'ユーザー情報の編集',
     'Your user name or ID is required.' => 'ユーザー名またはIDが必須です。',
     'Edit a profile on a social networking or instant messaging service.' => 'SNSやIMサービスなどのプロファイルを編集します。',
     'Service' => 'サービス',
-    'Username' => 'ユーザー名',
     'Enter your account on the selected service.' => '選択したサービスのアカウントを入力してください。',
     'For example:' => '例: ',
     'Action Streams' => 'アクションストリーム',
     'Select the action streams to collect from the selected service.' => '選択したサービスから集めるアクションストリームをチェックしてください。',
     'No streams are available for this service.' => 'このサービスでは利用できるストリームがありません。',
-    'Save Changes (s)' => '変更を保存 (s)',
-    'Save Changes' => '変更を保存',
-    'Cancel (x)' => 'キャンセル (x)',
-    'Cancel' => 'キャンセル',
 
 ## plugins/ActionStreams/tmpl/list_profileevent.tmpl
-    'Action Stream for [_1]' => '[_1]のアクションストリーム',
-    'User properties' => 'ユーザー属性',
+    'Action Stream' => 'アクションストリーム',
     'The selected events were deleted.' => '選択したイベントは削除されました。',
     'The selected events were hidden.' => '選択したイベントを非表示にしました。',
     'The selected events were shown.' => '選択したイベントを表示にしました。',
@@ -461,65 +374,51 @@ use vars qw( %Lexicon );
     'events' => 'イベント',
     'Hide selected events (h)' => '選択したイベントを非表示にする (h)',
     'Hide' => '非表示',
-    'Show selected events (s)' => '選択したイベントを表示にする (s)',
+    'Show selected events (h)' => '選択したイベントを表示にする (h)',
     'Show' => '表示',
-    'Showing only: [_1]' => '[_1]を表示',
-    'Remove filter' => 'フィルタしない',
     'All stream actions' => 'すべてのストリームアクション',
-    'change' => '絞り込み',
     'Show only actions where' => 'アクションを表示: ',
     'service' => 'サービス',
     'visibility' => '表示/非表示',
-    'is' => 'が',
     'hidden' => '非表示',
     'shown' => '表示',
-    'Filter' => 'フィルタ',
-    'Cancel' => 'キャンセル',
     'No events could be found.' => 'イベントが見つかりません。',
-    'Status' => '更新状態',
     'Event' => 'イベント',
-    'Service' => 'サービス',
-    'Created' => '作成',
-    'View' => '表示',
     'Shown' => '表示',
     'Hidden' => '非表示',
-    '_external_link_target' => '_blank',
     'View action link' => 'アクションリンク表示',
-
-## plugins/ActionStreams/tmpl/other_profiles.tmpl
-    'Other Profiles for [_1]' => '[_1]のプロフィール',
-    'The selected profile was added.' => '選択したプロフィールは追加されました。',
-    'The selected profiles were removed.' => '選択したプロフィールは削除されました。',
-    'The selected profiles were scanned for updates.' => '選択したプロフィールの更新を調べました。',
-    'The changes to the profile have been saved.' => 'プロフィールの変更が保存されました。',
-    'User properties' => 'ユーザー属性',
-    'Add Profile' => 'プロフィール追加',
-    'profile' => 'プロフィール',
-    'profiles' => 'プロフィール',
-    'Delete selected profiles (x)' => '選択したプロフィール削除(x)',
-    'Delete' => '削除',
-    'to update' => '更新',
-    'Scan now for new actions' => '新しいアクションを調べる',
-    'Update Now' => '今すぐ更新する',
-    'No profiles were found.' => 'プロフィールが見つかりません。',
-    'Service' => 'サービス',
-    'Username' => 'ユーザー名',
-    'View' => '表示',
-    'external_link_target' => '外部リンクターゲット',
-    'View Profile' => 'プロフィール表示',
-
-## plugins/ActionStreams/tmpl/sys_config_template.tmpl
-    'Expireing Events' => 'イベントデータの削除',
-    'If selected, old events data would be removed automatically.' => '古いイベントデータを自動的に削除します。',
-    'Enable expiring' => '自動削除を有効にする',
-    'Expireing Interval' => '自動削除の間隔',
-    'Specify the days to wait for auto expire.' => '自動削除までの日数',
-    'days for expireing' => '削除までの日数',
 
 ## plugins/ActionStreams/tmpl/widget_recent.mtml
     'Your Recent Actions' => '最近のアクション',
     'blog this' => '記事作成',
-    'No actions could be found.' => 'アクションが見つかりません。',
+
+## plugins/ActionStreams/tmpl/dialog_add_profile.tmpl
+    'Add a profile on a social networking or instant messaging service.' => 'ソーシャルネットワーク、またはインスタントメッセージサービスのプロフィールを追加します。',
+    'Select a service where you already have an account.' => 'アカウントをもっているサービスを選択してください。',
+    'Add Profile (s)' => 'プロフィール追加 (s)',
+
+## plugins/ActionStreams/tmpl/other_profiles.tmpl
+    'Other Profiles' => '利用サービス',
+    'The selected profile was added.' => '選択したプロフィールは追加されました。',
+    'The selected profiles were removed.' => '選択したプロフィールは削除されました。',
+    'The selected profiles were scanned for updates.' => '選択したプロフィールの更新を調べました。',
+    'The changes to the profile have been saved.' => 'プロフィールの変更が保存されました。',
+    'Add Profile' => 'プロフィール追加',
+    'profile' => 'プロフィール',
+    'profiles' => 'プロフィール',
+    'Delete selected profiles (x)' => '選択したプロフィール削除(x)',
+    'to update' => '更新',
+    'Scan now for new actions' => '新しいアクションを調べる',
+    'Update Now' => '今すぐ更新する',
+    'No profiles were found.' => 'プロフィールが見つかりません。',
+    'external_link_target' => '外部リンクターゲット',
+    'View Profile' => 'プロフィール表示',
+
+## plugins/CommunityActionStreams/config.yaml
+    '[_1] <a href="[_2]">commented</a> on <a href="[_3]">[_4]</a>' => '[_1]は<a href="[_3]">[_4]</a>に<a href="[_2]">コメント</a>しました',
+    '[_1] posted <a href="[_2]">[_3]</a>' => '[_1]は<a href="[_2]">[_3]</a>を投稿しました',
+    '[_1] saved <a href="[_2]">[_3]</a> as a favorite' => '[_1]は<a href="[_2]">[_3]</a>をお気に入りに追加しました',
+    '[_0] is now following <a href="[_2]">[_3]</a>' => '[_1]は<a href="[_2]">[_3]</a>を注目しています',
 
 );
 
