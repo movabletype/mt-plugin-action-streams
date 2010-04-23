@@ -67,7 +67,7 @@ use vars qw( %Lexicon );
     '1up.com' => '1up.com',
     '43Things' => '43Things',
     'AIM' => 'AIM',
-    'Activity URL' => '',
+    'Activity URL' => 'アクティビティのURL',
     'Bebo' => 'Bebo',
     'Blurst' => 'Blurst',
     'COLOURlovers' => 'COLOURlovers',
