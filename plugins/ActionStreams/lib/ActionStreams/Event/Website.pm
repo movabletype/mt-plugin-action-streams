@@ -19,6 +19,25 @@ __PACKAGE__->install_meta({
     ) ],
 });
 
+sub summary {
+    ## Taken from Data::ObjectDriver::BaseObject.
+    ## this getter/setter method is required for escape from
+    ## the collision with summary framework.
+    my $obj = shift;
+    my $col = 'summary';
+    # getter
+    return $obj->{column_values}->{$col} unless (@_);
+
+    # setter
+    my ($val, $flags) = @_;
+    $obj->{column_values}->{$col} = $val;
+    unless ($flags && ref($flags) eq 'HASH' && $flags->{no_changed_flag}) {
+        $obj->{changed_cols}->{$col}++;
+    }
+
+    return $obj->{column_values}->{$col};
+}
+
 sub update_events {
     my $class = shift;
     my %profile = @_;
