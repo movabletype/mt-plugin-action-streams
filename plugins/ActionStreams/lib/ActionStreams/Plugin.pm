@@ -25,7 +25,7 @@ sub users_content_nav {
     <mt:else>
         <mt:if name="user_view">
         <li><a href="<mt:var name="SCRIPT_URL">?__mode=other_profiles&amp;id=<mt:var name="EDIT_AUTHOR_ID" escape="url">"><b><__trans phrase="Other Profiles"></b></a></li>
-        <li><a href="<mt:var name="SCRIPT_URL">?__mode=list_profileevent&amp;id=<mt:var name="EDIT_AUTHOR_ID" escape="url">"><b><__trans phrase="Action Stream"></a></b></li>
+        <li><a href="<mt:var name="SCRIPT_URL">?__mode=list_profileevent&amp;id=<mt:var name="EDIT_AUTHOR_ID" escape="url">"><b><__trans phrase="Action Stream"></b></a></li>
         <mt:else>
             <mt:if name="id">
         <li<mt:if name="other_profiles"> class="active"</mt:if>><a href="<mt:var name="SCRIPT_URL">?__mode=other_profiles&amp;id=<mt:var name="id" escape="url">"><b><__trans phrase="Other Profiles"></b></a></li>
