@@ -168,21 +168,6 @@
         ><__trans phrase="Show"></button>
 </mt:setvarblock>
 
-<mt:Ignore>
-<mt:setvarblock name="action_buttons">
-    <a href="javascript:void(0)"
-        onclick="doForMarkedInThisWindow(getByID('profileevent-listing-form'), '<__trans phrase="event">', '<__trans phrase="events">', 'id', 'itemset_hide_events'); return false"
-        accesskey="h"
-        title="<__trans phrase="Hide selected events (h)">"
-        ><__trans phrase="Hide"></a>
-    <a href="javascript:void(0)"
-        onclick="doForMarkedInThisWindow(getByID('profileevent-listing-form'), '<__trans phrase="event">', '<__trans phrase="events">', 'id', 'itemset_show_events'); return false"
-        accesskey="h"
-        title="<__trans phrase="Show selected events (h)">"
-        ><__trans phrase="Show"></a>
-</mt:setvarblock>
-</mt:Ignore>
-
 <mt:include name="include/header.tmpl">
 
 <div class="listing-filter">
@@ -319,5 +304,14 @@
         </td>
     </tr>
 </mtapp:listing>
-
+<mt:if name="mt_version" ge="5">
+<mt:setvarblock name="jq_js_include" append="1">
+    jQuery('button.mt-<mt:var name="form_id">-action').mtDoPluginAction({
+        id: '<mt:var name="form_id">',
+        plural: '<mt:if name="object_label_plural"><mt:var name="object_label_plural" escape="js"></mt:if>',
+        args: {<mt:if name="search">'search': '<mt:var name="search" escape="js">'</mt:if>},
+        phrase: '<__trans phrase="to act upon" escape="js">'
+    });
+</mt:setvarblock>
+</mt:if>
 <mt:include name="include/footer.tmpl">
