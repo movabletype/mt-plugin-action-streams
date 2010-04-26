@@ -514,19 +514,16 @@ sub fetch_scraper {
     return if !$items;
     return $items if !ref $items;
     return $items if 'ARRAY' ne ref $items;
-
+    my $no_utf8 = MT->VERSION < 5.0;
     ITEM: for my $item (@$items) {
         next ITEM if !ref $item || ref $item ne 'HASH';
         for my $field (keys %$item) {
             if ($field eq 'tags') {
-                if ( MT->VERSION < 5.0 ) {
-                    $item->{$field} = [ map { MT::I18N::utf8_off( "$_" ) } @{ $item->{$field} } ];
-                }
+                $item->{$field} = [ map { $no_utf8 ? MT::I18N::utf8_off( "$_" ) : "$_" } @{ $item->{$field} } ];
+
             }
             elsif (defined $item->{$field}) {
-                if ( MT->VERSION < 5.0 ) {
-                    $item->{$field} = MT::I18N::utf8_off( q{} . $item->{$field} );
-                }
+                $item->{$field} = $no_utf8 ? MT::I18N::utf8_off( "$item->{$field}" ) : "$item->{$field}";
             }
             else {
                 delete $item->{$field};
