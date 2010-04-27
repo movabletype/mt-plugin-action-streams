@@ -781,6 +781,8 @@ sub update_events_for_profile {
     require ActionStreams::Event;
     my @event_classes = ActionStreams::Event->classes_for_type($type)
       or return;
+    @event_classes
+        = grep { my $r = $_->registry_entry; $r && !$r->{deprecated} } @event_classes;
 
     my $mt = MT->app;
     $mt->run_callbacks('pre_update_action_streams_profile.' . $profile->{type},

@@ -3,6 +3,7 @@ oneup:
         name: Currently Playing
         description: The games in your collection you're currently playing
         class: OneupPlaying
+        deprecated: 1
 backtype:
     comments:
         name: Comments
