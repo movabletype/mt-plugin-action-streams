@@ -24,33 +24,43 @@ sub as_html {
     return $event->SUPER::as_html( form => $form );
 }
 
+sub set_user_id {
+    my ($cb, $app, $author, $profile) = @_;
+    my $ident = $profile->{ident};
+    my $url = "http://$ident.1up.com/";
+    my $ua = __PACKAGE__->ua();
+    my @redir = @{ $ua->requests_redirectable };
+    $ua->requests_redirectable([]);
+
+    my $resp = $ua->get($url);
+    $ua->requests_redirectable(\@redir);
+
+    die "Failed to get real User ID from 1Up.com." if $resp->code != 301;
+    my $real_profile = $resp->header('Location');
+
+    if ($real_profile !~ m{ \D (\d+) \z }xms) {
+        # Hmm, invalid ident?
+        die "Failed to get real User ID from 1Up.com.";
+    }
+    $profile->{user_id} = $1;
+}
+
+sub replace_ident {
+    my ($cb, $mt, $author, $profile) = @_;
+    $profile->{__ident} = $profile->{ident};
+    $profile->{ident} = $profile->{user_id};
+}
+
+sub replace_back_ident {
+    my ($cb, $mt, $author, $profile) = @_;
+    $profile->{ident} = $profile->{__ident};
+}
+
 sub update_events {
     my $class = shift;
     my %profile = @_;
-    my ($ident, $author) = @profile{qw( ident author )};
-
-    my $url = "http://$ident.1up.com/";
-
-    {
-        my $ua = $class->ua();
-        my @redir = @{ $ua->requests_redirectable };
-        $ua->requests_redirectable([]);
-
-        my $resp = $ua->get($url);
-        $ua->requests_redirectable(\@redir);
-
-        return if $resp->code != 301;
-        my $real_profile = $resp->header('Location');
-
-        if ($real_profile !~ m{ \D (\d+) \z }xms) {
-            # Hmm, invalid ident?
-            return;
-        }
-        my $user_id = $1;
-
-        $url = "http://www.1up.com/do/gamesCollectionViewOnly?publicUserId=$user_id";
-    }
-
+    my ($user_id, $author) = @profile{qw( user_id author )};
+    my $url = "http://www.1up.com/do/gamesCollectionViewOnly?publicUserId=$user_id";
     my $items = $class->fetch_scraper(
         url     => $url,
         scraper => scraper {

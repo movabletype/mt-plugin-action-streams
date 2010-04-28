@@ -4,6 +4,15 @@ oneup:
         description: The games in your collection you're currently playing
         class: OneupPlaying
         deprecated: 1
+    journal:
+        name: Blog Entry
+        description: Blog Entry at 1Up.com
+        url: http://www.1up.com/journalRSS?publicUserId={{ident}}
+        html_form: '[_1] posted <a href="[_2]">[_3]</a>'
+        html_params:
+            - url
+            - title
+        rss: 1
 backtype:
     comments:
         name: Comments

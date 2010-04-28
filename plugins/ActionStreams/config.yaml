@@ -83,6 +83,9 @@ callbacks:
     pre_build_action_streams_event.wists_wists:             $ActionStreams::ActionStreams::Fix::wists_thumb
     filter_action_streams_event.nytimes_links:              $ActionStreams::ActionStreams::Fix::nytimes_links_titles
     filter_action_streams_event:                            $ActionStreams::ActionStreams::Event::filter_by_auto_expire_interval
+    pre_add_profile.oneup:                                  $ActionStreams::ActionStreams::Event::OneupPlaying::set_user_id
+    pre_update_action_streams_profile.oneup:                $ActionStreams::ActionStreams::Event::OneupPlaying::replace_ident
+    post_update_action_streams_profile.oneup:               $ActionStreams::ActionStreams::Event::OneupPlaying::replace_back_ident
 object_types:
     profileevent: ActionStreams::Event
     as: ActionStreams::Event

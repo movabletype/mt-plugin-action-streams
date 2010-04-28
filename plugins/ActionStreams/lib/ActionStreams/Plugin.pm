@@ -337,6 +337,7 @@ sub _build_service_data {
             my $streamdata = $streams->{$type} || {};
             @streams =
                 sort { lc $a->{name} cmp lc $b->{name} }
+                grep { $info{include_deprecated} || !$_->{deprecated} }
                 grep { grep { $_ } @$_{qw( class scraper xpath rss atom )} }
                 map  { +{ stream => $_, %{ $streamdata->{$_} } } }
                 grep { $_ ne 'plugin' }
@@ -519,7 +520,6 @@ sub add_other_profile {
         grep { $_ ne 'plugin' && $app->param(join q{_}, 'stream', $type, $_) }
         keys %{ $app->registry('action_streams', $type) || {} };
     $profile->{streams} = \%streams if %streams;
-
     $app->run_callbacks('pre_add_profile.'  . $type, $app, $author, $profile);
     $author->add_profile($profile);
     $app->run_callbacks('post_add_profile.' . $type, $app, $author, $profile);
