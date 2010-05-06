@@ -15,7 +15,7 @@ backtype:
     service_type: comments
 bebo:
     name: Bebo
-    url: http://www.bebo.com/Profile.jsp?MemberId={{ident}}
+    url: http://www.bebo.com/{{ident}}
     service_type: network
 blurst:
     name: Blurst
