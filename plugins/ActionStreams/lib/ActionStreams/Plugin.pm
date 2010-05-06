@@ -182,7 +182,7 @@ sub list_profileevent {
 
     my $plugin = MT->component('ActionStreams');
     my %params = map { $_ => $app->param($_) ? 1 : 0 }
-        qw( saved_deleted hidden shown );
+        qw( saved_deleted hidden shown all_hidden all_shown );
 
     $params{services} = [];
     my $services = $app->registry('profile_services');
