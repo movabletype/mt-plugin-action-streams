@@ -406,6 +406,11 @@ sub other_profiles {
     my @profiles = sort { lc $a->{label} cmp lc $b->{label} }
         @{ $author->other_profiles || [] };
 
+    my $reg = $app->registry('profile_services');
+    for my $p ( @profiles ) {
+        $p->{unknown} = 1 unless $reg->{$p->{type}};
+    }
+
     my %params = map { $_ => $author->$_ } qw( id name );
     $params{edit_author_id}   = $params{id};
     $params{edit_author_name} = $params{name};
