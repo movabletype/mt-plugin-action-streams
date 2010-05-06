@@ -175,6 +175,7 @@ msn:
     name: 'MSN Messenger'
     url: msnim:chat?contact={{ident}}
     service_type: contact
+    ident_example: melody@example.com
 multiply:
     name: Multiply
     url: http://{{ident}}.multiply.com/
