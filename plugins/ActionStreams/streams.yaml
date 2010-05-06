@@ -461,7 +461,7 @@ kongregate:
         url: 'http://www.kongregate.com/accounts/{{ident}}'
         identifier: url
         scraper:
-            foreach: #favorites dl
+            foreach: '#favorites dl'
             get:
                 url:
                     - dd a
@@ -485,7 +485,7 @@ kongregate:
         url: 'http://www.kongregate.com/accounts/{{ident}}'
         identifier: url,title
         scraper:
-            foreach: #achievements .badge_details
+            foreach: '#achievements .badge_details'
             get:
                 url:
                     - dt.badge_img a
