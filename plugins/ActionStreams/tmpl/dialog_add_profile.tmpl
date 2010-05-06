@@ -156,7 +156,7 @@
         content_class="field-content-text">
         <span id="profile-id-service-icon" class="service-icon">
             <span id="profile_id-prefix"></span>
-            <input type="text" name="profile_id" size="30" value="" />
+            <input type="text" name="profile_id" value="" class="extra-path" />
             <span id="profile_id-suffix"></span>
         </span>
     </mtapp:setting>
@@ -175,7 +175,8 @@
                     <mt:setvarblock name="stream_id">stream_<mt:var name="type" escape="html">_<mt:var name="stream" escape="html"></mt:setvarblock>
                     <mtapp:setting
                         id="<mt:var name="stream_id">"
-                        label="<mt:var name="name" escape="html">">
+                        label="<mt:var name="name" escape="html">"
+		        content_class="field-content-text">
                         <label><input type="checkbox" id="<mt:var name="stream_id">" name="<mt:var name="stream_id">" value="1" /> <mt:var name="description" escape="html"></label>
                     </mtapp:setting>
                 </mt:loop>
