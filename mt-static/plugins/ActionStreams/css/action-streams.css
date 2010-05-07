@@ -25,7 +25,7 @@
 .service-icon {
     display: block;
     overflow: hidden;
-    background: transparent url(../images/services/other.png) left center no-repeat;
+    background: transparent url(../images/services/other.png) no-repeat;
     padding-left: 20px;
     min-height: 18px;
     min-width: 16px;
