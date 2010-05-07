@@ -42,6 +42,7 @@ sub _item_id_to_event_data {
     $event->{game_url} = URI->new_abs($event->{game_url}, 'http://blurst.com/')->as_string();
     $event->{game_title} =~ s{ \A \s* Play \s* }{}xms;
     $event->{title} =~ s{ \( .* \z }{}xms;
+    $event->{thumbnail} = "$event->{thumbnail}";
 
     return $event;
 }
