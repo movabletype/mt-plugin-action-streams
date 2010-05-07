@@ -25,6 +25,10 @@ blurst:
 catster:
     name: Catster
     url: http://www.catster.com/cats/{{ident}}
+    ident_label: Cat ID
+    ident_example: 1234567
+    ident_hint: |-
+        You can find your cat ID in the cat profile page URL. For example: http://www.catster.com/cats/1234567
 colourlovers:
     name: COLOURlovers
     url: http://www.colourlovers.com/lover/{{ident}}
@@ -49,6 +53,10 @@ dodgeball:
 dogster:
     name: Dogster
     url: http://www.dogster.com/dogs/{{ident}}
+    ident_label: Dog ID
+    ident_example: 1234567
+    ident_hint: |-
+        You can find your dog ID in the cat profile page URL. For example: http://www.dogster.com/dogs/1234567
 dopplr:
     name: Dopplr
     url: http://www.dopplr.com/traveller/{{ident}}/
@@ -184,6 +192,7 @@ myspace:
     url: http://www.myspace.com/{{ident}}
     ident_label: User ID
     ident_prefix: http://www.myspace.com/
+    ident_hint: 1234567890
     service_type: network
 netflix:
     name: Netflix
@@ -230,6 +239,7 @@ picasaweb:
     name: Picasa Web Albums
     url: http://picasaweb.google.com/{{ident}}
     service_type: photos
+    ident_example: 123456789012345678901
 p0pulist:
     name: p0p
     url: http://p0p.com/list/hot_list/{{ident}}
