@@ -426,26 +426,6 @@ use vars qw( %Lexicon );
     'No actions could be found.' => 'アクションが見つかりません。',
     'Your Recent Actions' => '最近のアクション',
     'blog this' => '記事作成',
-
-## Unused?
-    'Action Archive' => 'アクションアーカイブ',
-    'Blank should be replaced by positive sign (+).' => '空白は + で置き換えてください。',
-    'Blog posts about your search term' => '検索ワードについてのブログ記事',
-    'Google Blog Search result: <a href="[_2]">[_3]</a>' => 'Googleブログ検索結果: <a href="[_2]">[_3]</a>',
-    'Google Blogs' => 'Google Blogs',
-    'Google News' => 'Google News',
-    'Google News search result: <a href="[_2]">[_3]</a>' => 'Googleニュース検索結果: <a href="[_2]">[_3]</a>',
-    'News Stories matching your search' => '検索での新しいストーリーとの一致',
-    'Search for' => '検索 ',
-    'Search term' => '検索ワード',
-    'Show selected events (h)' => '選択したイベントを表示にする (h)',
-    'Stories' => 'ストーリー',
-    'Technorati blog search result: <a href="[_2]">[_3]</a>' => 'Technoratiブログ検索結果: <a href="[_2]">[_3]</a>',
-    'Tweets about your search term' => '検索ワードについてのTweet',
-    'Twitter Search result: <a href="[_2]">[_3]</a>' => 'Twitter検索結果: <a href="[_2]">[_3]</a>',
-    'TwitterSearch' => 'TwitterSearch',
-    '[_0] is now following <a href="[_2]">[_3]</a>' => '[_1]は<a href="[_2]">[_3]</a>を注目しています',
-    '[_1] <a href="[_2]">commented</a> on <a href="[_3]">[_4]</a>' => '[_1]は<a href="[_3]">[_4]</a>に<a href="[_2]">コメント</a>しました',
 );
 
 1;
