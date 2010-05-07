@@ -405,7 +405,7 @@ istockphoto:
         html_params:
             - url
             - title
-        url: 'http://www.istockphoto.com/webservices/feeds/?feedFormat=IStockAtom_1_0&feedName=istockfeed.image.newestUploads&feedParams=UserID={{ident}}'
+        url: 'http://www.istockphoto.com/webservices/feeds/?feedFormat=IStockAtom_1_0&feedName=istockfeed.image.newestUploads&UserID={{ident}}'
         identifier: url
         atom:
             thumbnail: content/div/a/img/@src
