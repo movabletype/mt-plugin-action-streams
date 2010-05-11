@@ -192,7 +192,7 @@ myspace:
     url: http://www.myspace.com/{{ident}}
     ident_label: User ID
     ident_prefix: http://www.myspace.com/
-    ident_hint: 1234567890
+    ident_example: 1234567890
     service_type: network
 netflix:
     name: Netflix
