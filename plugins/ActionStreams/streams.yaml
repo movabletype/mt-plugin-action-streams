@@ -409,6 +409,7 @@ istockphoto:
         identifier: url
         atom:
             thumbnail: content/div/a/img/@src
+            url: link/@href
 iusethis:
     events:
         name: Recent events for Mac OS X
