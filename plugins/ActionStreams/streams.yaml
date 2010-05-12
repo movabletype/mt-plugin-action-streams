@@ -411,25 +411,32 @@ istockphoto:
             thumbnail: content/div/a/img/@src
 iusethis:
     events:
-        name: Recent events
+        name: Recent events for Mac OS X
         description: Events from your recent events feed
-        html_form: '[_1] <a href="[_2]">[_3]</a>'
+        html_form: '[_1] <a href="[_2]">[_3]</a> for Mac OS X'
         html_params:
             - url
             - title
         rss: 1
         url: 'http://osx.iusethis.com/user/feed.rss/{{ident}}?following=0'
-    osxapps:
-        name: Apps you use
-        description: The applications you saved as ones you use
-        fields:
-            - favorite
-        html_form: '[_1] started using <a href="[_2]">[_3]</a>[quant,_4, (and loves it),,]'
+    iphoneevents:
+        name: Recent events for iPhone
+        description: Events from your recent events feed
+        html_form: '[_1] <a href="[_2]">[_3]</a> for iPhone'
         html_params:
             - url
             - title
-            - favorite
-        url: 'http://osx.iusethis.com/user/{{ident}}'
+        rss: 1
+        url: 'http://iphone.iusethis.com/user/feed.rss/{{ident}}?following=0'
+    windowsevents:
+        name: Recent events for Windows
+        description: Events from your recent events feed
+        html_form: '[_1] <a href="[_2]">[_3]</a> for Windows'
+        html_params:
+            - url
+            - title
+        rss: 1
+        url: 'http://windows.iusethis.com/user/feed.rss/{{ident}}?following=0'
 iwatchthis:
     favorites:
         name: Favorites
