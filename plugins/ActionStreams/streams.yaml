@@ -1092,9 +1092,7 @@ zooomr:
         html_params:
             - url
         url: 'http://www.zooomr.com/services/feeds/public_photos/?id={{ident}}&format=rss_200'
-        xpath:
-            foreach: //item
-            get:
-                identifier: link
-                thumbnail: media:content/@url
+        rss:
+            identifier: link
+            thumbnail: media:content/@url
 
