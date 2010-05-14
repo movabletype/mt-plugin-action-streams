@@ -5,8 +5,13 @@ use strict;
 
 use MT::Author;
 
-# Say hey, but we really just wanted the module loaded.
-sub init_app { 1 }
+sub init_app {
+    return 1 if MT->VERSION < 5;
+    my $component = MT->component('actionstreams');
+    my $registry = $component->registry;
+    delete $registry->{template_sets}{streams};
+    1;
+}
 
 MT::Author->install_meta({
     columns => [
