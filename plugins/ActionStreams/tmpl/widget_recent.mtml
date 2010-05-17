@@ -61,7 +61,7 @@
     <mt:if name="blog_id">
         <mt:if name="charset" like="/^utf-?8$/i">
                 <div class="asotd_actions">
-                    <a href="javascript:post('<mt:var name="__counter__">','<mt:StreamActionTitle>','<mt:var name="service_type">',<mt:if name="thumb_url">true<mt:else>false</mt:if>)"><__trans phrase="blog this"></a>
+                    <a href="javascript:post('<mt:var name="__counter__">','<mt:StreamActionTitle escape="js">','<mt:var name="service_type">',<mt:if name="thumb_url">true<mt:else>false</mt:if>)"><__trans phrase="blog this"></a>
                 </div>
         </mt:if>
     </mt:if>
