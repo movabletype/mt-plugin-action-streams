@@ -5,11 +5,20 @@ use strict;
 
 use MT::Author;
 
-sub init_app {
-    return 1 if MT->VERSION < 5;
-    my $component = MT->component('actionstreams');
-    my $registry = $component->registry;
-    delete $registry->{template_sets}{streams};
+sub init_app { 1 }
+
+## REMOVE ME ASAP
+sub hide_ts {
+    my ( $cb, $app ) = @_;
+    my $mode = $app->mode;
+    my $type = $app->param('_type');
+    if ( MT->VERSION >= 5
+        && ( $mode eq 'list_theme'
+          || ( $mode eq 'view' && $type eq 'blog' ))) {
+        my $component = MT->component('actionstreams');
+        my $registry = $component->registry;
+        delete $registry->{template_sets}{streams};
+    }
     1;
 }
 
