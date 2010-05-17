@@ -405,7 +405,7 @@ use vars qw( %Lexicon );
 ## plugins/ActionStreams/tmpl/other_profiles.tmpl
     'Delete selected profiles (x)' => '選択したプロフィール削除(x)',
     'No profiles were found.' => 'プロフィールが見つかりません。',
-    'Other Profiles for [_1]' => '[_1]の外部プロフィール',
+    'Other Profiles for [_1]' => '[_1]の利用サービス',
     'Scan now for new actions' => '新しいアクションを調べる',
     'The changes to the profile have been saved.' => 'プロフィールの変更が保存されました。',
     'The selected profile was added.' => '選択したプロフィールは追加されました。',
