@@ -6,7 +6,7 @@ use base qw( MT::Object MT::Taggable MT::Scorable );
 our @EXPORT_OK = qw( classes_for_type );
 use HTTP::Date qw( str2time );
 
-use MT::Util qw( encode_html encode_url ts2epoch );
+use MT::Util qw( encode_html encode_url ts2epoch weaken );
 use MT::I18N qw( encode_text );
 
 use ActionStreams::Scraper;
@@ -82,7 +82,6 @@ sub as_html {
     my $event = shift;
     my %params = @_;
     my $stream = $event->registry_entry or return '';
-
     # How many spaces are there in the form?
     my $form = $params{form} || $stream->{html_form} || q{};
     my @nums = $form =~ m{ \[ _ (\d+) \] }xmsg;
@@ -100,8 +99,8 @@ sub as_html {
                  ;
         unshift @content, encode_html($name);
     }
-
-    return MT->translate($form, @content);
+    my $c = $stream->{plugin} || MT->component('ActionStreams');
+    return $c->translate($form, @content);
 }
 
 sub update_events_loggily {
@@ -247,7 +246,10 @@ sub registry_entry {
 
     my $reg = MT->instance->registry('action_streams') or return;
     my $service = $reg->{$type} or return;
-    $service->{$stream};
+    my $stream_hash = $service->{$stream};
+    $stream_hash->{plugin} = $service->{plugin};
+    weaken( $stream_hash->{plugin} );
+    $stream_hash;
 }
 
 sub author {
