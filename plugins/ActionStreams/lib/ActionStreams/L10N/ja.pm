@@ -17,6 +17,9 @@ use vars qw( %Lexicon );
 ## plugins/ActionStreams/blog_tmpl/elsewhere.mtml
     'Find [_1] Elsewhere' => '[_1]の利用サービス',
 
+## plugins/ActionStreams/blog_tmpl/main_index.mtml
+    'Today' => '今日',
+
 ## plugins/ActionStreams/config.yaml
     'Action Stream' => 'アクションストリーム',
     'Action Streams Theme' => 'アクションストリームテーマ',
@@ -40,6 +43,8 @@ use vars qw( %Lexicon );
     'Could not fetch [_1]: [_2]' => '[_1]の更新に失敗しました: [_2]',
     'Could not load class [_1] for stream [_2] [_3]: [_4]' => '[_2]([_3])ストリームの[_1]クラスのロードができません: [_4]',
     "Error updating events for [_1]'s [_2] stream (type [_3] ident [_4]): [_5]" => '[_1]の[_2]ストリーム([_3]タイプの[_4])の更新に失敗しました: [_5]',
+    'Event' => 'イベント',
+    'Events' => 'イベント',
     'No URL to fetch for [_1] results' => '[_1]の更新情報のURLが設定されていません',
     '[_1] updating [_2] events for [_3]' => '[_3]の[_2]イベントを更新しています: [_1]',
 
@@ -176,7 +181,6 @@ use vars qw( %Lexicon );
     'Achievements' => '実績',
     'Achievements earned in Blurst games' => 'Blurstで獲得した実績',
     'Achievements you won' => '獲得した実績',
-    'Apps you use' => '使用アプリ',
     'Articles you disliked (your votes must be public)' => '嫌いな記事(公開にしています)',
     'Articles you liked (your votes must be public)' => '好きな記事(公開にしています)',
     'Articles you submitted' => '投稿した記事',
@@ -195,7 +199,6 @@ use vars qw( %Lexicon );
     'Deliveries' => '配布',
     'Dislikes' => '嫌い',
     'Dugg' => 'ダグ',
-    'Events' => 'イベント',
     'Events from your recent events feed' => '最近のイベントフィードのイベント',
     'Events you are watching or attending' => '見ているまたは参加しているイベント',
     'Favorite Artists' => 'お気に入りのアーティスト',
@@ -247,7 +250,9 @@ use vars qw( %Lexicon );
     'Reading' => '読んでいる',
     'Recent Movies' => '最近の映画',
     'Recent Rental Activity' => '最近のレンタル活動',
-    'Recent events' => '最近のイベント',
+    'Recent events for Mac OS X' => 'Mac OS Xのイベント',
+    'Recent events for Windows' => 'Windowsのイベント',
+    'Recent events for iPhone' => 'iPhoneのイベント',
     'Recommendations' => 'お勧め',
     'Recommendations in your TimesPeople activities' => 'TimesPeopleでのお勧め',
     'Reviews' => 'レビュー',
@@ -264,7 +269,6 @@ use vars qw( %Lexicon );
     'Stuff' => '物',
     'Stuff you saved' => '保存した物',
     'Submissions' => '承認',
-    'The applications you saved as ones you use' => '使用するアプリケーション',
     "The events you said you'll be attending" => '参加表明したイベント',
     "The games in your collection you're currently playing" => 'コレクションの中で現在プレーしているゲーム',
     "The posts available from the website's feed" => 'ウェブサイトのフィードで有効な記事',
@@ -293,7 +297,9 @@ use vars qw( %Lexicon );
     'Your recent journal entries' => '最近のジャーナル記事',
     'Your shared items' => '共有アイテム',
     'Your wine reviews' => 'ワインレビュー',
-    '[_1] <a href="[_2]">[_3]</a>' => '[_1] <a href="[_2]">[_3]</a>',
+    '[_1] <a href="[_2]">[_3]</a> for Mac OS X' => '[_1] <a href="[_2]">[_3]</a> for Mac OS X',
+    '[_1] <a href="[_2]">[_3]</a> for Windows' => '[_1] <a href="[_2]">[_3]</a> for Windows',
+    '[_1] <a href="[_2]">[_3]</a> for iPhone' => '[_1] <a href="[_2]">[_3]</a> for iPhone',
     '[_1] <a href="[_2]">jaiku\'d</a>, "[_3]"' => '[_1]は"[_3]"を<a href="[_2]">Jaiku</a>しました',
     '[_1] <a href="[_2]">posted</a>, "[_3]"' => '[_1]は"[_3]"を<a href="[_2]">投稿</a>しました',
     '[_1] <a href="[_2]">said</a>, &ldquo;[_3]&rdquo;' => '[_1]は&ldquo;[_3]&rdquo;と<a href="[_2]">言いました</a>',
@@ -346,7 +352,6 @@ use vars qw( %Lexicon );
     '[_1] scored <strong>[_2]</strong> in <a href="[_3]">[_4]</a>' => '[_1]は<a href="[_3]">[_4]</a>の<strong>[_2]</strong>に点数をつけました',
     '[_1] shared <a href="[_2]">[_3]</a> from <a href="[_4]">[_5]</a>' => '[_1]は<a href="[_4]">[_5]</a>の<a href="[_2]">[_3]</a>を共有しました',
     '[_1] started reading <a href="[_2]"><i>[_3]</i> by [_4]</a>' => '[_1]は<a href="[_2]">[_4]の<i>[_3]</i></a>を読み始めました',
-    '[_1] started using <a href="[_2]">[_3]</a>[quant,_4, (and loves it),,]' => '[_1]は<a href="[_2]">[_3]</a>([quant,_4, (大好き),,])を使い始めました',
     '[_1] submitted <a href="[_2]">[_3]</a> to Reddit' => '[_1]はRedditに<a href="[_2]">[_3]</a>を投稿しました',
     '[_1] submitted the link <a href="[_2]">[_3]</a>' => '[_1]はリンク(<a href="[_2]">[_3]</a>)を投稿しました',
     '[_1] wants <a href="[_2]">[_3]</a>' => '[_1]は<a href="[_2]">[_3]</a>を求めてます',
@@ -380,7 +385,6 @@ use vars qw( %Lexicon );
     'All action stream events were hidden.' => '全アクションストリームイベントを非表示にしました。',
     'All action stream events were shown.' => '全アクションストリームイベントを表示にしました。',
     'All stream actions' => 'すべてのストリームアクション',
-    'Event' => 'イベント',
     'Hidden' => '非表示',
     'Hide' => '非表示',
     'Hide selected events (h)' => '選択したイベントを非表示にする (h)',
@@ -400,6 +404,8 @@ use vars qw( %Lexicon );
     'hidden' => '非表示',
     'service' => 'サービス',
     'shown' => '表示',
+    'to hide' => '非表示に',
+    'to show' => '表示',
     'visibility' => '表示/非表示',
 
 ## plugins/ActionStreams/tmpl/other_profiles.tmpl
@@ -430,6 +436,13 @@ use vars qw( %Lexicon );
     'No actions could be found.' => 'アクションが見つかりません。',
     'Your Recent Actions' => '最近のアクション',
     'blog this' => '記事作成',
+
+## Unused?
+    'Apps you use' => '使用アプリ',
+    'Recent events' => '最近のイベント',
+    'The applications you saved as ones you use' => '使用するアプリケーション',
+    '[_1] <a href="[_2]">[_3]</a>' => '[_1] <a href="[_2]">[_3]</a>',
+    '[_1] started using <a href="[_2]">[_3]</a>[quant,_4, (and loves it),,]' => '[_1]は<a href="[_2]">[_3]</a>([quant,_4, (大好き),,])を使い始めました',
 );
 
 1;
