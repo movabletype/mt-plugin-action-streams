@@ -46,6 +46,14 @@ __PACKAGE__->install_meta({
     ) ],
 });
 
+sub class_label {
+    MT->translate("Event");
+}
+
+sub class_label_plural {
+    MT->translate("Events");
+}
+
 # Oracle does not like an identifier of more than 30 characters.
 sub datasource {
     my $class = shift;
