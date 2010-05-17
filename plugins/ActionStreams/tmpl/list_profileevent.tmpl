@@ -157,12 +157,12 @@
 
 <mt:setvarblock name="action_buttons">
     <button
-        onclick="doForMarkedInThisWindow(getByID('profileevent-listing-form'), '<__trans phrase="event">', '<__trans phrase="events">', 'id', 'itemset_hide_events'); return false"
+        onclick="doForMarkedInThisWindow(getByID('profileevent-listing-form'), '<__trans phrase="event">', '<__trans phrase="events">', 'id', 'itemset_hide_events', null, '<__trans phrase="to hide">'); return false"
         accesskey="h"
         title="<__trans phrase="Hide selected events (h)">"
         ><__trans phrase="Hide"></button>
     <button
-        onclick="doForMarkedInThisWindow(getByID('profileevent-listing-form'), '<__trans phrase="event">', '<__trans phrase="events">', 'id', 'itemset_show_events'); return false"
+        onclick="doForMarkedInThisWindow(getByID('profileevent-listing-form'), '<__trans phrase="event">', '<__trans phrase="events">', 'id', 'itemset_show_events', null, '<__trans phrase="to show">'); return false"
         accesskey="s"
         title="<__trans phrase="Show selected events (s)">"
         ><__trans phrase="Show"></button>
