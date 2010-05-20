@@ -1,9 +1,19 @@
-# Action Streams Plugin for Movable Type
-# Authors: Mark Paschal, Akira Sawada, Fumiaki Yoshimatsu, Bryan Tighe,
-#          Brad Choate, Alex Bain
-# Copyright 2009 Six Apart, Ltd.
-# License: Artistic, licensed under the same terms as Perl itself
+NAME
+    Action Streams Plugin for Movable Type 5
 
+AUTHORS
+    Mark Paschal, Akira Sawada, Fumiaki Yoshimatsu, Bryan Tighe,
+    Brad Choate, Alex Bain
+
+COPYRIGHT
+    The following copyright notice applies to all the files provided in this
+    distribution, including binary files, unless explicitly noted otherwise.
+
+    Copyright 2009-2010 Six Apart, Ltd.
+
+LICENSE
+    This library is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
 
 OVERVIEW
 
@@ -26,14 +36,14 @@ with tools your readers may be using.
 
 PREREQUISITES
 
+This plugin works both with Movable Type 5 and Movable Type 4.
+
+- Movable Type 5.02 or higher
 - Movable Type 4.2 or higher
 - Scheduled task or cron job to execute the Periodic Tasks script (see below)
 
 The Action Streams plugin ships with all of the external libraries you should
 need to run it.
-
-Note: Action Streams does not work when run-periodic-tasks is run in daemon
-mode.
 
 
 INSTALLATION
@@ -86,7 +96,7 @@ template tags.
 
 CHANGES
 
-2.2   in development
+2.2   Forked from the original repository. 
       Improved Delicious stream.
       Fixed error when rebuilding blogs with deactivated templates.
       Support for "not" operator in mt:ActionStreams "service" and "stream"
