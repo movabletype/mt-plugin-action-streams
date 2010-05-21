@@ -21,9 +21,8 @@ use vars qw( %Lexicon );
     'Today' => '今日',
 
 ## plugins/ActionStreams/config.yaml
-    'Action Stream' => 'アクションストリーム',
-    'Action Streams Theme' => 'アクションストリームテーマ',
-    'Action Streams Theme.' => 'アクションストリームテーマ',
+    'Action Streams' => 'アクションストリーム',
+    'Action Streams collects your action on third party web sites into your Movable Type web site.' => 'アクションストリームを表示するブログテーマです。', # Translate - New
     'Are you sure you want to hide EVERY event in EVERY action stream?' => '全アクションストリームの全イベントを非表示にしてよろしいですか?',
     'Are you sure you want to show EVERY event in EVERY action stream?' => '全アクションストリームの全イベントを表示にしてよろしいですか?',
     'Deleted events that are still available from the remote service will be added back in the next scan. Only events that are no longer available from your profile will remain deleted. Are you sure you want to delete the selected event(s)?' => 'イベントを削除してもリモートサービスは有効となっています。次の更新調査時に追加されます。ユーザプロフィールからイベントを無効にすれば削除されます。選択したイベントを削除してよろしいですか?',
@@ -49,6 +48,7 @@ use vars qw( %Lexicon );
     '[_1] updating [_2] events for [_3]' => '[_3]の[_2]イベントを更新しています: [_1]',
 
 ## plugins/ActionStreams/lib/ActionStreams/Plugin.pm
+    'Action Stream' => 'アクションストリーム',
     'Actions from the service [_1]' => 'サービス([_1])のアクション',
     'Actions that are hidden' => '非表示アクション',
     'Actions that are shown' => '表示アクション',
@@ -365,7 +365,6 @@ use vars qw( %Lexicon );
     'Rebuild Indexes' => 'インデックス再構築',
 
 ## plugins/ActionStreams/tmpl/dialog_add_profile.tmpl
-    'Action Streams' => 'アクションストリーム',
     'Add Profile' => 'プロフィール追加',
     'Add Profile (s)' => 'プロフィール追加 (s)',
     'Add a profile on a social networking or instant messaging service.' => 'ソーシャルネットワーク、またはインスタントメッセージサービスのプロフィールを追加します。',
@@ -438,6 +437,8 @@ use vars qw( %Lexicon );
     'blog this' => '記事作成',
 
 ## Unused?
+    'Action Streams Theme' => 'アクションストリームテーマ',
+    'Action Streams Theme.' => 'アクションストリームテーマ',
     'Apps you use' => '使用アプリ',
     'Recent events' => '最近のイベント',
     'The applications you saved as ones you use' => '使用するアプリケーション',

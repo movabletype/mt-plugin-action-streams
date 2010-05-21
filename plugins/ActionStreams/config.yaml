@@ -158,7 +158,7 @@ widgets:
         condition: $ActionStreams::ActionStreams::Plugin::widget_blog_dashboard_only
 template_sets:
     streams:
-        label: Action Stream
+        label: Action Streams
         base_path: 'blog_tmpl'
         base_css: themes-base/blog.css
         order: 100
@@ -198,8 +198,8 @@ template_sets:
 themes:
     streams:
         id: Streams
-        label: Action Streams Theme
-        description: <__trans phrase="Action Streams Theme.">
+        label: Action Streams
+        description: <__trans phrase="Action Streams collects your action on third party web sites into your Movable Type web site.">
         author_name: Six Apart, Ltd.
         author_link: http://www.sixapart.com/
         version: 2.3
