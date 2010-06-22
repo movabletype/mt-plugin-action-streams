@@ -566,7 +566,7 @@ ActionStreams::Event - an Action Streams stream definition
 =head1 SYNOPSIS
 
     # in plugin's config.yaml
-    
+
     profile_services:
         example:
             streamid:
@@ -581,28 +581,28 @@ ActionStreams::Event - an Action Streams stream definition
 
     package My::Stream;
     use base qw( ActionStreams::Event );
-    
+
     __PACKAGE__->install_properties({
         class_type => 'example_streamid',
     });
-    
+
     sub update_events {
         my $class = shift;
         my %profile = @_;
-        
+
         # trivial example: save a random number
         my $die_roll = int rand 20;
         my %item = (
             title      => $die_roll,
             identifier => $die_roll,
         );
-        
+
         return $class->build_results(
             author => $profile{author},
             items  => [ \%item ],
         );
     }
-    
+
     1;
 
 =head1 DESCRIPTION
@@ -847,7 +847,7 @@ Used in backup.  Backup function calls the method to generate $terms and
 $args for the class to load objects.  ActionStream::Event does not have
 blog_id and does use class_column, the nature the class has to tell
 backup function to properly load all the target objects of the class
-to be backed up. 
+to be backed up.
 
 See I<MT::BackupRestore> for more detail.
 
@@ -880,4 +880,3 @@ errors will be thrown to end users until they try to use your stream.
 Mark Paschal E<lt>mark@sixapart.comE<gt>
 
 =cut
-

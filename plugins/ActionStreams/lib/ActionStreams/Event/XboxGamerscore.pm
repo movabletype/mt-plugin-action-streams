@@ -53,4 +53,3 @@ sub update_events {
 }
 
 1;
-

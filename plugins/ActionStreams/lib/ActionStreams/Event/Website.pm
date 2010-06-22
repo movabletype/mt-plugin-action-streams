@@ -84,7 +84,7 @@ sub update_events {
         }
         @$items = grep { $_->{identifier} } @$items;
     }
-	return if !$items;
+    return if !$items;
 
     if (my ($icon_url) = @{ $links->{icon} || [] }) {
         $icon_url = q{} . $icon_url;

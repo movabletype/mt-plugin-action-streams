@@ -165,4 +165,3 @@ sub magnolia_link_notes {
 }
 
 1;
-

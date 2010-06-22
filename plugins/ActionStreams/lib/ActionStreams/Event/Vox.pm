@@ -34,7 +34,7 @@ sub update_events {
             result 'assets';
         },
     );
-	return if !$items;
+    return if !$items;
 
     $class->build_results( author => $author, items => $items );
 }

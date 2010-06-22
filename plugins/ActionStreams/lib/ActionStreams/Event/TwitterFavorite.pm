@@ -24,4 +24,3 @@ sub encode_field_for_html {
 }
 
 1;
-

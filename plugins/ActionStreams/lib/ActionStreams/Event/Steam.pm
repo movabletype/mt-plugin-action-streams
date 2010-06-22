@@ -45,8 +45,8 @@ sub update_events {
     my $achv_scraper = scraper {
         process q{div#BG_top h2},
             'title' => 'TEXT';
-		process q{html},
-			'html' => 'HTML';
+        process q{html},
+            'html' => 'HTML';
         process q{//div[@class='achieveTxtHolder']},
             'achvs[]' => scraper {
                 process 'h3',  'title'       => 'TEXT';
@@ -82,20 +82,20 @@ sub update_events {
         my ($title, $html, $achvs) = @$items{qw( title html achvs )};
         $title =~ s{ \s* Stats \z }{}xmsi;
 
-		next URL if ($title =~ /Global Gameplay/i);
+        next URL if ($title =~ /Global Gameplay/i);
 
-		# So we have the full source code in $html; we need to count how many achievements are before
-		# the critical <br /><br /><br /> line dividing achieved from unachieved.
-		
-		next URL if ($html !~ /\<br\ \/\>\<br\ \/\>\<br\ \/\>.+/); # If the line isn't there, they don't have any achievements yet.
-		
-		$html =~ s/\<br\ \/\>\<br\ \/\>\<br\ \/\>.+//;
+        # So we have the full source code in $html; we need to count how many achievements are before
+        # the critical <br /><br /><br /> line dividing achieved from unachieved.
+
+        next URL if ($html !~ /\<br\ \/\>\<br\ \/\>\<br\ \/\>.+/); # If the line isn't there, they don't have any achievements yet.
+
+        $html =~ s/\<br\ \/\>\<br\ \/\>\<br\ \/\>.+//;
         my @splitlist = split(/achieveTxtHolder/, $html);
-		my $count = scalar @splitlist;
-		$count = $count - 2; #This method ends up with one too many, always, and we want the last valid *INDEX* number.
+        my $count = scalar @splitlist;
+        $count = $count - 2; #This method ends up with one too many, always, and we want the last valid *INDEX* number.
 
-		my @achievements = @$achvs;
-		$#achievements = $count; # Truncates the array
+        my @achievements = @$achvs;
+        $#achievements = $count; # Truncates the array
 
         for my $item (@achievements) {
             $item->{gametitle} = $title;
@@ -119,4 +119,3 @@ sub update_events {
 
 
 1;
-

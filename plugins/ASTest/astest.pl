@@ -1,4 +1,3 @@
-
 package ASTest::Plugin;
 
 use strict;
@@ -76,6 +75,4 @@ sub astest {
     $app->build_page($plugin->load_tmpl('astest.tmpl'), $param);
 }
 
-
 1;
-

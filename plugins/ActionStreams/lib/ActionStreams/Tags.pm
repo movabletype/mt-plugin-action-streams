@@ -251,7 +251,7 @@ sub action_streams {
     my $day_date = '';
 
     # For pagination tags
-    my ( $l, $o, $c ); 
+    my ( $l, $o, $c );
     if ( exists $ctx->{__stash}{limit} ) {
         $l = $ctx->{__stash}{limit};
     }
@@ -555,4 +555,3 @@ sub profile_services {
 }
 
 1;
-

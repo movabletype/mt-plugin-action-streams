@@ -118,7 +118,7 @@ sub _edit_author {
     };
 
     $arg->{id} or return $trans_error->('No id');
-    
+
     my $class = MT->model('author');
     my $author = $class->load( $arg->{id} )
         or return $trans_error->("No such [_1].", lc( $class->class_label ));
@@ -823,4 +823,3 @@ sub update_events_for_profile {
 }
 
 1;
-

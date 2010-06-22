@@ -106,4 +106,3 @@ sub rename_action_metadata {
 }
 
 1;
-

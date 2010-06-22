@@ -65,4 +65,3 @@ sub MT::Author::remove_profile {
 }
 
 1;
-
