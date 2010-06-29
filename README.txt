@@ -98,7 +98,7 @@ CHANGES
 
 2.3   26 May 2010
       Support Movable Type 5.02.
-      Release Notes : http://wiki.github.com/sixapart/mt-plugin-action-streams/release-2010-05-26
+      Release Notes : http://wiki.github.com/sixapart/mt-plugin-ActionStreams/release-2010-05-26
 
 2.2   Forked from the original repository. 
       Improved Delicious stream.
