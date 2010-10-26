@@ -12,8 +12,7 @@ COPYRIGHT
     Copyright 2009-2010 Six Apart, Ltd.
 
 LICENSE
-    This library is free software; you can redistribute it and/or modify it
-    under the same terms as Perl itself.
+    This library is free software released under the GPL.
 
 OVERVIEW
 
@@ -96,9 +95,11 @@ template tags.
 
 CHANGES
 
+2.3.1 26 Oct 2010
+      Minor cleanup, license update, move to Movable Type organization in GitHub.
+
 2.3   26 May 2010
       Support Movable Type 5.02.
-      Release Notes : http://wiki.github.com/sixapart/mt-plugin-ActionStreams/release-2010-05-26
 
 2.2   Forked from the original repository. 
       Improved Delicious stream.
@@ -141,5 +142,3 @@ This distribution contains icons from Silk, an icon set by Mark James,
 licensed under the Creative Commons Attribution 2.5 License.
 
 http://www.famfamfam.com/lab/icons/silk/
-
-

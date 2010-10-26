@@ -1,2 +1,2 @@
-ActionStreams is not an official Six Apart release. As such,
-support from SixApart for this plugin is not available.
+ActionStreams is not an official Six Apart release. As such, support for this
+plugin is not available.
