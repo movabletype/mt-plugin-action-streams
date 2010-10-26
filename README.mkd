@@ -99,7 +99,6 @@ template tags.
 
 ## Changes
 
-
 ### 2.3.1 (26 Oct 2010)
 
 * Minor cleanup, license update, move to Movable Type organization in GitHub.
