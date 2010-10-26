@@ -153,4 +153,4 @@ various features and stream recipes.
 This distribution contains icons from Silk, an icon set by Mark James,
 licensed under the Creative Commons Attribution 2.5 License.
 
-http://www.famfamfam.com/lab/icons/silk/
+<http://www.famfamfam.com/lab/icons/silk/>
