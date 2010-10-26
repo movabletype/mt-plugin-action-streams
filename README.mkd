@@ -1,6 +1,5 @@
 # Action Streams plugin for Movable Type 5
 
-
 ## Authors
 
 Mark Paschal, Akira Sawada, Fumiaki Yoshimatsu, Bryan Tighe,
