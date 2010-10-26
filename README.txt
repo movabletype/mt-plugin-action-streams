@@ -1,20 +1,26 @@
-NAME
-    Action Streams Plugin for Movable Type 5
+# Action Streams plugin for Movable Type 5
 
-AUTHORS
-    Mark Paschal, Akira Sawada, Fumiaki Yoshimatsu, Bryan Tighe,
-    Brad Choate, Alex Bain
 
-COPYRIGHT
-    The following copyright notice applies to all the files provided in this
-    distribution, including binary files, unless explicitly noted otherwise.
+## Authors
 
-    Copyright 2009-2010 Six Apart, Ltd.
+Mark Paschal, Akira Sawada, Fumiaki Yoshimatsu, Bryan Tighe,
+Brad Choate, Alex Bain
 
-LICENSE
-    This library is free software released under the GPL.
 
-OVERVIEW
+## Copyright
+
+The following copyright notice applies to all the files provided in this
+distribution, including binary files, unless explicitly noted otherwise.
+
+Copyright 2009-2010 Six Apart, Ltd.
+
+
+## License
+
+This library is free software released under the GPL.
+
+
+## Overview
 
 Action Streams for Movable Type collects your action on third party web sites
 into your Movable Type web site. Using it, you can aggregate those actions for
@@ -33,107 +39,113 @@ set also use the XFN and hAtom microformats and provide web feeds to integrate
 with tools your readers may be using.
 
 
-PREREQUISITES
+## Prerequisites
 
 This plugin works both with Movable Type 5 and Movable Type 4.
 
-- Movable Type 5.02 or higher
-- Movable Type 4.2 or higher
-- Scheduled task or cron job to execute the Periodic Tasks script (see below)
+* Movable Type 5.02 or higher
+* Movable Type 4.2 or higher
+* Scheduled task or cron job to execute the Periodic Tasks script (see below)
 
 The Action Streams plugin ships with all of the external libraries you should
 need to run it.
 
 
-INSTALLATION
+## Installation
 
-  1. Configure a cronjob (see below) for the script run-periodic-tasks.
-  2. Unpack the ActionStreams archive.
-  3. Copy the contents of ActionStreams/extlib into /path/to/mt/extlib/
-  3. Copy the contents of ActionStreams/mt-static into /path/to/mt/mt-static/
-  4. Copy the contents of ActionStreams/plugins into /path/to/mt/plugins/
-  5. Navigate to your profile, and click on "Other Profiles."
-  6. Build a list of your accounts from which to display and stream actions.
-  7. Edit your stylesheet to include needed CSS. (see STYLES below)
-  8. Edit your templates to display your other profiles and your Action
-     Stream. (See the Template Author Guide in the doc/ folder.) A template
-     set is also provided for convenience.
-  9. Edit the plugin's settings to enable automatically rebuilding your blog
-     as new actions are imported. This setting is under each of your blog's
-     plugin settings.
-
-
-CRONJOB
-
-Action Streams uses Movable Type's scheduled task system to collect your
-action data from remote services. To run scheduled tasks, configure a cron job
-to run MT's tools/run-periodic-tasks script periodically.
-
-Add the following lines to your crontab to execute the script every 10
-minutes:
-
-  # Movable Type scheduled tasks
-  */10 * * * * cd /path/to/mt; perl ./tools/run-periodic-tasks
+1. Configure a cronjob (see below) for the script run-periodic-tasks.
+2. Unpack the ActionStreams archive.
+3. Copy the contents of ActionStreams/extlib into /path/to/mt/extlib/
+3. Copy the contents of ActionStreams/mt-static into /path/to/mt/mt-static/
+4. Copy the contents of ActionStreams/plugins into /path/to/mt/plugins/
+5. Navigate to your profile, and click on "Other Profiles."
+6. Build a list of your accounts from which to display and stream actions.
+7. Edit your stylesheet to include needed CSS. (see STYLES below)
+8. Edit your templates to display your other profiles and your Action
+   Stream. (See the Template Author Guide in the doc/ folder.) A template
+   set is also provided for convenience.
+9. Edit the plugin's settings to enable automatically rebuilding your blog
+   as new actions are imported. This setting is under each of your blog's
+   plugin settings.
 
 
-STYLES
+## Cron Job
+
+Action Streams uses Movable Type's scheduled task system to collect your action
+data from remote services. To run scheduled tasks, configure a cron job to run
+MT's tools/run-periodic-tasks script periodically.
+
+Add the following lines to your crontab to execute the script every 10 minutes:
+
+    # Movable Type scheduled tasks
+    */10 * * * * cd /path/to/mt; perl ./tools/run-periodic-tasks
+
+
+## Styles
 
 To add icons to your Action Streams and other basic styling, add the following
 line to the top of your main stylesheet (normally styles.css).
 
-  @import url(<MT:StaticWebPath>plugins/ActionStreams/css/action-streams.css);
+    @import url(<MT:StaticWebPath>plugins/ActionStreams/css/action-streams.css);
 
 The classes used in the template code examples use the same classes as the
 default templates and thus they work well with the default themes.
 
 
-TEMPLATE CODE
+## Template Code
 
 See the Template Author Guide in the doc/ folder for help with Action Streams'
 template tags.
 
 
-CHANGES
-
-2.3.1 26 Oct 2010
-      Minor cleanup, license update, move to Movable Type organization in GitHub.
-
-2.3   26 May 2010
-      Support Movable Type 5.02.
-
-2.2   Forked from the original repository. 
-      Improved Delicious stream.
-      Fixed error when rebuilding blogs with deactivated templates.
-      Support for "not" operator in mt:ActionStreams "service" and "stream"
-      tag attributes when used individually.
-      Quieter operation when used with Log4MT.
-      Fixed bug that prevented use of methods other than get() with the HTTP
-      caching system.
-
-2.1   17 March 2009
-      Localized into several pleasing world languages. (Thanks, Six Apart
-      Motion Team!)
-      Wrote documentation (see plugin's doc/ directory or web site).
-      Provided editing of external profiles that have already been added.
-      Added "Update Now" button to profiles list.
-      Hotlinking of Twitter and Identi.ca tweets in default rendering.
-      Support for conditional HTTP requests when collecting actions.
-      Provided filtering of the "Action Streams" listing in the app.
-      Added `StreamActionRollup` tag for "rolling up" similar actions.
-      Bundled the "Recent Actions" blog dashboard widget. (Thanks, Bryan!)
-      Added support for RSS feeds in the Website stream.
-      Provided code to make easy "rss" recipes from RSS feeds.
-      Improved template set (incl. fixes for MT 4.2 support).
-      Switched to asynchronous job processing for action collecting.
-      Made installation easier (less dependent on Web::Scraper, moved extlib
-      into plugin as per MT 4.2 capability, removed Iwtst plugin).
-      Added many new profiles and streams!
-
-1.0   30 January 2008
-      Initial release.
+## Changes
 
 
-CREDITS
+### 2.3.1 (26 Oct 2010)
+
+* Minor cleanup, license update, move to Movable Type organization in GitHub.
+
+### 2.3 (26 May 2010)
+
+* Support Movable Type 5.02.
+
+### 2.2
+
+* Forked from the original repository. 
+* Improved Delicious stream.
+* Fixed error when rebuilding blogs with deactivated templates.
+* Support for "not" operator in mt:ActionStreams "service" and "stream"
+* tag attributes when used individually.
+* Quieter operation when used with Log4MT.
+* Fixed bug that prevented use of methods other than get() with the HTTP
+  caching system.
+
+### 2.1 (17 March 2009)
+
+* Localized into several pleasing world languages. (Thanks, Six Apart
+  Motion Team!)
+* Wrote documentation (see plugin's doc/ directory or web site).
+* Provided editing of external profiles that have already been added.
+* Added "Update Now" button to profiles list.
+* Hotlinking of Twitter and Identi.ca tweets in default rendering.
+* Support for conditional HTTP requests when collecting actions.
+* Provided filtering of the "Action Streams" listing in the app.
+* Added `StreamActionRollup` tag for "rolling up" similar actions.
+* Bundled the "Recent Actions" blog dashboard widget. (Thanks, Bryan!)
+* Added support for RSS feeds in the Website stream.
+* Provided code to make easy "rss" recipes from RSS feeds.
+* Improved template set (incl. fixes for MT 4.2 support).
+* Switched to asynchronous job processing for action collecting.
+* Made installation easier (less dependent on Web::Scraper, moved extlib
+  into plugin as per MT 4.2 capability, removed Iwtst plugin).
+* Added many new profiles and streams!
+
+### 1.0 (30 January 2008)
+
+* Initial release.
+
+
+## Credits
 
 Thanks to Bryan Tighe, Brad Choate, and Alex Bain for their contributions of
 various features and stream recipes.
