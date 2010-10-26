@@ -1,7 +1,7 @@
 use ExtUtils::MakeMaker;
 
 WriteMakefile(
-    NAME            => 'ActionStreams',
-    VERSION         => '2.2',
+    NAME            => 'Action Streams',
+    VERSION         => '2.3.1',
     DISTNAME        => 'ActionStreams',
 );

@@ -1,12 +1,12 @@
 name: Action Streams
 id: ActionStreams
 key: ActionStreams
-author_link: http://www.sixapart.com/
-author_name: Six Apart Ltd.
+author_link: http://www.movabletype.org/
+author_name: Six Apart
 description: <MT_TRANS phrase="Manages authors' accounts and actions on sites elsewhere around the web">
 schema_version: 16
-version: 2.3
-plugin_link: http://www.sixapart.com/
+version: 2.3.1
+plugin_link: http://www.movabletype.org/
 settings:
     rebuild_for_action_stream_events:
         Default: 0
@@ -200,9 +200,9 @@ themes:
         id: Streams
         label: Action Streams
         description: <__trans phrase="Action Streams collects your action on third party web sites into your Movable Type web site.">
-        author_name: Six Apart, Ltd.
-        author_link: http://www.sixapart.com/
-        version: 2.3
+        author_name: Six Apart
+        author_link: http://www.movabletype.org/
+        version: 2.3.1
         class: blog
         l10n_class: ActionStreams::L10N
         thumbnail_file: thumb.png
