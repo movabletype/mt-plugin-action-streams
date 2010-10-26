@@ -9,7 +9,7 @@
     <id>tag:<$MTBlogHost exclude_port="1" encode_xml="1"$>,<$MTDate format="%Y"$>:<$MTBlogRelativeURL encode_xml="1"$>/<$MTBlogID$>/actionstreams</id>
     <updated><MTEntries lastn="1"><$MTEntryModifiedDate utc="1" format="%Y-%m-%dT%H:%M:%SZ"$></MTEntries></updated>
     <MTIfNonEmpty tag="MTBlogDescription"><subtitle><$MTBlogDescription remove_html="1" encode_xml="1"$></subtitle></MTIfNonEmpty>
-    <generator uri="http://www.sixapart.com/movabletype/">Movable Type <$MTVersion$></generator>
+    <generator uri="http://www.movabletype.org/">Movable Type <$MTVersion$></generator>
 
     <mt:ActionStreams display_name="$author_display_name" lastn="$past_actions">
         <entry>
