@@ -44,11 +44,11 @@ with this template code:
         <mt:If name="action_type" eq="website_posts">
             <!-- move the icon_url action var to a regular var -->
             <mt:StreamActionVar name="icon_url" setvar="website_icon_url">
-            
+
             <mt:If name="website_icon_url">
             style="list-style-image: url(<mt:Var name="website_icon_url">)"
             </mt:If>
-            
+
         </mt:If>
         >
             <mt:StreamAction>
@@ -81,10 +81,10 @@ besides blogs. You can customize the text on a per-site basis by checking the
         <mt:If name="action_type" eq="website_posts">
             <!-- move the source_url action var to a regular var -->
             <mt:StreamActionVar name="source_url" setvar="website_url">
-            
+
             <!-- example book review site -->
             <mt:If name="website_url" eq="http://books.example.com/">
-            
+
                 <!-- book review -->
                 <mt:AuthorDisplayName escape="html">
                 reviewed
@@ -101,4 +101,3 @@ besides blogs. You can customize the text on a per-site basis by checking the
             <mt:StreamAction>
         </mt:If>
     </mt:ActionStreams>
-

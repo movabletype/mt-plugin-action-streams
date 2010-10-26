@@ -628,4 +628,3 @@ are:
 Fires after a stream event is composed, but before it is saved. The parameters
 passed to your callback routine are the same as to
 `pre_build_action_streams_event`.
-
