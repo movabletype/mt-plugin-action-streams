@@ -17,7 +17,7 @@ use base qw( MT::Object MT::Taggable MT::Scorable );
 our @EXPORT_OK = qw( classes_for_type );
 use HTTP::Date qw( str2time );
 
-use MT::Util qw( encode_html encode_url ts2epoch weaken );
+use MT::Util qw( encode_html encode_url ts2epoch weaken expat_parser );
 use MT::I18N qw( encode_text );
 
 use ActionStreams::Scraper;
@@ -396,7 +396,7 @@ sub fetch_xpath {
     $content =~ s{ \A \s+ }{}xms;
 
     require XML::XPath;
-    my $x = XML::XPath->new( xml => $content );
+    my $x = XML::XPath->new( xml => $content, parser => expat_parser() );
 
     my @items;
     ITEM: for my $item ($x->findnodes($params{foreach})) {
