@@ -1,5 +1,5 @@
 ############################################################################
-# Copyright © 2010 Six Apart Ltd.
+# Copyright © 2011 Six Apart Ltd.
 # This program is free software: you can redistribute it and/or modify it
 # under the terms of version 2 of the GNU General Public License as published
 # by the Free Software Foundation, or (at your option) any later version.
@@ -17,7 +17,7 @@ use base qw( MT::Object MT::Taggable MT::Scorable );
 our @EXPORT_OK = qw( classes_for_type );
 use HTTP::Date qw( str2time );
 
-use MT::Util qw( encode_html encode_url ts2epoch weaken );
+use MT::Util qw( encode_html encode_url ts2epoch weaken expat_parser );
 use MT::I18N qw( encode_text );
 
 use ActionStreams::Scraper;
@@ -396,7 +396,7 @@ sub fetch_xpath {
     $content =~ s{ \A \s+ }{}xms;
 
     require XML::XPath;
-    my $x = XML::XPath->new( xml => $content );
+    my $x = XML::XPath->new( xml => $content, parser => expat_parser() );
 
     my @items;
     ITEM: for my $item ($x->findnodes($params{foreach})) {

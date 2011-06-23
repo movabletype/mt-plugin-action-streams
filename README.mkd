@@ -11,7 +11,7 @@ Brad Choate, Alex Bain
 The following copyright notice applies to all the files provided in this
 distribution, including binary files, unless explicitly noted otherwise.
 
-Copyright 2009-2010 Six Apart, Ltd.
+Copyright 2009-2011 Six Apart, Ltd.
 
 
 ## License
@@ -98,6 +98,10 @@ template tags.
 
 
 ## Changes
+
+### 2.32 (23 June 2011)
+* Changed the version number format.
+* Fixed the XML issue.
 
 ### 2.3.1 (26 Oct 2010)
 
