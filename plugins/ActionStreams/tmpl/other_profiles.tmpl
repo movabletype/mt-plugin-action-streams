@@ -104,13 +104,16 @@ function verifyDelete( delete_item ){
 <mt:setvarblock name="action_buttons">
     <button
         accesskey="x"
+        type="button"
         onclick="doRemoveItems(getByID('profile-listing-form'), '<__trans phrase="profile">', '<__trans phrase="profiles">', null, null, { mode: 'remove_other_profile' }); return false"
         title="<__trans phrase="Delete selected profiles (x)">"
-        class="mt-delete-items"
+        class="button mt-delete-items"
         ><__trans phrase="Delete"></button>
     <button
         onclick="doForMarkedInThisWindow(getByID('profile-listing-form'), '<__trans phrase="profile">', '<__trans phrase="profiles">', 'id', 'itemset_update_profiles', null, '<__trans phrase="to update">'); return false"
+        type="button"
         title="<__trans phrase="Scan now for new actions">"
+        class="button"
         ><__trans phrase="Update Now"></button>
 </mt:setvarblock>
 <mt:var name="position_actions_top" value="1">
@@ -121,10 +124,10 @@ function verifyDelete( delete_item ){
     <mt:if __first__>
         <mt:setvarblock name="table-header">
             <tr>
-                <th class="cb"><input type="checkbox" name="id-head" value="all" class="select" /></th>
-                <th class="service primary-col"><span class="service-icon"><__trans phrase="Service"></span></th>
-                <th class="userid"><__trans phrase="Username"></th>
-                <th class="view"><__trans phrase="View"></th>
+                <th class="col head cb"><input type="checkbox" name="id-head" value="all" class="select" /></th>
+                <th class="col head service primary"><span class="service-icon"><__trans phrase="Service"></span></th>
+                <th class="col head userid primary"><__trans phrase="Username"></th>
+                <th class="col head view"><__trans phrase="View"></th>
             </tr>
         </mt:setvarblock name="table-header">
         <thead>
@@ -139,14 +142,14 @@ function verifyDelete( delete_item ){
     </mt:if>
 
     <tr class="<mt:if __odd__>odd<mt:else>even</mt:if>">
-        <td class="cb"><input type="checkbox" name="id" class="select" value="<mt:var name="edit_author_id" escape="html">:<mt:var name="type" escape="html">:<mt:var name="ident" escape="html">" /></td>
+        <td class="col cb"><input type="checkbox" name="id" class="select" value="<mt:var name="edit_author_id" escape="html">:<mt:var name="type" escape="html">:<mt:var name="ident" escape="html">" /></td>
 <mt:if name="mt_version" ge="5">
-        <td class="service network"><span class="service-icon service-<mt:if name="unknown">unknown<mt:else><mt:var name="type"></mt:if>"><mt:unless name="unknown"><a href="<mt:var name="script_url">?__mode=dialog_edit_profile&amp;author_id=<mt:var name="edit_author_id">&amp;profile_type=<mt:var name="type" escape="url">&amp;profile_ident=<mt:var name="ident" escape="url">&amp;return_args=<mt:var name="return_args" escape="url">%26author_id=<mt:var name="edit_author_id">" class="mt-open-dialog"></mt:unless><mt:var name="label" escape="html"><mt:unless name="unknown"></a></mt:unless></span></td>
+        <td class="col service network"><span class="service-icon service-<mt:if name="unknown">unknown<mt:else><mt:var name="type"></mt:if>"><mt:unless name="unknown"><a href="<mt:var name="script_url">?__mode=dialog_edit_profile&amp;author_id=<mt:var name="edit_author_id">&amp;profile_type=<mt:var name="type" escape="url">&amp;profile_ident=<mt:var name="ident" escape="url">&amp;return_args=<mt:var name="return_args" escape="url">%26author_id=<mt:var name="edit_author_id">" class="mt-open-dialog"></mt:unless><mt:var name="label" escape="html"><mt:unless name="unknown"></a></mt:unless></span></td>
 <mt:else>
-        <td class="service network"><span class="service-icon service-<mt:if name="unknown">unknown<mt:else><mt:var name="type"></mt:if>"><mt:unless name="unknown"><a href="javascript:void(0)" onclick="return openDialog(this.form, 'dialog_edit_profile', 'author_id=<mt:var name="edit_author_id">&amp;profile_type=<mt:var name="type" escape="url">&amp;profile_ident=<mt:var name="ident" escape="url">&amp;return_args=<mt:var name="return_args" escape="url">%26author_id=<mt:var name="edit_author_id">')"></mt:unless><mt:var name="label" escape="html"><mt:unless name="unknown"></a></mt:unless></span></td>
+        <td class="col service network"><span class="service-icon service-<mt:if name="unknown">unknown<mt:else><mt:var name="type"></mt:if>"><mt:unless name="unknown"><a href="javascript:void(0)" onclick="return openDialog(this.form, 'dialog_edit_profile', 'author_id=<mt:var name="edit_author_id">&amp;profile_type=<mt:var name="type" escape="url">&amp;profile_ident=<mt:var name="ident" escape="url">&amp;return_args=<mt:var name="return_args" escape="url">%26author_id=<mt:var name="edit_author_id">')"></mt:unless><mt:var name="label" escape="html"><mt:unless name="unknown"></a></mt:unless></span></td>
 </mt:if>
-        <td class="userid"><mt:var name="ident" escape="html"></td>
-        <td class="view si status-view">
+        <td class="col userid"><mt:var name="ident" escape="html"></td>
+        <td class="col view si status-view">
             <a href="<mt:var name="uri" escape="html">" target="<__trans phrase="external_link_target">" title="<__trans phrase="View Profile">"><img src="<mt:var name="static_uri">images/spacer.gif" alt="<__trans phrase="View Profile">" width="13" height="9" /></a>
         </td>
     </tr>
