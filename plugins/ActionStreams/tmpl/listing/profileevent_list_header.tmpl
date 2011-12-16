@@ -1,0 +1,19 @@
+<mt:setvarblock name="html_head" append="1">
+<link rel="stylesheet" type="text/css" href="<mt:var name="static_uri">plugins/ActionStreams/css/action-streams.css" />
+</mt:setvarblock>
+
+<mt:setvarblock name="jq_js_include" append="1">
+
+jQuery(window).bind('listReady', function() {
+	jQuery('td.service').each(function(index, domEle) {
+		var $this = jQuery(domEle);
+		var $span = jQuery('<span></span>').addClass('service-icon');
+		if ( name != 'service' ) {
+			$span.addClass( 'service-' + $this.text().toLowerCase() );
+		}
+		$this.wrapInner( $span );
+	})
+});
+
+</mt:setvarblock>
+

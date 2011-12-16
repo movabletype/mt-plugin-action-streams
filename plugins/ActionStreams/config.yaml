@@ -25,7 +25,7 @@ init_app: $ActionStreams::ActionStreams::Init::init_app
 applications:
     cms:
         methods:
-            list_profileevent:       $ActionStreams::ActionStreams::Plugin::list_profileevent
+            list_profileevent1:       $ActionStreams::ActionStreams::Plugin::list_profileevent
             other_profiles:          $ActionStreams::ActionStreams::Plugin::other_profiles
             dialog_add_profile:      $ActionStreams::ActionStreams::Plugin::dialog_add_edit_profile
             dialog_edit_profile:     $ActionStreams::ActionStreams::Plugin::dialog_add_edit_profile
@@ -39,6 +39,7 @@ applications:
             itemset_show_all_events: $ActionStreams::ActionStreams::Plugin::itemset_show_all_events
         callbacks:
             pre_run: $ActionStreams::ActionStreams::Init::hide_ts
+            cms_pre_load_filtered_list.profileevent: $ActionStreams::ActionStreams::Plugin::callback_LFL
         menus:
             user:other_profiles:
                 order: 10000
@@ -94,6 +95,53 @@ object_types:
     profileevent: ActionStreams::Event
     as: ActionStreams::Event
     as_ua_cache:  ActionStreams::UserAgent::Cache
+listing_screens:
+    profileevent:
+        object_label: Profile Events
+        primary: event
+        default_sort_key: id
+list_properties:
+    profileevent:
+        event:
+            auto: 0
+            display: force
+            order: 150
+            html: sub { MT::Util::remove_html($_[1]->as_html()) }
+            label: Event
+        service:
+            auto: 0
+            display: force
+            order: 200
+            html: | 
+                sub { 
+                    my ($prop, $obj, $app, $options) = @_;
+                    my $nets = $app->registry('profile_services') || return;
+                    my ($service, $stream_id) = split /_/, $obj->class, 2;
+                    my $net = $nets->{$service} || return;
+                    $net->{name}
+                }
+            label: Service
+        created_on:
+            auto: 1
+            order: 300
+            label: Created
+        view:
+            auto: 0
+            label: View
+            display: optional
+            order: 400
+            html_link: sub { $_[1]->url }
+            raw: View
+        status:
+            auto: 0
+            display: force
+            order: 100
+            label: Status
+            html: |
+                sub {
+                    my ($prop, $obj, $app, $options) = @_;
+                    '<img src="' . $app->config->StaticWebPath. '/images/status_icons/' . ($obj->visible ? 'success' : 'warning' ) . '.gif" />' 
+                }
 list_actions:
     profileevent:
         hide_all:

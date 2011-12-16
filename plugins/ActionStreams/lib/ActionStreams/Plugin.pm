@@ -33,7 +33,8 @@ sub users_content_nav {
     <__trans_section component="actionstreams">
     <mt:if name="mt_version" ge="5">
         <li<mt:if name="other_profiles"> class="active"><em><mt:else>></mt:if><a href="<mt:var name="SCRIPT_URL">?__mode=other_profiles&amp;id=<mt:if name="id"><mt:var name="id" escape="url"><mt:else><mt:var name="edit_author_id" escape="url"></mt:if>&amp;author_id=<mt:if name="id"><mt:var name="id" escape="url"><mt:else><mt:var name="edit_author_id" escape="url"></mt:if>"><__trans phrase="Other Profiles"></a><mt:if name="other_profiles"></em></mt:if></li>
-        <li<mt:if name="list_profileevent"> class="active"><em><mt:else>></mt:if><a href="<mt:var name="SCRIPT_URL">?__mode=list_profileevent&amp;id=<mt:if name="id"><mt:var name="id" escape="url"><mt:else><mt:var name="edit_author_id" escape="url"></mt:if>&amp;author_id=<mt:if name="id"><mt:var name="id" escape="url"><mt:else><mt:var name="edit_author_id" escape="url"></mt:if>"><__trans phrase="Action Stream"></a><mt:if name="list_profileevent"></em></mt:if></li>
+        <li<mt:if name="list_profileevent"> class="active"><em><mt:else>></mt:if><a href="<mt:var name="SCRIPT_URL">?__mode=list_profileevent1&amp;id=<mt:if name="id"><mt:var name="id" escape="url"><mt:else><mt:var name="edit_author_id" escape="url"></mt:if>&amp;author_id=<mt:if name="id"><mt:var name="id" escape="url"><mt:else><mt:var name="edit_author_id" escape="url"></mt:if>"><__trans phrase="Action Stream"></a><mt:if name="list_profileevent"></em></mt:if></li>
+       <li<mt:if name="list_profileevent"> class="active"><em><mt:else>></mt:if><a href="<mt:var name="SCRIPT_URL">?__mode=list&amp;_type=profileevent&amp;id=<mt:if name="id"><mt:var name="id" escape="url"><mt:else><mt:var name="edit_author_id" escape="url"></mt:if>&amp;author_id=<mt:if name="id"><mt:var name="id" escape="url"><mt:else><mt:var name="edit_author_id" escape="url"></mt:if>"><__trans phrase="Action Stream"></a><mt:if name="list_profileevent"></em></mt:if></li>
     <mt:else>
         <mt:if name="user_view">
         <li><a href="<mt:var name="SCRIPT_URL">?__mode=other_profiles&amp;id=<mt:var name="EDIT_AUTHOR_ID" escape="url">"><b><__trans phrase="Other Profiles"></b></a></li>
@@ -134,6 +135,22 @@ sub _edit_author {
         or $app->user->id != $arg->{id} && !$app->user->is_superuser();
 
     return $author;
+}
+
+sub callback_LFL {
+    my ($cb, $app, $filter, $count_options, $cols) = @_;
+    my $author = _edit_author( $app->param('id') ) || $app->user();
+    $count_options->{terms}->{class} = '*';
+    $count_options->{terms}->{author_id} = $author->id;
+
+    # this is here so the classes are loaded before the listing function 
+    # loads the objects, so they will get their appropriate class
+    my $streams_info = $app->registry('action_streams');
+    for my $prevt (keys %$streams_info) {
+        ActionStreams::Event->classes_for_type($prevt);
+    }
+
+    return 1;
 }
 
 sub list_profileevent {
