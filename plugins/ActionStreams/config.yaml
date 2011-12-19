@@ -40,6 +40,7 @@ applications:
         callbacks:
             pre_run: $ActionStreams::ActionStreams::Init::hide_ts
             cms_pre_load_filtered_list.profileevent: $ActionStreams::ActionStreams::Plugin::callback_LFL
+            list_template_param.profileevent: $ActionStreams::ActionStreams::Plugin::callback_listing_params
         menus:
             user:other_profiles:
                 order: 10000
@@ -130,8 +131,14 @@ list_properties:
             label: View
             display: optional
             order: 400
-            html_link: sub { $_[1]->url }
-            raw: View
+            html: |
+                sub {
+                    '<a title="View action link" target="_blank" href="'.
+                    $_[1]->url . '">' .
+                    '<img width="13" height="9" alt="View action link" src="http://localhost/~sfomberg/mt-static/images/spacer.gif">' .
+                    '</a>';
+                }
+            col_class: si status-view
         status:
             auto: 0
             display: force
@@ -144,6 +151,18 @@ list_properties:
                 }
 list_actions:
     profileevent:
+        hide:
+            label: Hide
+            button: 1
+            order: 100
+            xhr: 1
+            code:  $ActionStreams::ActionStreams::Plugin::itemset_hide_events
+        show:
+            label: Show
+            order: 200
+            button: 1
+            xhr: 1
+            code:  $ActionStreams::ActionStreams::Plugin::itemset_show_events
         hide_all:
             label: Hide All
             order: 100
@@ -160,6 +179,7 @@ list_actions:
                 sub { MT->translate('Are you sure you want to show EVERY event in EVERY action stream?') }
         delete:
             label: Delete
+            button: 1
             order: 300
             code:  $core::MT::App::CMS::delete
             continue_prompt_handler: >

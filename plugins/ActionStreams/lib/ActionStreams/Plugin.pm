@@ -139,7 +139,7 @@ sub _edit_author {
 
 sub callback_LFL {
     my ($cb, $app, $filter, $count_options, $cols) = @_;
-    my $author = _edit_author( $app->param('id') ) || $app->user();
+    my $author = _edit_author( $app->param('author_id') ) || $app->user();
     $count_options->{terms}->{class} = '*';
     $count_options->{terms}->{author_id} = $author->id;
 
@@ -151,6 +151,23 @@ sub callback_LFL {
     }
 
     return 1;
+}
+
+sub callback_listing_params {
+    my ($cb, $app, $params, $tmpl) = @_;
+    my @service_styles_loop;
+    my $nets = $app->registry('profile_services') || {};
+    while (my ($service, $rec) = each %$nets) {
+        if (!$rec->{plugin} || $rec->{plugin}->id ne 'actionstreams') {
+            if (my $icon = __PACKAGE__->icon_url_for_service($service, $rec)) {
+                push @service_styles_loop, {
+                    service_type => $service,
+                    service_icon => $icon,
+                };
+            }
+        }        
+    }
+    $params->{service_styles} = \@service_styles_loop;
 }
 
 sub list_profileevent {
@@ -275,8 +292,7 @@ sub itemset_hide_events {
         $event->save;
     }
 
-    $app->add_return_arg( hidden => 1 );
-    $app->call_return;
+    return 1;
 }
 
 sub itemset_show_events {
@@ -293,8 +309,7 @@ sub itemset_show_events {
         $event->save;
     }
 
-    $app->add_return_arg( shown => 1 );
-    $app->call_return;
+    return 1;
 }
 
 sub _itemset_hide_show_all_events {
