@@ -122,14 +122,23 @@ list_properties:
                     $net->{name}
                 }
             label: Service
+            #filter_label: Set Service
+            filter_tmpl: |
+                Show only: 
+                <select class="<mt:var name="type">-option">
+                    <mt:loop name="service_filters">
+                        <option value="<$mt:var name="val" escape="js"$>"><$mt:var name="name" escape="js"$></option>
+                    </mt:loop>
+                </select>
+            base: __virtual.string
         created_on:
-            auto: 1
             order: 300
-            label: Created
+            base: __virtual.created_on
+            display: default
         view:
             auto: 0
             label: View
-            display: optional
+            display: default
             order: 400
             html: |
                 sub {
