@@ -33,7 +33,6 @@ sub users_content_nav {
     <__trans_section component="actionstreams">
     <mt:if name="mt_version" ge="5">
         <li<mt:if name="other_profiles"> class="active"><em><mt:else>></mt:if><a href="<mt:var name="SCRIPT_URL">?__mode=other_profiles&amp;author_id=<mt:if name="id"><mt:var name="id" escape="url"><mt:else><mt:var name="edit_author_id" escape="url"></mt:if>"><__trans phrase="Other Profiles"></a><mt:if name="other_profiles"></em></mt:if></li>
-        <li<mt:if name="list_profileevent"> class="active"><em><mt:else>></mt:if><a href="<mt:var name="SCRIPT_URL">?__mode=list_profileevent1&amp;author_id=<mt:if name="id"><mt:var name="id" escape="url"><mt:else><mt:var name="edit_author_id" escape="url"></mt:if>"><__trans phrase="Action Stream"></a><mt:if name="list_profileevent"></em></mt:if></li>
        <li<mt:if name="list_profileevent"> class="active"><em><mt:else>></mt:if><a href="<mt:var name="SCRIPT_URL">?__mode=list&amp;_type=profileevent&amp;author_id=<mt:if name="id"><mt:var name="id" escape="url"><mt:else><mt:var name="edit_author_id" escape="url"></mt:if>"><__trans phrase="Action Stream"></a><mt:if name="list_profileevent"></em></mt:if></li>
     <mt:else>
         <mt:if name="user_view">
@@ -172,114 +171,6 @@ sub callback_listing_params {
     @service_filter_loop = sort { lc $a->{name} cmp lc $b->{name} } @service_filter_loop;
     $params->{service_styles} = \@service_styles_loop;
     $params->{service_filters} = \@service_filter_loop;
-}
-
-sub list_profileevent {
-    my $app = shift;
-    my %param = @_;
-
-    $app->return_to_dashboard( redirect => 1 ) if $app->param('blog_id');
-
-    my $author = _edit_author( $app->param('author_id') ) or return;
-
-    my %service_styles;
-    my @service_styles_loop;
-
-    my $code = sub {
-        my ($event, $row) = @_;
-
-        my @meta_col = keys %{ $event->properties->{meta_columns} || {} };
-        $row->{$_} = $event->{$_} for @meta_col;
-
-        $row->{as_html} = $event->as_html();
-
-        my ($service, $stream_id) = split /_/, $row->{class}, 2;
-        $row->{type} = $service;
-
-        my $nets = $app->registry('profile_services') || {};
-        my $net = $nets->{$service};
-        $row->{service} = $net->{name} if $net;
-
-        $row->{url} = $event->url;
-
-        if (!$service_styles{$service}) {
-            if (!$net->{plugin} || $net->{plugin}->id ne 'actionstreams') {
-                if (my $icon = __PACKAGE__->icon_url_for_service($service, $net)) {
-                    push @service_styles_loop, {
-                        service_type => $service,
-                        service_icon => $icon,
-                    };
-                }
-            }
-            $service_styles{$service} = 1;
-        }
-
-        my $ts = $row->{created_on};
-        $row->{created_on_relative} = relative_date($ts, time);
-        $row->{created_on_formatted} = format_ts(
-            MT::App::CMS->LISTING_DATETIME_FORMAT(),
-            epoch2ts(undef, offset_time(ts2epoch(undef, $ts))),
-            undef,
-            $app->user ? $app->user->preferred_language : undef,
-        );
-    };
-
-    # Make sure all classes are loaded.
-    require ActionStreams::Event;
-    for my $prevt (keys %{ $app->registry('action_streams') }) {
-        ActionStreams::Event->classes_for_type($prevt);
-    }
-
-    my $plugin = MT->component('ActionStreams');
-    my %params = map { $_ => $app->param($_) ? 1 : 0 }
-        qw( saved_deleted hidden shown all_hidden all_shown );
-
-    $params{services} = [];
-    my $services = $app->registry('profile_services');
-    while (my ($prevt, $service) = each %$services) {
-        push @{ $params{services} }, {
-            service_id   => $prevt,
-            service_name => $service->{name},
-        };
-    }
-    $params{services} = [ sort { lc $a->{service_name} cmp lc $b->{service_name} } @{ $params{services} } ];
-
-    my %terms = (
-        class => '*',
-        author_id => $author->id,
-    );
-    my %args = (
-        sort => 'created_on',
-        direction => 'descend',
-    );
-
-    if (my $filter = $app->param('filter')) {
-        $params{filter_key} = $filter;
-        my $filter_val = $params{filter_val} = $app->param('filter_val');
-        if ($filter eq 'service') {
-            $params{filter_label} = $app->translate('Actions from the service [_1]', $app->registry('profile_services')->{$filter_val}->{name});
-            $terms{class} = $filter_val . '_%';
-            $args{like} = { class => 1 };
-        }
-        elsif ($filter eq 'visible') {
-            $params{filter_label} = ($filter_val eq 'show') ? $app->translate('Actions that are shown')
-                : $app->translate('Actions that are hidden');
-            $terms{visible} = $filter_val eq 'show' ? 1 : 0;
-        }
-    }
-
-    $params{id}   = $params{edit_author_id} = $author->id;
-    $params{name} = $params{edit_author_name} = $author->name;
-    $params{service_styles} = \@service_styles_loop;
-    $app->listing({
-        type     => 'profileevent',
-        terms    => \%terms,
-        args     => \%args,
-        listing_screen => 1,
-        code     => $code,
-        template => $plugin->load_tmpl('list_profileevent.tmpl'),
-        params   => \%params,
-    });
 }
 
 sub itemset_hide_events {

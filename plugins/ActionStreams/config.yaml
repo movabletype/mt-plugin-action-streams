@@ -25,7 +25,6 @@ init_app: $ActionStreams::ActionStreams::Init::init_app
 applications:
     cms:
         methods:
-            list_profileevent1:       $ActionStreams::ActionStreams::Plugin::list_profileevent
             other_profiles:          $ActionStreams::ActionStreams::Plugin::other_profiles
             dialog_add_profile:      $ActionStreams::ActionStreams::Plugin::dialog_add_edit_profile
             dialog_edit_profile:     $ActionStreams::ActionStreams::Plugin::dialog_add_edit_profile
@@ -101,6 +100,13 @@ listing_screens:
         object_label: Profile Events
         primary: event
         default_sort_key: id
+        condition: |
+            sub {
+                my ($app) = @_;
+                my $user = $app->user;
+                return 1 if $user->is_superuser();
+                return $user->id eq $app->param('author_id');
+            }
 list_properties:
     profileevent:
         event:
@@ -122,7 +128,6 @@ list_properties:
                     $net->{name}
                 }
             label: Service
-            #filter_label: Set Service
             filter_tmpl: |
                 Show only: 
                 <select class="<mt:var name="type">-option">
@@ -144,7 +149,6 @@ list_properties:
                     }
                     return { class => \@streams };
                 }
-            base: __virtual.string
         created_on:
             order: 300
             base: __virtual.created_on
