@@ -130,6 +130,20 @@ list_properties:
                         <option value="<$mt:var name="val" escape="js"$>"><$mt:var name="name" escape="js"$></option>
                     </mt:loop>
                 </select>
+            terms: |
+                sub {
+                    my $prop = shift;
+                    my ( $args, $db_terms, $db_args ) = @_;
+                    my $option = $args->{option};
+                    my $nets = MT->registry('action_streams') || {};
+                    my $service = $nets->{$option} or die "no such service";
+                    my @streams;
+                    foreach my $stream (keys %$service) {
+                        next if $stream eq 'plugin';
+                        push @streams, $option . "_" . $stream;
+                    }
+                    return { class => \@streams };
+                }
             base: __virtual.string
         created_on:
             order: 300
