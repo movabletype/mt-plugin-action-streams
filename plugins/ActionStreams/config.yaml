@@ -111,9 +111,18 @@ list_properties:
     profileevent:
         event:
             auto: 0
-            display: force
+            display: default
             order: 150
-            html: sub { MT::Util::remove_html($_[1]->as_html()) }
+            html: |
+                sub {
+                    my ($prop, $obj, $app, $options) = @_;
+                    my $out = '<span class="service-icon ';
+                    $out .= $obj->visible ? 'event-shown' : 'event-hidden';
+                    $out .= '">';
+                    $out .= MT::Util::remove_html($obj->as_html());
+                    $out .= '</span>';
+                    return $out;
+                }
             label: Event
         service:
             auto: 0
@@ -167,14 +176,21 @@ list_properties:
                 }
             col_class: si status-view
         status:
-            auto: 0
-            display: force
-            order: 100
+            display: none
             label: Status
-            html: |
+            filter_label: Visibility
+            filter_tmpl: |
+                Show only: 
+                <select class="<mt:var name="type">-option">
+                    <option value="visible">Visible</option>
+                    <option value="hidden">Hidden</option>
+                </select>
+            terms: |
                 sub {
-                    my ($prop, $obj, $app, $options) = @_;
-                    '<img src="' . $app->config->StaticWebPath. '/images/status_icons/' . ($obj->visible ? 'success' : 'warning' ) . '.gif" />' 
+                    my $prop = shift;
+                    my ( $args, $db_terms, $db_args ) = @_;
+                    my $option = $args->{option};
+                    return { visible => ( $option eq 'hidden' ? 0 : 1 ) }
                 }
 list_actions:
     profileevent:
@@ -190,20 +206,6 @@ list_actions:
             button: 1
             xhr: 1
             code:  $ActionStreams::ActionStreams::Plugin::itemset_show_events
-        hide_all:
-            label: Hide All
-            order: 100
-            js:    finishPluginActionAll
-            code:  $ActionStreams::ActionStreams::Plugin::itemset_hide_all_events
-            continue_prompt_handler: >
-                sub { MT->translate('Are you sure you want to hide EVERY event in EVERY action stream?') }
-        show_all:
-            label: Show All
-            order: 200
-            js:    finishPluginActionAll
-            code:  $ActionStreams::ActionStreams::Plugin::itemset_show_all_events
-            continue_prompt_handler: >
-                sub { MT->translate('Are you sure you want to show EVERY event in EVERY action stream?') }
         delete:
             label: Delete
             button: 1

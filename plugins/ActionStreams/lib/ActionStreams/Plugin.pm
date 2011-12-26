@@ -171,8 +171,10 @@ sub callback_listing_params {
     @service_filter_loop = sort { lc $a->{name} cmp lc $b->{name} } @service_filter_loop;
     $params->{service_styles} = \@service_styles_loop;
     $params->{service_filters} = \@service_filter_loop;
-    $params->{build_user_menus} = 1;
-    $params->{edit_author_id}   = $app->param('author_id');
+    if (my $author_id = $app->param('author_id')) {
+        $params->{build_user_menus} = 1;
+        $params->{edit_author_id}   = $author_id;
+    }
 }
 
 sub itemset_hide_events {

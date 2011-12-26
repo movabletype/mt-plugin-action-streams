@@ -6,6 +6,8 @@
         <mt:loop name="service_styles">
         .service-<mt:var name="service_type"> { background-image: url(<mt:var name="service_icon">); }
         </mt:loop>
+        .event-shown { background-image: url(<mt:var name="static_uri">images/status_icons/success.gif); }
+        .event-hidden { background-image: url(<mt:var name="static_uri">images/status_icons/warning.gif); }
     // -->
     </style>
 
