@@ -26,19 +26,4 @@ jQuery(window).bind('listReady', function() {
 
 </mt:setvarblock>
 
-<mt:if name="mt_version" ge="5">
-<mt:unless name="blog_id">
-    <mt:setvarblock name="related_content">
-        <mtapp:widget
-            id="user-properties"
-            label="<__trans phrase="User properties">">
-            <mt:include name="include/users_content_nav.tmpl">
-        </mtapp:widget>
-    </mt:setvarblock>
-</mt:unless>
-<mt:else>
-<mt:setvarblock name="content_nav">
-    <mt:include name="include/users_content_nav.tmpl">
-</mt:setvarblock>
-</mt:if>
 

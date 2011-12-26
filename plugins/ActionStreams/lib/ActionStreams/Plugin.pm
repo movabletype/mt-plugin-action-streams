@@ -32,8 +32,8 @@ sub users_content_nav {
     my $menu_str = <<"EOF";
     <__trans_section component="actionstreams">
     <mt:if name="mt_version" ge="5">
-        <li<mt:if name="other_profiles"> class="active"><em><mt:else>></mt:if><a href="<mt:var name="SCRIPT_URL">?__mode=other_profiles&amp;author_id=<mt:if name="id"><mt:var name="id" escape="url"><mt:else><mt:var name="edit_author_id" escape="url"></mt:if>"><__trans phrase="Other Profiles"></a><mt:if name="other_profiles"></em></mt:if></li>
-       <li<mt:if name="list_profileevent"> class="active"><em><mt:else>></mt:if><a href="<mt:var name="SCRIPT_URL">?__mode=list&amp;_type=profileevent&amp;author_id=<mt:if name="id"><mt:var name="id" escape="url"><mt:else><mt:var name="edit_author_id" escape="url"></mt:if>"><__trans phrase="Action Stream"></a><mt:if name="list_profileevent"></em></mt:if></li>
+        <li<mt:if name="other_profiles"> class="active"><em><mt:else>></mt:if><a href="<mt:var name="SCRIPT_URL">?__mode=other_profiles&amp;author_id=<mt:if name="author_id"><mt:var name="author_id" escape="url"><mt:else><mt:var name="edit_author_id" escape="url"></mt:if>"><__trans phrase="Other Profiles"></a><mt:if name="other_profiles"></em></mt:if></li>
+       <li<mt:if name="list_profileevent"> class="active"><em><mt:else>></mt:if><a href="<mt:var name="SCRIPT_URL">?__mode=list&amp;_type=profileevent&amp;author_id=<mt:if name="author_id"><mt:var name="author_id" escape="url"><mt:else><mt:var name="edit_author_id" escape="url"></mt:if>"><__trans phrase="Action Stream"></a><mt:if name="list_profileevent"></em></mt:if></li>
     <mt:else>
         <mt:if name="user_view">
         <li><a href="<mt:var name="SCRIPT_URL">?__mode=other_profiles&amp;id=<mt:var name="EDIT_AUTHOR_ID" escape="url">"><b><__trans phrase="Other Profiles"></b></a></li>
@@ -171,6 +171,8 @@ sub callback_listing_params {
     @service_filter_loop = sort { lc $a->{name} cmp lc $b->{name} } @service_filter_loop;
     $params->{service_styles} = \@service_styles_loop;
     $params->{service_filters} = \@service_filter_loop;
+    $params->{build_user_menus} = 1;
+    $params->{edit_author_id}   = $app->param('author_id');
 }
 
 sub itemset_hide_events {
