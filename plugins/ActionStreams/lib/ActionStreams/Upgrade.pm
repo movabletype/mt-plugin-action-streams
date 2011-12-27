@@ -14,12 +14,13 @@ package ActionStreams::Upgrade;
 
 use strict;
 use warnings;
+use ActionStreams::Init;
 
 sub enable_existing_streams {
     my ($author) = @_;
     my $app = MT->app;
 
-    my $profiles = $author->other_profiles();
+    my $profiles = get_author_profiles($author);
     return if !$profiles || !@$profiles;
 
     for my $profile (@$profiles) {

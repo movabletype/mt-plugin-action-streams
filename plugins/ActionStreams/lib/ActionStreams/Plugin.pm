@@ -17,6 +17,7 @@ use warnings;
 
 use Carp qw( croak );
 use MT::Util qw( relative_date offset_time epoch2ts ts2epoch format_ts );
+use ActionStreams::Init;
 
 sub users_content_nav {
     my ($cb, $app, $param, $tmpl) = @_;
@@ -63,7 +64,7 @@ sub param_list_member {
     my $author_iter = MT->model('author')->load_iter({ id => \@author_ids });
     my %profile_counts;
     while ( my $author = $author_iter->() ) {
-        $profile_counts{$author->id} = scalar @{ $author->other_profiles };
+        $profile_counts{$author->id} = scalar @{ get_author_profiles($author) };
     }
     for my $loop_item ( @$loop ) {
         $loop_item->{profiles} = $profile_counts{ $loop_item->{id} };
@@ -211,52 +212,6 @@ sub itemset_show_events {
     return 1;
 }
 
-sub _itemset_hide_show_all_events {
-    my ($app, $new_visible) = @_;
-    $app->validate_magic or return;
-    my $event_class = MT->model('profileevent');
-
-    # Really we should work directly from the selected author ID, but as an
-    # itemset event we only got some event IDs. So use its.
-    my ($event_id) = $app->param('id');
-    my $event = $event_class->load($event_id)
-        or return $app->error($app->translate('No such event [_1]', $event_id));
-
-    my $author = _edit_author( $event->author_id ) or return;
-
-    my $driver = $event_class->driver;
-    my $stmt = $driver->prepare_statement($event_class, {
-        # TODO: include filter value when we have filters
-        author_id => $author->id,
-        visible   => $new_visible ? 0 : 1,
-    });
-
-    my $sql = "UPDATE " . $driver->table_for($event_class) . " SET "
-        . $driver->dbd->db_column_name($event_class->datasource, 'visible')
-        . " = ? " . $stmt->as_sql_where;
-
-    # Work around error in MT::ObjectDriver::Driver::DBI::sql by doing it inline.
-    my $dbh = $driver->rw_handle;
-    $dbh->do($sql, {}, $new_visible, @{ $stmt->{bind} })
-        or return $app->error($dbh->errstr);
-
-    return 1;
-}
-
-sub itemset_hide_all_events {
-    my $app = shift;
-    _itemset_hide_show_all_events($app, 0) or return;
-    $app->add_return_arg( all_hidden => 1 );
-    $app->call_return;
-}
-
-sub itemset_show_all_events {
-    my $app = shift;
-    _itemset_hide_show_all_events($app, 1) or return;
-    $app->add_return_arg( all_shown => 1 );
-    $app->call_return;
-}
-
 sub _build_service_data {
     my %info = @_;
     my ($networks, $streams, $author) = @info{qw( networks streams author )};
@@ -264,7 +219,7 @@ sub _build_service_data {
 
     my %has_profiles;
     if ($author) {
-        my $other_profiles = $author->other_profiles();
+        my $other_profiles = get_author_profiles($author);
         $has_profiles{$_->{type}} = 1 for @$other_profiles;
     }
 
@@ -347,7 +302,7 @@ sub other_profiles {
     my $tmpl = $plugin->load_tmpl( 'other_profiles.tmpl' );
 
     my @profiles = sort { lc $a->{label} cmp lc $b->{label} }
-        @{ $author->other_profiles || [] };
+        @{ get_author_profiles($author) || [] };
 
     my $reg = $app->registry('profile_services');
     for my $p ( @profiles ) {
@@ -381,7 +336,7 @@ sub dialog_add_edit_profile {
     if (my $edit_type = $app->param('profile_type')) {
         my $ident = $app->param('profile_ident') || q{};
         my ($profile) = grep { $_->{ident} eq $ident }
-            @{ $author->other_profiles($edit_type) };
+            @{ get_author_profiles($author, $edit_type) };
 
         %edit_profile = (
             edit_type      => $edit_type,
@@ -415,7 +370,7 @@ sub edit_other_profile {
     my $type       = $app->param('profile_type');
     my $orig_ident = $app->param('original_ident');
 
-    $author->remove_profile($type, $orig_ident);
+    remove_author_profile($author, $type, $orig_ident);
 
     $app->forward('add_other_profile', success_msg => 'edited');
 }
@@ -469,7 +424,7 @@ sub add_other_profile {
         keys %{ $app->registry('action_streams', $type) || {} };
     $profile->{streams} = \%streams if %streams;
     $app->run_callbacks('pre_add_profile.'  . $type, $app, $author, $profile);
-    $author->add_profile($profile);
+    add_author_profile($author, $profile);
     $app->run_callbacks('post_add_profile.' . $type, $app, $author, $profile);
 
     my $success_msg = $param{success_msg} || 'added';
@@ -493,7 +448,7 @@ sub remove_other_profile {
         my $author = $users{$author_id} or next PROFILE;
 
         $app->run_callbacks('pre_remove_profile.' . $type, $app, $author, $type, $ident);
-        $author->remove_profile( $type, $ident );
+        remove_author_profile( $author, $type, $ident );
         $app->run_callbacks('post_remove_profile.' . $type, $app, $author, $type, $ident);
         $page_author_id = $author_id;
     }
@@ -585,7 +540,7 @@ sub itemset_update_profiles {
                                               no_error => 1 });
         my $author = $users{$author_id} or next PROFILE;
 
-        my $profiles = $author->other_profiles($type);
+        my $profiles = get_author_profiles($author, $type);
         if (!$profiles) {
             next PROFILE;
         }
@@ -687,7 +642,7 @@ sub update_events {
         join => [ $au_class->meta_pkg, 'author_id', { type => 'other_profiles' } ],
     });
     while (my $author = $author_iter->()) {
-        my $profiles = $author->other_profiles();
+        my $profiles = get_author_profiles($author);
         $mt->run_callbacks('pre_update_action_streams',  $mt, $author, $profiles);
 
         PROFILE: for my $profile (@$profiles) {

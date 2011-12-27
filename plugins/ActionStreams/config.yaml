@@ -34,8 +34,6 @@ applications:
             itemset_update_profiles: $ActionStreams::ActionStreams::Plugin::itemset_update_profiles
             itemset_hide_events:     $ActionStreams::ActionStreams::Plugin::itemset_hide_events
             itemset_show_events:     $ActionStreams::ActionStreams::Plugin::itemset_show_events
-            itemset_hide_all_events: $ActionStreams::ActionStreams::Plugin::itemset_hide_all_events
-            itemset_show_all_events: $ActionStreams::ActionStreams::Plugin::itemset_show_all_events
         callbacks:
             pre_run: $ActionStreams::ActionStreams::Init::hide_ts
             cms_pre_load_filtered_list.profileevent: $ActionStreams::ActionStreams::Plugin::callback_LFL
@@ -62,8 +60,6 @@ applications:
 callbacks:
     MT::App::CMS::template_param.users_content_nav: $ActionStreams::ActionStreams::Plugin::users_content_nav
     MT::App::CMS::template_param.list_member: $ActionStreams::ActionStreams::Plugin::param_list_member
-    MT::App::CMS::template_param.other_profiles: $ActionStreams::ActionStreams::Plugin::users_content_nav
-    MT::App::CMS::template_param.list_profileevent: $ActionStreams::ActionStreams::Plugin::users_content_nav
     MT::App::CMS::post_add_profile: $ActionStreams::ActionStreams::Plugin::first_profile_update
     post_action_streams_task: $ActionStreams::ActionStreams::Plugin::rebuild_action_stream_blogs
     pre_build_action_streams_event.flickr_favorites:        $ActionStreams::ActionStreams::Fix::flickr_photo_thumbnail
