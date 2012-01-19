@@ -124,7 +124,7 @@ sub _edit_author {
         return $app->error($app->translate(@_)) unless $arg->{no_error};
     };
 
-    $arg->{id} or return $trans_error->('No id');
+    $arg->{id} or return $trans_error->('No user id');
 
     my $class = MT->model('author');
     my $author = $class->load( $arg->{id} )
@@ -539,7 +539,7 @@ sub add_other_profile {
     my $success_msg = $param{success_msg} || 'added';
     return $app->redirect($app->uri(
         mode => 'other_profiles',
-        args => { id => $author->id, $success_msg => 1 },
+        args => { author_id => $author->id, $success_msg => 1 },
     ));
 }
 
@@ -564,7 +564,7 @@ sub remove_other_profile {
 
     return $app->redirect($app->uri(
         mode => 'other_profiles',
-        args => { id => ($page_author_id || $app->user->id), removed => 1 },
+        args => { author_id => ($page_author_id || $app->user->id), removed => 1 },
     ));
 }
 
