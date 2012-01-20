@@ -327,6 +327,52 @@ sub itemset_show_events {
     $app->call_return;
 }
 
+sub _itemset_hide_show_all_events {
+    my ($app, $new_visible) = @_;
+    $app->validate_magic or return;
+    my $event_class = MT->model('profileevent');
+
+    # Really we should work directly from the selected author ID, but as an
+    # itemset event we only got some event IDs. So use its.
+    my ($event_id) = $app->param('id');
+    my $event = $event_class->load($event_id)
+        or return $app->error($app->translate('No such event [_1]', $event_id));
+
+    my $author = _edit_author( $event->author_id ) or return;
+
+    my $driver = $event_class->driver;
+    my $stmt = $driver->prepare_statement($event_class, {
+        # TODO: include filter value when we have filters
+        author_id => $author->id,
+        visible   => $new_visible ? 0 : 1,
+    });
+
+    my $sql = "UPDATE " . $driver->table_for($event_class) . " SET "
+        . $driver->dbd->db_column_name($event_class->datasource, 'visible')
+        . " = ? " . $stmt->as_sql_where;
+
+    # Work around error in MT::ObjectDriver::Driver::DBI::sql by doing it inline.
+    my $dbh = $driver->rw_handle;
+    $dbh->do($sql, {}, $new_visible, @{ $stmt->{bind} })
+        or return $app->error($dbh->errstr);
+
+    return 1;
+}
+
+sub itemset_hide_all_events {
+    my $app = shift;
+    _itemset_hide_show_all_events($app, 0) or return;
+    $app->add_return_arg( all_hidden => 1 );
+    $app->call_return;
+}
+
+sub itemset_show_all_events {
+    my $app = shift;
+    _itemset_hide_show_all_events($app, 1) or return;
+    $app->add_return_arg( all_shown => 1 );
+    $app->call_return;
+}
+
 sub _build_service_data {
     my %info = @_;
     my ($networks, $streams, $author) = @info{qw( networks streams author )};
