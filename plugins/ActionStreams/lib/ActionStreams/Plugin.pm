@@ -276,6 +276,8 @@ sub list_profileevent_old {
     $params{id}   = $params{edit_author_id} = $author->id;
     $params{name} = $params{edit_author_name} = $author->name;
     $params{service_styles} = \@service_styles_loop;
+    $params{return_args} = "__mode=list_profileevent_old&author_id=" . $author->id;
+
     $app->listing({
         type     => 'profileevent',
         terms    => \%terms,
@@ -301,7 +303,9 @@ sub itemset_hide_events {
         $event->save;
     }
 
-    return 1;
+    return 1 if $app->param('xhr');
+    $app->add_return_arg( hidden => 1 );
+    $app->call_return;
 }
 
 sub itemset_show_events {
@@ -318,7 +322,9 @@ sub itemset_show_events {
         $event->save;
     }
 
-    return 1;
+    return 1 if $app->param('xhr');
+    $app->add_return_arg( shown => 1 );
+    $app->call_return;
 }
 
 sub _build_service_data {
