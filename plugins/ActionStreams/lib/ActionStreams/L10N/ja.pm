@@ -430,12 +430,12 @@ use vars qw( %Lexicon );
     'to update' => '更新',
 
 ## plugins/ActionStreams/tmpl/sys_config_template.tmpl
-    'Enable expiring' => '自動削除を有効にする',
-    'Expireing Events' => 'イベントの自動削除',
-    'Expireing Interval' => '自動削除の間隔',
-    'If selected, old events data would be removed automatically.' => '有効にすると、古いイベントデータを自動的に削除します。',
-    'Specify the days to wait for auto expire.' => 'イベントが自動削除されるまでの日数を指定してください。',
-    'days for expireing' => '日経過後に削除',
+    'Enable expiration' => '自動削除を有効にする',
+    'Expiring Events' => 'イベントの自動削除',
+    'Expiration Interval' => '自動削除の間隔',
+    'If selected, old event data will be removed automatically.' => '有効にすると、古いイベントデータを自動的に削除します。',
+    'Specify the number of days to wait for events to expire.' => 'イベントが自動削除されるまでの日数を指定してください。',
+    'days' => '日経過後に削除',
 
 ## plugins/ActionStreams/tmpl/widget_recent.mtml
     'No actions could be found.' => 'アクションが見つかりません。',
