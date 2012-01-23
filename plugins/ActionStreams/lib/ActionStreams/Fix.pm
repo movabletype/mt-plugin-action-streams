@@ -50,7 +50,7 @@ sub flickr_photo_thumbnail {
     my ($cb, $app, $item, $event, $author, $profile) = @_;
     # Extract just the URL, and use the _t size thumbnail, not the _m size image.
     my $thumb = delete $item->{thumbnail};
-    if ($thumb =~ m{ (http://farm[^\.]+\.static\.flickr\.com .*? _m.jpg) }xms) {
+    if ($thumb =~ m{ (http://farm[^\.]+\.static\.?flickr\.com .*? _m.jpg) }xms) {
         $thumb = $1;
         $thumb =~ s{ _m.jpg \z }{_t.jpg}xms;
         $item->{thumbnail} = $thumb;
