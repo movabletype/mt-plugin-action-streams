@@ -893,7 +893,7 @@ twitter:
             - url
             - tweet_author
             - title
-        url: 'http://twitter.com/favorites/{{ident}}.atom'
+        url: 'https://api.twitter.com/1/favorites.atom?screen_name={{ident}}'
         atom:
             created_on: ''
             modified_on: ''
