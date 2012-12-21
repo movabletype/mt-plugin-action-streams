@@ -753,17 +753,14 @@ reddit:
         html_params:
             - url
             - title
-        url: 'http://www.reddit.com/user/{{ident}}/comments/'
-        identifier: title
-        scraper:
-            foreach: 'a.title'
+        url: 'http://www.reddit.com/user/{{ident}}/comments/.xml'
+        identifier: url
+        xpath:
+            foreach: //item
             get:
-                title:
-                    - a
-                    - TEXT
-                url:
-                    - a
-                    - '@href'
+                created_on: 'dc:date'
+                title: title
+                url: link
     submitted:
         name: Submissions
         description: Articles you submitted
@@ -771,17 +768,14 @@ reddit:
         html_params:
             - url
             - title
-        url: 'http://www.reddit.com/user/{{ident}}/submitted/'
+        url: 'http://www.reddit.com/user/{{ident}}/submitted/.xml'
         identifier: title
-        scraper:
-            foreach: 'a.title'
+        xpath:
+            foreach: //item
             get:
-                title:
-                    - a
-                    - TEXT
-                url:
-                    - a
-                    - '@href'
+                created_on: pubDate
+                title: title
+                url: link
     favorites:
         name: Likes
         description: Articles you liked (your votes must be public)
@@ -789,17 +783,13 @@ reddit:
         html_params:
             - url
             - title
-        url: 'http://www.reddit.com/user/{{ident}}/liked/'
+        url: 'http://www.reddit.com/user/{{ident}}/liked/.xml'
         identifier: title
-        scraper:
-            foreach: 'a.title'
+        xpath:
+            foreach: //item
             get:
-                title:
-                    - a
-                    - TEXT
-                url:
-                    - a
-                    - '@href'
+                title: title
+                url: link
     dislikes:
         name: Dislikes
         description: Articles you disliked (your votes must be public)
@@ -807,17 +797,13 @@ reddit:
         html_params:
             - url
             - title
-        url: 'http://www.reddit.com/user/{{ident}}/disliked/'
+        url: 'http://www.reddit.com/user/{{ident}}/disliked/.xml'
         identifier: title
-        scraper:
-            foreach: 'a.title'
+        xpath:
+            foreach: //item
             get:
-                title:
-                    - a
-                    - TEXT
-                url:
-                    - a
-                    - '@href'
+                title: title
+                url: link
 slideshare:
     favorites:
         name: Favorites
