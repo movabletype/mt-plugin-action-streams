@@ -339,10 +339,10 @@ sub _build_service_data {
 
     my @network_keys = sort { lc $networks->{$a}->{name} cmp lc $networks->{$b}->{name} }
         keys %$networks;
-    TYPE: for my $type (@network_keys) {
+    for my $type (@network_keys) {
         my $ndata = $networks->{$type}
-            or next TYPE;
-        next TYPE if !$info{include_deprecated} && $ndata->{deprecated};
+            or next;
+        next if !$info{include_deprecated} && $ndata->{deprecated};
 
         my @streams;
         if ($streams) {
@@ -356,19 +356,18 @@ sub _build_service_data {
                 keys %$streamdata;
         }
 
-        ## we must translate from original. or garbles on FastCGI environment.
-        if ( !exists $ndata->{__ident_hint_original} ) {
-            $ndata->{__ident_hint_original} = $ndata->{ident_hint};
+        my $ident_hint_trans = '';
+        if ($ndata->{ident_hint}) {
+            $ident_hint_trans = ref($ndata->{ident_hint}) eq 'CODE'
+                ? $ndata->{ident_hint}->()
+                : MT->component('ActionStreams')->translate( $ndata->{ident_hint} );
         }
-
-        $ndata->{ident_hint}
-            = MT->component('ActionStreams')->translate( $ndata->{__ident_hint_original} )
-            if $ndata->{__ident_hint_original};
 
         my $ret = {
             type => $type,
             %$ndata,
             label => $ndata->{name},
+            ident_hint => $ident_hint_trans,
             user_has_account => ($has_profiles{$type} ? 1 : 0),
         };
         if (@streams) {
