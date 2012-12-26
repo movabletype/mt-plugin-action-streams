@@ -369,6 +369,7 @@ sub _build_service_data {
             label => $ndata->{name},
             ident_hint => $ident_hint_trans,
             user_has_account => ($has_profiles{$type} ? 1 : 0),
+            oauth_required => (exists $ndata->{oauth} ? 1 : 0),
         };
         if (@streams) {
             for my $stream (@streams) {
@@ -495,10 +496,10 @@ sub add_other_profile {
 
     my $author = _edit_author( $app->param('author_id') ) or return;
 
-    my( $ident, $uri, $label, $type );
+    my( $ident, $uri, $label, $type, $network );
     if ( $type = $app->param( 'profile_type' ) ) {
         my $reg = $app->registry('profile_services');
-        my $network = $reg->{$type}
+        $network = $reg->{$type}
             or croak "Unknown network $type";
         $label = MT->component('ActionStreams')->translate( '[_1] Profile', $network->{name} );
 
@@ -536,6 +537,22 @@ sub add_other_profile {
         grep { $_ ne 'plugin' && $app->param(join q{_}, 'stream', $type, $_) }
         keys %{ $app->registry('action_streams', $type) || {} };
     $profile->{streams} = \%streams if %streams;
+
+    if ($network->{oauth}) {
+        require Net::OAuth::Client;
+
+        my $oauth = create_oauth_client($app, $network, $profile);
+        my $oauth_token = $app->param('oauth_token');
+        my $oauth_verifier = $app->param('oauth_verifier');
+
+        if (not $oauth_token) {
+            return $app->redirect( $oauth->authorize_url );
+        }
+        my $access_token = $oauth->get_access_token($oauth_token, $oauth_verifier);
+        $profile->{oauth_token}  = $access_token->token();
+        $profile->{oauth_secret} = $access_token->token_secret();
+    }
+
     $app->run_callbacks('pre_add_profile.'  . $type, $app, $author, $profile);
     $author->add_profile($profile);
     $app->run_callbacks('post_add_profile.' . $type, $app, $author, $profile);
@@ -545,6 +562,29 @@ sub add_other_profile {
         mode => 'other_profiles',
         args => { id => $author->id, $success_msg => 1 },
     ));
+}
+
+sub create_oauth_client {
+    my ($app, $network, $profile) = @_;
+    my $a_params = $network->{oauth};
+    my %cb_args = 
+        map { ( $_ => scalar $app->param($_) ) }
+        qw{ magic_token author_id profile_type profile_id };
+    if (exists $profile->{streams}) {
+        foreach my $key (keys %{ $profile->{streams} }) {
+            $cb_args{'stream_'.$key} = 1;
+        }
+    }
+    my $oauth = Net::OAuth::Client->new(
+        '', # app key
+        '', # app secret
+        site => $a_params->{site},,
+        request_token_path => $a_params->{request_token_path},
+        authorize_path => $a_params->{authorize_path},
+        access_token_path => $a_params->{access_token_path},
+        callback => $app->base . $app->app_uri(mode => 'add_other_profile', args => \%cb_args),
+    );
+    return $oauth;
 }
 
 sub remove_other_profile {

@@ -304,6 +304,15 @@ twitter:
     name: Twitter
     url: http://twitter.com/{{ident}}
     service_type: status
+twitter_api:
+    name: 'Twitter API'
+    url: http://twitter.com/{{ident}}
+    service_type: status
+    oauth:
+        site: 'https://api.twitter.com/'
+        request_token_path: '/oauth/request_token'
+        authorize_path: '/oauth/authorize'
+        access_token_path: '/oauth/access_token'
 typepad:
     name: TypePad
     ident_prefix: http://profile.typepad.com/
