@@ -85,58 +85,54 @@
         };
 
         function update_ident_field () {
-            var v = getByID('profile_type');
+            var $v = jQuery('#profile_type');
+            var defaults = {
+                label: "<__trans phrase="Username">",
+                example: "melody",
+                prefix: "",
+                suffix: ""
+            };
 
-            var data = new Object();
-            data.label = "<__trans phrase="Username">";
-            data.example = "melody";
-            data.prefix = "";
-            data.suffix = "";
+            var service = $v.val();
 
             var fields = ['label', 'example', 'prefix', 'suffix'];
             for(var i = 0; i < 4; i++) {
-                var l = fields[i];
-                var datum = data[l];
-                if (networks[v.value] && networks[v.value][l]) {
-                    datum = networks[v.value][l];
+                var key = fields[i];
+                var val = defaults[key];
+                if (networks[service] && networks[service][key]) {
+                    val = networks[service][key];
                 }
-
-                var f = getByID('profile_id-' + l);
-                f.innerHTML = datum;
+                jQuery('#profile_id-'+key).html(val);
             }
-            if (networks[v.value] && networks[v.value]['hint']) {
-                var f = getByID('profile_id-hint-inner');
-                f.innerHTML = networks[v.value]['hint'];
-                show('profile_id-hint',document);
+
+            if (networks[service] && networks[service]['hint']) {
+                jQuery('#profile_id-hint-inner')
+                    .html(networks[service]['hint'])
+                    .show()
+                    .removeClass('hidden');
             } else {
-                hide('profile_id-hint',document);
+                jQuery('#profile_id-hint-inner').hide();
             }
 
             if (last_network) {
-                hide('streams-' + last_network, document);
-
-                var streams = getByID('streams-' + last_network);
-                var stream_boxes = streams.getElementsByTagName('input');
-                for (var i = 0; i < stream_boxes.length; i++) {
-                    if (stream_boxes[i].type != 'checkbox') continue;
-                    stream_boxes[i].checked = false;
-                }
+                var $streams = jQuery('#streams-' + last_network);
+                $streams.hide();
+                $streams.find('input:checkbox').attr('checked', false);
             }
-            show('streams-' + v.value, document);
-            var streams = getByID('streams-' + v.value);
-            var stream_boxes = streams.getElementsByTagName('input');
-            for (var i = 0; i < stream_boxes.length; i++) {
-                if (stream_boxes[i].type != 'checkbox') continue;
-                stream_boxes[i].checked = true;
-            }
+            var $streams = jQuery('#streams-' + service);
+            $streams
+                .show()
+                .removeClass('hidden')
+                .find('input:checkbox')
+                .attr('checked', true);
 
-            var icon = getByID('profile-id-service-icon');
+            var $icon = jQuery('#profile-id-service-icon');
             if (last_network) {
-                DOM.removeClassName(icon, 'service-' + last_network);
+                $icon.removeClass('service-' + last_network);
             }
-            DOM.addClassName(icon, 'service-' + v.value);
+            $icon.addClass('service-' + service);
 
-            last_network = v.value;
+            last_network = service;
         }
 
         function add_in_update (e) {
