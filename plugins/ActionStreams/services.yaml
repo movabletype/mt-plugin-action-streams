@@ -304,7 +304,7 @@ twitter:
     name: Twitter
     url: http://twitter.com/{{ident}}
     service_type: status
-twitter_api:
+twitterapi:
     name: 'Twitter API'
     url: http://twitter.com/{{ident}}
     service_type: status

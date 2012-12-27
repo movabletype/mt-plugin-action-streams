@@ -241,6 +241,13 @@ sub update_events {
             %profile,
         );
     }
+    elsif (my $json_params = $stream->{json}) {
+        $items = $class->fetch_json(
+            %$json_params,
+            %$fetch,
+            %profile,
+        );
+    }
     return if !$items;
 
     $class->build_results(
@@ -362,6 +369,114 @@ sub set_values {
     $event->SUPER::set_values($values);
 }
 
+sub fetch_url {
+    my ($class, $url, %params) = @_;
+    if (not exists $params{oauth_token}) {
+        return $class->ua(%params)->get($url);
+    }
+
+    my $app = MT->instance;
+    my $reg = $app->registry('profile_services');
+    my $network = $reg->{$params{type}};
+    my $oauth = ActionStreams::Plugin::create_oauth_client($app, $network, \%params);
+    require Net::OAuth::AccessToken;
+    my $token = Net::OAuth::AccessToken->new(
+        token => $params{oauth_token},
+        token_secret => $params{oauth_secret}, 
+        client => $oauth);
+    return $token->get($url);
+}
+
+sub fetch_json {
+    my $class = shift;
+    my %params = @_;
+
+    my $url = $params{url} || '';
+    if (!$url) {
+        MT->log(
+            MT->component('ActionStreams')->translate(
+                "No URL to fetch for [_1] results", $class));
+        return;
+    }
+    my $res = $class->fetch_url($url, %params);
+    if (!$res->is_success()) {
+        MT->log(
+            MT->component('ActionStreams')->translate(
+                "Could not fetch [_1]: [_2]", $url, $res->status_line()))
+            if $res->code != 304;
+        return;
+    }
+    # Do not continue if contents is incomplete.
+    if (my $abort = $res->{_headers}{'client-aborted'}) {
+        MT->log(
+            MT->component('ActionStreams')->translate(
+                'Aborted fetching [_1]: [_2]', $url, $abort));
+        return;
+    }
+
+    # Strip leading whitespace, since the parser doesn't like it.
+    my $content = $res->content;
+    $content =~ s{ \A \s+ }{}xms;
+
+    my $json_route = sub {
+        my ($root, $path) = @_;
+        unless ($path =~ s!^/!!) {
+            die "JSON's foreach need to start with the root '/'. (".$params{foreach}.")";
+        }
+        my @layers = split '/', $path;
+        while (@layers and $root) {
+            my $level = shift @layers;
+            last if 0 == length $level;
+            if ( ref( $root ) eq 'HASH' ) {
+                return unless exists $root->{$level};
+                $root = $root->{$level};
+            }
+            elsif ( ref( $root ) eq 'ARRAY' ) {
+                return unless $level =~ m/^\d+$/;
+                return if $level >= scalar @$root;
+                $root = $root->[$level];
+            }
+            else {
+                return;
+            }
+        }
+        return $root;
+    };
+
+
+    require JSON;
+    my $data = JSON->new->decode($content);
+    my $root = $json_route->($data, $params{foreach});
+    return [] unless $root;
+
+    my @items;
+    foreach my $rec (@$root) {
+        my $values = {};
+        while (my ($key, $path) = each %{ $params{get} }) {
+            $values = undef, last unless $path;
+            my $val = $json_route->($rec, $path);
+            $values = undef, last unless defined $val;
+
+            if ($val && ($key eq 'created_on' || $key eq 'modified_on')) {
+                # try both RFC 822/1123 and ISO 8601 formats
+                my $out_timestamp;
+                if (my $epoch = str2time($val)) {
+                    $out_timestamp = MT::Util::epoch2ts(undef, $epoch);
+                }
+                # The epoch2ts may have failed too.
+                if (!defined $out_timestamp) {
+                    $out_timestamp = MT::Util::iso2ts(undef, $val);
+                }
+                # Whether it's defined or not, that's our new outval.
+                $val = $out_timestamp;
+            }
+            $values->{$key} = $val;
+        }
+        push @items, $values if defined $values;
+    }
+    return \@items;
+}
+
 sub fetch_xpath {
     my $class = shift;
     my %params = @_;
@@ -373,8 +488,7 @@ sub fetch_xpath {
                 "No URL to fetch for [_1] results", $class));
         return;
     }
-    my $ua = $class->ua(%params);
-    my $res = $ua->get($url);
+    my $res = $class->fetch_url($url, %params);
     if (!$res->is_success()) {
         MT->log(
             MT->component('ActionStreams')->translate(

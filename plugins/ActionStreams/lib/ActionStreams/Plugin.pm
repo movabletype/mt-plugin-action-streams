@@ -539,7 +539,6 @@ sub add_other_profile {
     $profile->{streams} = \%streams if %streams;
 
     if ($network->{oauth}) {
-        require Net::OAuth::Client;
 
         my $oauth = create_oauth_client($app, $network, $profile);
         my $oauth_token = $app->param('oauth_token');
@@ -566,6 +565,14 @@ sub add_other_profile {
 
 sub create_oauth_client {
     my ($app, $network, $profile) = @_;
+
+    require Net::OAuth::Client;
+    # fixing a bug in Net::OAuth 0.28 - it errorly requests token_secret for 
+    # AccessTokenRequest V1.0A. which it should not.
+    require Net::OAuth::V1_0A::AccessTokenRequest;
+    my $ats_api = Net::OAuth::V1_0A::AccessTokenRequest->required_api_params();
+    @$ats_api = grep { $_ ne 'token_secret' } @$ats_api;
+
     my $a_params = $network->{oauth};
     my %cb_args = 
         map { ( $_ => scalar $app->param($_) ) }
