@@ -350,7 +350,7 @@ sub _build_service_data {
             @streams =
                 sort { lc $a->{name} cmp lc $b->{name} }
                 grep { $info{include_deprecated} || !$_->{deprecated} }
-                grep { grep { $_ } @$_{qw( class scraper xpath rss atom )} }
+                grep { grep { $_ } @$_{qw( class scraper xpath rss atom json )} }
                 map  { +{ stream => $_, %{ $streamdata->{$_} } } }
                 grep { $_ ne 'plugin' }
                 keys %$streamdata;

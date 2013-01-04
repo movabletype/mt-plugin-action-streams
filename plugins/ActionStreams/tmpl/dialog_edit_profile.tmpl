@@ -69,6 +69,7 @@
                 <mt:if name="ident_hint">
                     hint: '<mt:var name="ident_hint" escape="js">',
                 </mt:if>
+                oauth: '<mt:var name="oauth_required" escape="js">',
                 label: '<mt:var name="ident_label" escape="js">'
             }<mt:unless var="__last__">,</mt:unless>
             </mt:loop>
@@ -136,6 +137,17 @@
             DOM.addClassName(icon, 'service-' + v.value);
 
             last_network = v.value;
+
+            if (networks[v.value] && networks[v.value]['oauth']) {
+                jQuery('button.primary-button')
+                    .attr('title', '<__trans phrase="Authentication Required" escape="js">')
+                    .text('<__trans phrase="Authentication Required" escape="js">');
+            }
+            else {
+                jQuery('button.primary-button')
+                    .attr('title', '<__trans phrase="Save Changes (s)" escape="js">')
+                    .text('<__trans phrase="Save Changes" escape="js">');
+            }
         }
 
         function add_in_update (e) {
