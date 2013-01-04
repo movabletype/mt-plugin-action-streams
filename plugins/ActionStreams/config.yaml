@@ -19,7 +19,8 @@ settings:
         Scope: system
 l10n_class: ActionStreams::L10N
 blog_config_template: blog_config_template.tmpl
-system_config_template: sys_config_template.tmpl
+system_config_template: 
+    code: '$ActionStreams::ActionStreams::Plugin::system_config_template'
 
 init_app: $ActionStreams::ActionStreams::Init::init_app
 applications:
@@ -90,6 +91,7 @@ callbacks:
     pre_add_profile.oneup:                                  $ActionStreams::ActionStreams::Event::OneupPlaying::set_user_id
     pre_update_action_streams_profile.oneup:                $ActionStreams::ActionStreams::Event::OneupPlaying::replace_ident
     post_update_action_streams_profile.oneup:               $ActionStreams::ActionStreams::Event::OneupPlaying::replace_back_ident
+    save_config_filter.ActionStreams: $ActionStreams::ActionStreams::Plugin::save_oauth_keys
 object_types:
     profileevent: ActionStreams::Event
     as: ActionStreams::Event

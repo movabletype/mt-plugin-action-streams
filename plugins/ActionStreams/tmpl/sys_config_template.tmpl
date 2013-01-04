@@ -15,3 +15,77 @@
     <label><input type="text" name="events_expire_interval" size="4" id="events_expire_interval" class="smaller-text" value="<mt:if name="events_expire_interval"><mt:var name="events_expire_interval"><mt:else>0</mt:if>" /> <__trans phrase="days"></label>
 </mtapp:setting>
 </div>
+
+<mtapp:setting
+   id="oauth_keys"
+   label="<__trans phrase="OAuth Keys">"
+   hint=""
+   show_hint="0">
+  <input type="hidden" name="oauth_data" id="oauth_data" value="<mt:var name="oauth_data">" />
+  <p><a href="#" id="add_oath_link" class="icon-left icon-create"><__trans phrase="Add OAuth Service"></a></p>
+  <div id="oath_listing" class="listing hide_actions hidden">
+  </div>
+</mtapp:setting>
+
+<script type="text/javascript">
+;(function($) {
+    var oauth_networks = { 
+        <mt:loop name="oauth_networks">
+            '<mt:var name="type" escape="js">': { 
+                'oauth_key': '<mt:var name="oauth_key" escape="js">',
+                'oauth_secret': '<mt:var name="oauth_secret" escape="js">',
+                'label': '<mt:var name="label" escape="js">' }<mt:unless var="__last__">,</mt:unless>
+        </mt:loop> };
+
+    var num = 1;
+    function add_oauth_field( type ) {
+        var $div = $('<div class="auto_keys_container"></div>');
+        var $select = $('<select></select>')
+            .attr('name', 'service-'+num)
+            .appendTo($div);
+        var $f_s = $('<option></option>')
+            .text('Select a service...')
+            .appendTo($select);
+        if (!type) {
+            $f_s.attr("selected", "selected");
+        }
+        $.each(oauth_networks, function(key, value){
+            var $s = $('<option></option>')
+                .attr('value', key)
+                .text(value['label'])
+                .appendTo($select);
+            if (type && (key === type)) {
+                $s.attr("selected", "selected");
+            }
+        });
+        var $in1 = $('<input></input>')
+            .addClass('oauth_key')
+            .attr('name', 'oauth-key-'+num)
+            .appendTo($div);
+        var $in2 = $('<input></input>')
+            .addClass('oauth_secret')
+            .attr('name', 'oauth-secret-'+num)
+            .appendTo($div);
+        if (type) {
+            $in1.val(oauth_networks[type]['oauth_key']);
+            $in2.val(oauth_networks[type]['oauth_secret']);
+        }
+        $('<button></button>')
+            .html('<img src="<mt:var NAME="STATIC_URI">images/nav_icons/mini/delete.gif" alt="<__trans phrase="Remove">">')
+            .click(function(e) { $div.remove() })
+            .appendTo($div);
+        $('#oath_listing')
+            .append($div)
+            .removeClass('hidden');
+        num += 1;
+    }
+
+    $('#add_oath_link').click(function (){ add_oauth_field(); });
+    $.each(oauth_networks, function(key, value){
+        if (value['oauth_key'].length > 0) {
+            add_oauth_field(key);
+        }
+    });
+})(jQuery);
+
+</script>

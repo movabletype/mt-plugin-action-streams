@@ -582,9 +582,14 @@ sub create_oauth_client {
             $cb_args{'stream_'.$key} = 1;
         }
     }
+    my $plugin = MT->component('ActionStreams');
+    my $pdata = $plugin->get_config_obj()->data();
+    my $keys = $pdata->{oauth}->{ $profile->{type} };
+    return $app->errtrans("OAuth App keys where not set for [_1]", $network->{name})
+        unless defined $keys;
     my $oauth = Net::OAuth::Client->new(
-        '', # app key
-        '', # app secret
+        $keys->{key}, # app key
+        $keys->{secret}, # app secret
         site => $a_params->{site},,
         request_token_path => $a_params->{request_token_path},
         authorize_path => $a_params->{authorize_path},
@@ -872,6 +877,53 @@ sub update_events_for_profile {
     }
     $mt->run_callbacks('post_update_action_streams_profile.' . $profile->{type},
         $mt, $author, $profile);
+}
+
+sub system_config_template {
+    my ($plugin, $params, $scope) = @_;
+    my $app = MT->instance;
+    my $cfg = $plugin->get_config_hash();
+    my $reg = $app->registry('profile_services');
+    my $acfg = $cfg->{oauth} || {};
+
+    my @networks;
+    while (my ($type, $data) = each %$reg) {
+        next unless exists $data->{oauth};
+        my $rec = { 
+            type => $type,
+            label => $data->{name},
+        };
+        if (exists $acfg->{$type}) {
+            $rec->{oauth_key} = $acfg->{$type}->{key};
+            $rec->{oauth_secret} = $acfg->{$type}->{secret};
+        }
+        push @networks, $rec;
+    }
+    @networks = sort @networks;
+    $params->{oauth_networks} = \@networks;
+
+    return $plugin->load_tmpl("sys_config_template.tmpl");
+}
+
+sub save_oauth_keys {
+    my ( $cb, $plugin, $data, $scope ) = @_;
+    return 1 if $scope and $scope ne 'system';
+    my $app = MT->instance();
+    my $oauth_data = {};
+    my %params = $app->param_hash();
+    my @nums = 
+        map { s/^service-// }
+        grep { m/^service-\d+$/ and $app->param($_) } 
+        keys %params;
+    foreach my $num ( @nums ) {
+        $oauth_data->{ $params{"service-$num"} } = {
+            key => $params{"oauth-key-$num"},
+            secret => $params{"oauth-secret-$num"},
+        };
+    }
+
+    $data->{oauth} = $oauth_data;
+    return 1;
 }
 
 1;
