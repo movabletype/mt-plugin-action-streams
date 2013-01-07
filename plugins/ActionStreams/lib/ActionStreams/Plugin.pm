@@ -901,6 +901,9 @@ sub system_config_template {
     }
     @networks = sort @networks;
     $params->{oauth_networks} = \@networks;
+    $params->{oauth_exists} = 
+        eval { require Crypt::SSLeay; 1; } 
+        or eval { require IO::Socket::SSL; 1; };
 
     return $plugin->load_tmpl("sys_config_template.tmpl");
 }

@@ -16,16 +16,20 @@
 </mtapp:setting>
 </div>
 
-<mtapp:setting
-   id="oauth_keys"
-   label="<__trans phrase="OAuth Keys">"
-   hint=""
-   show_hint="0">
-  <input type="hidden" name="oauth_data" id="oauth_data" value="<mt:var name="oauth_data">" />
-  <p><a href="#" id="add_oath_link" class="icon-left icon-create"><__trans phrase="Add OAuth Service"></a></p>
-  <div id="oath_listing" class="listing hide_actions hidden">
-  </div>
-</mtapp:setting>
+<mt:if name="oauth_exists">
+    <mtapp:setting
+       id="oauth_keys"
+       label="<__trans phrase="OAuth Keys">"
+       hint=""
+       show_hint="0">
+      <input type="hidden" name="oauth_data" id="oauth_data" value="<mt:var name="oauth_data">" />
+      <p><a href="#" id="add_oath_link" class="icon-left icon-create"><__trans phrase="Add OAuth Service"></a></p>
+      <div id="oath_listing" class="listing hide_actions hidden">
+      </div>
+    </mtapp:setting>
+<mt:else>
+    <mtapp:statusmsg class="info zero-state"><__trans phrase="Perl SSL modules modules (Crypt::SSLeay or IO::Socket::SSL) are required for OAuth services"></mtapp:statusmsg>
+</mt:if>
 
 <script type="text/javascript">
 ;(function($) {
