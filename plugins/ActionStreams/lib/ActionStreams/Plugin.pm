@@ -17,6 +17,7 @@ use warnings;
 
 use Carp qw( croak );
 use MT::Util qw( relative_date offset_time epoch2ts ts2epoch format_ts );
+use ActionStreams::Init;
 
 sub users_content_nav {
     my ($cb, $app, $param, $tmpl) = @_;
@@ -32,16 +33,16 @@ sub users_content_nav {
     my $menu_str = <<"EOF";
     <__trans_section component="actionstreams">
     <mt:if name="mt_version" ge="5">
-        <li<mt:if name="other_profiles"> class="active"><em><mt:else>></mt:if><a href="<mt:var name="SCRIPT_URL">?__mode=other_profiles&amp;id=<mt:if name="id"><mt:var name="id" escape="url"><mt:else><mt:var name="edit_author_id" escape="url"></mt:if>&amp;author_id=<mt:if name="id"><mt:var name="id" escape="url"><mt:else><mt:var name="edit_author_id" escape="url"></mt:if>"><__trans phrase="Other Profiles"></a><mt:if name="other_profiles"></em></mt:if></li>
-        <li<mt:if name="list_profileevent"> class="active"><em><mt:else>></mt:if><a href="<mt:var name="SCRIPT_URL">?__mode=list_profileevent&amp;id=<mt:if name="id"><mt:var name="id" escape="url"><mt:else><mt:var name="edit_author_id" escape="url"></mt:if>&amp;author_id=<mt:if name="id"><mt:var name="id" escape="url"><mt:else><mt:var name="edit_author_id" escape="url"></mt:if>"><__trans phrase="Action Stream"></a><mt:if name="list_profileevent"></em></mt:if></li>
+        <li<mt:if name="other_profiles"> class="active"><em><mt:else>></mt:if><a href="<mt:var name="SCRIPT_URL">?__mode=other_profiles&amp;author_id=<mt:if name="author_id"><mt:var name="author_id" escape="url"><mt:else><mt:var name="edit_author_id" escape="url"></mt:if>"><__trans phrase="Other Profiles"></a><mt:if name="other_profiles"></em></mt:if></li>
+       <li<mt:if name="list_profileevent"> class="active"><em><mt:else>></mt:if><a href="<mt:var name="SCRIPT_URL">?__mode=list&amp;_type=profileevent&amp;author_id=<mt:if name="author_id"><mt:var name="author_id" escape="url"><mt:else><mt:var name="edit_author_id" escape="url"></mt:if>"><__trans phrase="Action Stream"></a><mt:if name="list_profileevent"></em></mt:if></li>
     <mt:else>
         <mt:if name="user_view">
         <li><a href="<mt:var name="SCRIPT_URL">?__mode=other_profiles&amp;id=<mt:var name="EDIT_AUTHOR_ID" escape="url">"><b><__trans phrase="Other Profiles"></b></a></li>
         <li><a href="<mt:var name="SCRIPT_URL">?__mode=list_profileevent&amp;id=<mt:var name="EDIT_AUTHOR_ID" escape="url">"><b><__trans phrase="Action Stream"></b></a></li>
         <mt:else>
             <mt:if name="id">
-        <li<mt:if name="other_profiles"> class="active"</mt:if>><a href="<mt:var name="SCRIPT_URL">?__mode=other_profiles&amp;id=<mt:var name="id" escape="url">"><b><__trans phrase="Other Profiles"></b></a></li>
-        <li<mt:if name="list_profileevent"> class="active"</mt:if>><a href="<mt:var name="SCRIPT_URL">?__mode=list_profileevent&amp;id=<mt:var name="id" escape="url">"><b><__trans phrase="Action Stream"></b></a></li>
+        <li<mt:if name="other_profiles"> class="active"</mt:if>><a href="<mt:var name="SCRIPT_URL">?__mode=other_profiles&amp;author_id=<mt:var name="author_id" escape="url">"><b><__trans phrase="Other Profiles"></b></a></li>
+        <li<mt:if name="list_profileevent"> class="active"</mt:if>><a href="<mt:var name="SCRIPT_URL">?__mode=list_profileevent_old&amp;author_id=<mt:var name="author_id" escape="url">"><b><__trans phrase="Action Stream"></b></a></li>
             </mt:if>
         </mt:if>
     </mt:if>
@@ -63,7 +64,7 @@ sub param_list_member {
     my $author_iter = MT->model('author')->load_iter({ id => \@author_ids });
     my %profile_counts;
     while ( my $author = $author_iter->() ) {
-        $profile_counts{$author->id} = scalar @{ $author->other_profiles };
+        $profile_counts{$author->id} = scalar @{ get_author_profiles($author) };
     }
     for my $loop_item ( @$loop ) {
         $loop_item->{profiles} = $profile_counts{ $loop_item->{id} };
@@ -123,7 +124,7 @@ sub _edit_author {
         return $app->error($app->translate(@_)) unless $arg->{no_error};
     };
 
-    $arg->{id} or return $trans_error->('No id');
+    $arg->{id} or return $trans_error->('No user id');
 
     my $class = MT->model('author');
     my $author = $class->load( $arg->{id} )
@@ -136,13 +137,55 @@ sub _edit_author {
     return $author;
 }
 
-sub list_profileevent {
+sub callback_LFL {
+    my ($cb, $app, $filter, $count_options, $cols) = @_;
+    my $author = _edit_author( $app->param('author_id') ) || $app->user();
+    $count_options->{terms}->{class} = '*';
+    $count_options->{terms}->{author_id} = $author->id;
+
+    # this is here so the classes are loaded before the listing function 
+    # loads the objects, so they will get their appropriate class
+    my $streams_info = $app->registry('action_streams');
+    for my $prevt (keys %$streams_info) {
+        ActionStreams::Event->classes_for_type($prevt);
+    }
+
+    return 1;
+}
+
+sub callback_listing_params {
+    my ($cb, $app, $params, $tmpl) = @_;
+    my @service_styles_loop;
+    my @service_filter_loop;
+    my $nets = $app->registry('profile_services') || {};
+    while (my ($service, $rec) = each %$nets) {
+        push @service_filter_loop, { name => $rec->{name}, val => $service };
+        if (!$rec->{plugin} || $rec->{plugin}->id ne 'actionstreams') {
+            if (my $icon = __PACKAGE__->icon_url_for_service($service, $rec)) {
+                push @service_styles_loop, {
+                    service_type => $service,
+                    service_icon => $icon,
+                };
+            }
+        }        
+    }
+    @service_filter_loop = sort { lc $a->{name} cmp lc $b->{name} } @service_filter_loop;
+    $params->{service_styles} = \@service_styles_loop;
+    $params->{service_filters} = \@service_filter_loop;
+    $params->{list_profileevent} = 1;
+    if (my $author_id = $app->param('author_id')) {
+        $params->{build_user_menus} = 1;
+        $params->{edit_author_id}   = $author_id;
+    }
+}
+
+sub list_profileevent_old {
     my $app = shift;
     my %param = @_;
 
     $app->return_to_dashboard( redirect => 1 ) if $app->param('blog_id');
 
-    my $author = _edit_author( $app->param('id') ) or return;
+    my $author = _edit_author( $app->param('author_id') ) or return;
 
     my %service_styles;
     my @service_styles_loop;
@@ -233,6 +276,8 @@ sub list_profileevent {
     $params{id}   = $params{edit_author_id} = $author->id;
     $params{name} = $params{edit_author_name} = $author->name;
     $params{service_styles} = \@service_styles_loop;
+    $params{return_args} = "__mode=list_profileevent_old&author_id=" . $author->id;
+
     $app->listing({
         type     => 'profileevent',
         terms    => \%terms,
@@ -258,6 +303,7 @@ sub itemset_hide_events {
         $event->save;
     }
 
+    return 1 if $app->param('xhr');
     $app->add_return_arg( hidden => 1 );
     $app->call_return;
 }
@@ -276,6 +322,7 @@ sub itemset_show_events {
         $event->save;
     }
 
+    return 1 if $app->param('xhr');
     $app->add_return_arg( shown => 1 );
     $app->call_return;
 }
@@ -333,7 +380,7 @@ sub _build_service_data {
 
     my %has_profiles;
     if ($author) {
-        my $other_profiles = $author->other_profiles();
+        my $other_profiles = get_author_profiles($author);
         $has_profiles{$_->{type}} = 1 for @$other_profiles;
     }
 
@@ -410,13 +457,13 @@ sub other_profiles {
 
     $app->return_to_dashboard( redirect => 1 ) if $app->param('blog_id');
 
-    my $author = _edit_author( $app->param('id') ) or return;
+    my $author = _edit_author( $app->param('author_id') ) or return;
 
     my $plugin = MT->component('ActionStreams');
     my $tmpl = $plugin->load_tmpl( 'other_profiles.tmpl' );
 
     my @profiles = sort { lc $a->{label} cmp lc $b->{label} }
-        @{ $author->other_profiles || [] };
+        @{ get_author_profiles($author) || [] };
 
     my $reg = $app->registry('profile_services');
     for my $p ( @profiles ) {
@@ -450,7 +497,7 @@ sub dialog_add_edit_profile {
     if (my $edit_type = $app->param('profile_type')) {
         my $ident = $app->param('profile_ident') || q{};
         my ($profile) = grep { $_->{ident} eq $ident }
-            @{ $author->other_profiles($edit_type) };
+            @{ get_author_profiles($author, $edit_type) };
 
         %edit_profile = (
             edit_type      => $edit_type,
@@ -484,7 +531,7 @@ sub edit_other_profile {
     my $type       = $app->param('profile_type');
     my $orig_ident = $app->param('original_ident');
 
-    $author->remove_profile($type, $orig_ident);
+    remove_author_profile($author, $type, $orig_ident);
 
     $app->forward('add_other_profile', success_msg => 'edited');
 }
@@ -545,13 +592,13 @@ sub add_other_profile {
     }
 
     $app->run_callbacks('pre_add_profile.'  . $type, $app, $author, $profile);
-    $author->add_profile($profile);
+    add_author_profile($author, $profile);
     $app->run_callbacks('post_add_profile.' . $type, $app, $author, $profile);
 
     my $success_msg = $param{success_msg} || 'added';
     return $app->redirect($app->uri(
         mode => 'other_profiles',
-        args => { id => $author->id, $success_msg => 1 },
+        args => { author_id => $author->id, $success_msg => 1 },
     ));
 }
 
@@ -643,14 +690,14 @@ sub remove_other_profile {
         my $author = $users{$author_id} or next PROFILE;
 
         $app->run_callbacks('pre_remove_profile.' . $type, $app, $author, $type, $ident);
-        $author->remove_profile( $type, $ident );
+        remove_author_profile( $author, $type, $ident );
         $app->run_callbacks('post_remove_profile.' . $type, $app, $author, $type, $ident);
         $page_author_id = $author_id;
     }
 
     return $app->redirect($app->uri(
         mode => 'other_profiles',
-        args => { id => ($page_author_id || $app->user->id), removed => 1 },
+        args => { author_id => ($page_author_id || $app->user->id), removed => 1 },
     ));
 }
 
@@ -735,7 +782,7 @@ sub itemset_update_profiles {
                                               no_error => 1 });
         my $author = $users{$author_id} or next PROFILE;
 
-        my $profiles = $author->other_profiles($type);
+        my $profiles = get_author_profiles($author, $type);
         if (!$profiles) {
             next PROFILE;
         }
@@ -750,7 +797,7 @@ sub itemset_update_profiles {
 
     return $app->redirect($app->uri(
         mode => 'other_profiles',
-        args => { id => ($page_author_id || $app->user->id), updated => 1 },
+        args => { author_id => ($page_author_id || $app->user->id), updated => 1 },
     ));
 }
 
@@ -837,7 +884,7 @@ sub update_events {
         join => [ $au_class->meta_pkg, 'author_id', { type => 'other_profiles' } ],
     });
     while (my $author = $author_iter->()) {
-        my $profiles = $author->other_profiles();
+        my $profiles = get_author_profiles($author);
         $mt->run_callbacks('pre_update_action_streams',  $mt, $author, $profiles);
 
         PROFILE: for my $profile (@$profiles) {

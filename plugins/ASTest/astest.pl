@@ -56,6 +56,7 @@ sub astest {
     my $app = shift;
 
     require Storable;
+    require ActionStreams::Init;
     local $Storable::forgive_me = 1;
     my $c = {
 
@@ -76,7 +77,7 @@ sub astest {
         },
 
         user => {
-            profiles => $app->user->other_profiles,
+            profiles => ActionStreams::Init::get_author_profiles($app->user),
         },
 
     };

@@ -26,7 +26,6 @@ init_app: $ActionStreams::ActionStreams::Init::init_app
 applications:
     cms:
         methods:
-            list_profileevent:       $ActionStreams::ActionStreams::Plugin::list_profileevent
             other_profiles:          $ActionStreams::ActionStreams::Plugin::other_profiles
             dialog_add_profile:      $ActionStreams::ActionStreams::Plugin::dialog_add_edit_profile
             dialog_edit_profile:     $ActionStreams::ActionStreams::Plugin::dialog_add_edit_profile
@@ -36,10 +35,14 @@ applications:
             itemset_update_profiles: $ActionStreams::ActionStreams::Plugin::itemset_update_profiles
             itemset_hide_events:     $ActionStreams::ActionStreams::Plugin::itemset_hide_events
             itemset_show_events:     $ActionStreams::ActionStreams::Plugin::itemset_show_events
+            # backward compability with MT4
+            list_profileevent_old:   $ActionStreams::ActionStreams::Plugin::list_profileevent_old
             itemset_hide_all_events: $ActionStreams::ActionStreams::Plugin::itemset_hide_all_events
             itemset_show_all_events: $ActionStreams::ActionStreams::Plugin::itemset_show_all_events
         callbacks:
             pre_run: $ActionStreams::ActionStreams::Init::hide_ts
+            cms_pre_load_filtered_list.profileevent: $ActionStreams::ActionStreams::Plugin::callback_LFL
+            list_template_param.profileevent: $ActionStreams::ActionStreams::Plugin::callback_listing_params
         menus:
             user:other_profiles:
                 order: 10000
@@ -62,8 +65,6 @@ applications:
 callbacks:
     MT::App::CMS::template_param.users_content_nav: $ActionStreams::ActionStreams::Plugin::users_content_nav
     MT::App::CMS::template_param.list_member: $ActionStreams::ActionStreams::Plugin::param_list_member
-    MT::App::CMS::template_param.other_profiles: $ActionStreams::ActionStreams::Plugin::users_content_nav
-    MT::App::CMS::template_param.list_profileevent: $ActionStreams::ActionStreams::Plugin::users_content_nav
     MT::App::CMS::post_add_profile: $ActionStreams::ActionStreams::Plugin::first_profile_update
     post_action_streams_task: $ActionStreams::ActionStreams::Plugin::rebuild_action_stream_blogs
     pre_build_action_streams_event.flickr_favorites:        $ActionStreams::ActionStreams::Fix::flickr_photo_thumbnail
@@ -96,8 +97,119 @@ object_types:
     profileevent: ActionStreams::Event
     as: ActionStreams::Event
     as_ua_cache:  ActionStreams::UserAgent::Cache
+listing_screens:
+    profileevent:
+        object_label: Profile Events
+        primary: event
+        default_sort_key: id
+        condition: |
+            sub {
+                my ($app) = @_;
+                my $user = $app->user;
+                return 1 if $user->is_superuser();
+                return $user->id eq $app->param('author_id');
+            }
+list_properties:
+    profileevent:
+        event:
+            auto: 0
+            display: default
+            order: 150
+            html: |
+                sub {
+                    my ($prop, $obj, $app, $options) = @_;
+                    my $out = '<span class="service-icon ';
+                    $out .= $obj->visible ? 'event-shown' : 'event-hidden';
+                    $out .= '">';
+                    $out .= MT::Util::remove_html($obj->as_html());
+                    $out .= '</span>';
+                    return $out;
+                }
+            label: Event
+        service:
+            auto: 0
+            display: force
+            order: 200
+            html: | 
+                sub { 
+                    my ($prop, $obj, $app, $options) = @_;
+                    my $nets = $app->registry('profile_services') || return;
+                    my ($service, $stream_id) = split /_/, $obj->class, 2;
+                    my $net = $nets->{$service} || return;
+                    $net->{name}
+                }
+            label: Service
+            filter_tmpl: |
+                Show only: 
+                <select class="<mt:var name="type">-option">
+                    <mt:loop name="service_filters">
+                        <option value="<$mt:var name="val" escape="js"$>"><$mt:var name="name" escape="js"$></option>
+                    </mt:loop>
+                </select>
+            terms: |
+                sub {
+                    my $prop = shift;
+                    my ( $args, $db_terms, $db_args ) = @_;
+                    my $option = $args->{option};
+                    my $nets = MT->registry('action_streams') || {};
+                    my $service = $nets->{$option} or die "no such service";
+                    my @streams;
+                    foreach my $stream (keys %$service) {
+                        next if $stream eq 'plugin';
+                        push @streams, $option . "_" . $stream;
+                    }
+                    return { class => \@streams };
+                }
+        created_on:
+            order: 300
+            base: __virtual.created_on
+            display: default
+        view:
+            auto: 0
+            label: View
+            display: default
+            order: 400
+            html: |
+                sub {
+                    '<a title="View action link" target="_blank" href="'.
+                    $_[1]->url . '">' .
+                    '<img width="13" height="9" alt="View action link" src="http://localhost/~sfomberg/mt-static/images/spacer.gif">' .
+                    '</a>';
+                }
+            col_class: si status-view
+        status:
+            display: none
+            label: Status
+            filter_label: Visibility
+            filter_tmpl: |
+                Show only: 
+                <select class="<mt:var name="type">-option">
+                    <option value="visible">Visible</option>
+                    <option value="hidden">Hidden</option>
+                </select>
+            terms: |
+                sub {
+                    my $prop = shift;
+                    my ( $args, $db_terms, $db_args ) = @_;
+                    my $option = $args->{option};
+                    return { visible => ( $option eq 'hidden' ? 0 : 1 ) }
+                }
 list_actions:
     profileevent:
+        hide:
+            label: Hide
+            button: 1
+            order: 100
+            xhr: 1
+            code:  $ActionStreams::ActionStreams::Plugin::itemset_hide_events
+            condition: sub { MT->version_number() >= 5 }
+        show:
+            label: Show
+            order: 200
+            button: 1
+            xhr: 1
+            code:  $ActionStreams::ActionStreams::Plugin::itemset_show_events
+            condition: sub { MT->version_number() >= 5 }
         hide_all:
             label: Hide All
             order: 100
@@ -105,6 +217,7 @@ list_actions:
             code:  $ActionStreams::ActionStreams::Plugin::itemset_hide_all_events
             continue_prompt_handler: >
                 sub { MT->translate('Are you sure you want to hide EVERY event in EVERY action stream?') }
+            condition: sub { MT->version_number() < 5 }
         show_all:
             label: Show All
             order: 200
@@ -112,8 +225,10 @@ list_actions:
             code:  $ActionStreams::ActionStreams::Plugin::itemset_show_all_events
             continue_prompt_handler: >
                 sub { MT->translate('Are you sure you want to show EVERY event in EVERY action stream?') }
+            condition: sub { MT->version_number() < 5 }
         delete:
             label: Delete
+            button: 1
             order: 300
             code:  $core::MT::App::CMS::delete
             continue_prompt_handler: >

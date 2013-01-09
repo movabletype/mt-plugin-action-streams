@@ -1,7 +1,7 @@
 package Web::Scraper;
 use strict;
 use warnings;
-use 5.8.1;
+use 5.008001;
 use Carp;
 use Scalar::Util qw(blessed);
 use List::Util qw(first);
@@ -11,14 +11,15 @@ use HTML::TreeBuilder::XPath;
 use HTML::Selector::XPath;
 use UNIVERSAL::require;
 
-our $VERSION = '0.26';
+our $VERSION = '0.36';
 
 sub import {
     my $class = shift;
     my $pkg   = caller;
 
     no strict 'refs';
-    *{"$pkg\::scraper"} = \&scraper;
+    no warnings 'redefine';
+    *{"$pkg\::scraper"}       = _build_scraper($class);
     *{"$pkg\::process"}       = sub { goto &process };
     *{"$pkg\::process_first"} = sub { goto &process_first };
     *{"$pkg\::result"}        = sub { goto &result  };
@@ -43,9 +44,12 @@ sub define {
     bless { code => $coderef }, $class;
 }
 
-sub scraper(&) {
-    my($coderef) = @_;
-    bless { code => $coderef }, __PACKAGE__;
+sub _build_scraper {
+    my $class = shift;
+    return sub(&) {
+        my($coderef) = @_;
+        bless { code => $coderef }, $class;
+    };
 }
 
 sub scrape {
@@ -59,17 +63,8 @@ sub scrape {
         my $res = $ua->get($stuff);
         return $self->scrape($res, $stuff->as_string);
     } elsif (blessed($stuff) && $stuff->isa('HTTP::Response')) {
-        require Encode;
-        require HTTP::Response::Encoding;
         if ($stuff->is_success) {
-            my @encoding = (
-                $stuff->encoding,
-                # could be multiple because HTTP response and META might be different
-                ($stuff->header('Content-Type') =~ /charset=([\w\-]+)/g),
-                "latin-1",
-            );
-            my $encoding = first { defined $_ && Encode::find_encoding($_) } @encoding;
-            $html = Encode::decode($encoding, $stuff->content);
+            $html = $stuff->decoded_content;
         } else {
             croak "GET " . $stuff->request->uri . " failed: ", $stuff->status_line;
         }
@@ -82,11 +77,7 @@ sub scrape {
         $html = $stuff;
     }
 
-    $tree ||= do {
-        my $t = HTML::TreeBuilder::XPath->new;
-        $t->parse($html);
-        $t;
-    };
+    $tree ||= $self->build_tree($html);
 
     my $stash = {};
     no warnings 'redefine';
@@ -116,6 +107,17 @@ sub scrape {
     return $ret if $retval;
 
     return $stash;
+}
+
+sub build_tree {
+    my($self, $html) = @_;
+
+    my $t = HTML::TreeBuilder::XPath->new;
+    $t->store_comments(1) if ($t->can('store_comments'));
+    $t->ignore_unknown(0);
+    $t->parse($html);
+    $t->eof;
+    $t;
 }
 
 sub create_process {
@@ -174,7 +176,16 @@ sub __get_value {
         }
         return $value;
     } elsif (lc($val) eq 'content' || lc($val) eq 'text') {
-        return $node->isTextNode ? $node->string_value : $node->as_text;
+        # getValue method is used for getting a content of comment nodes
+        # from HTML::TreeBuilder::XPath (version >= 0.14)
+        # or HTML::TreeBuilder::LibXML (version >= 0.13)
+        # getValue method works like as_text in both modules
+        # for other node types
+        return $node->isTextNode
+            ? $node->string_value
+            : ($node->can('getValue')
+                ? $node->getValue
+                : $node->as_text);
     } elsif (lc($val) eq 'raw' || lc($val) eq 'html') {
         if ($node->isTextNode) {
             if ($HTML::TreeBuilder::XPath::VERSION < 0.09) {
@@ -272,34 +283,139 @@ __END__
 
 =head1 NAME
 
-Web::Scraper - Web Scraping Toolkit inspired by Scrapi
+Web::Scraper - Web Scraping Toolkit using HTML and CSS Selectors or XPath expressions
 
 =head1 SYNOPSIS
 
   use URI;
   use Web::Scraper;
 
-  my $ebay_auction = scraper {
-      process "h3.ens>a",
-          description => 'TEXT',
-          url => '@href';
-      process "td.ebcPr>span", price => "TEXT";
-      process "div.ebPicture >a>img", image => '@src';
+  # First, create your scraper block
+  my $tweets = scraper {
+      # Parse all LIs with the class "status", store them into a resulting
+      # array 'tweets'.  We embed another scraper for each tweet.
+      process "li.status", "tweets[]" => scraper {
+          # And, in that array, pull in the elementy with the class
+          # "entry-content", "entry-date" and the link
+          process ".entry-content", body => 'TEXT';
+          process ".entry-date", when => 'TEXT';
+          process 'a[rel="bookmark"]', link => '@href';
+      };
   };
 
-  my $ebay = scraper {
-      process "table.ebItemlist tr.single",
-          "auctions[]" => $ebay_auction;
-      result 'auctions';
-  };
+  my $res = $tweets->scrape( URI->new("http://twitter.com/miyagawa") );
 
-  my $res = $ebay->scrape( URI->new("http://search.ebay.com/apple-ipod-nano_W0QQssPageNameZWLRS") );
+  # The result has the populated tweets array
+  for my $tweet (@{$res->{tweets}}) {
+      print "$tweet->{body} $tweet->{when} (link: $tweet->{link})\n";
+  }
+
+The structure would resemble this (visually)
+  {
+    tweets => [
+      { body => $body, when => $date, link => $uri },
+      { body => $body, when => $date, link => $uri },
+    ]
+  }
 
 =head1 DESCRIPTION
 
-Web::Scraper is a web scraper toolkit, inspired by Ruby's equivalent Scrapi.
+Web::Scraper is a web scraper toolkit, inspired by Ruby's equivalent
+Scrapi. It provides a DSL-ish interface for traversing HTML documents and
+returning a neatly arranged Perl data strcuture.
 
-B<THIS MODULE IS IN ITS BETA QUALITY. THE API IS STOLEN FROM SCRAPI BUT MAY CHANGE IN THE FUTURE>
+The I<scraper> and I<process> blocks provide a method to define what segments
+of a document to extract.  It understands HTML and CSS Selectors as well as
+XPath expressions.
+
+=head1 METHODS
+
+=head2 scraper
+
+  $scraper = scraper { ... };
+
+Creates a new Web::Scraper object by wrapping the DSL code that will be fired when I<scrape> method is called.
+
+=head2 scrape
+
+  $res = $scraper->scrape(URI->new($uri));
+  $res = $scraper->scrape($html_content);
+  $res = $scraper->scrape(\$html_content);
+  $res = $scraper->scrape($http_response);
+  $res = $scraper->scrape($html_element);
+
+Retrieves the HTML from URI, HTTP::Response, HTML::Tree or text
+strings and creates a DOM object, then fires the callback scraper code
+to retrieve the data structure.
+
+If you pass URI or HTTP::Response object, Web::Scraper will
+automatically guesses the encoding of the content by looking at
+Content-Type headers and META tags. Otherwise you need to decode the
+HTML to Unicode before passing it to I<scrape> method.
+
+You can optionally pass the base URL when you pass the HTML content as
+a string instead of URI or HTTP::Response.
+
+  $res = $scraper->scrape($html_content, "http://example.com/foo");
+
+This way Web::Scraper can resolve the relative links found in the document.
+
+=head2 process
+
+  scraper {
+      process "tag.class", key => 'TEXT';
+      process '//tag[contains(@foo, "bar")]', key2 => '@attr';
+      process '//comment()', 'comments[]' => 'TEXT';
+  };
+
+I<process> is the method to find matching elements from HTML with CSS
+selector or XPath expression, then extract text or attributes into the
+result stash.
+
+If the first argument begins with "//" or "id(" it's treated as an
+XPath expression and otherwise CSS selector.
+
+  # <span class="date">2008/12/21</span>
+  # date => "2008/12/21"
+  process ".date", date => 'TEXT';
+
+  # <div class="body"><a href="http://example.com/">foo</a></div>
+  # link => URI->new("http://example.com/")
+  process ".body > a", link => '@href';
+
+  # <div class="body"><!-- HTML Comment here --><a href="http://example.com/">foo</a></div>
+  # comment => " HTML Comment here "
+  #
+  # NOTES: A comment nodes are accessed when installed
+  # the HTML::TreeBuilder::XPath (version >= 0.14) and/or
+  # the HTML::TreeBuilder::LibXML (version >= 0.13)
+  process "//div[contains(@class, 'body')]/comment()", comment => 'TEXT';
+
+  # <div class="body"><a href="http://example.com/">foo</a></div>
+  # link => URI->new("http://example.com/"), text => "foo"
+  process ".body > a", link => '@href', text => 'TEXT';
+
+  # <ul><li>foo</li><li>bar</li></ul>
+  # list => [ "foo", "bar" ]
+  process "li", "list[]" => "TEXT";
+
+  # <ul><li id="1">foo</li><li id="2">bar</li></ul>
+  # list => [ { id => "1", text => "foo" }, { id => "2", text => "bar" } ];
+  process "li", "list[]" => { id => '@id', text => "TEXT" };
+
+=head1 EXAMPLES
+
+There are many examples in the C<eg/> dir packaged in this distribution.
+It is recommended to look through these.
+
+
+=head1 NESTED SCRAPERS
+
+TBD
+
+=head1 FILTERS
+
+TBD
 
 =head1 AUTHOR
 
@@ -313,5 +429,7 @@ it under the same terms as Perl itself.
 =head1 SEE ALSO
 
 L<http://blog.labnotes.org/category/scrapi/>
+
+L<HTML::TreeBuilder::XPath>
 
 =cut

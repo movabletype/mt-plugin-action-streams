@@ -97,21 +97,9 @@
     </style>
 </mt:setvarblock>
 
-<mt:if name="mt_version" ge="5">
-<mt:unless name="blog_id">
-    <mt:setvarblock name="related_content">
-        <mtapp:widget
-            id="user-properties"
-            label="<__trans phrase="User properties">">
-            <mt:include name="include/users_content_nav.tmpl">
-        </mtapp:widget>
-    </mt:setvarblock>
-</mt:unless>
-<mt:else>
 <mt:setvarblock name="content_nav">
     <mt:include name="include/users_content_nav.tmpl">
 </mt:setvarblock>
-</mt:if>
 
 <mt:setvarblock name="system_msg">
     <mt:if name="saved_deleted">
@@ -266,11 +254,6 @@
         <thead>
             <mt:var name="table-header">
         </thead>
-<mt:if name="mt_version" ge="5">
-        <tfoot>
-            <mt:var name="table-header">
-        </tfoot>
-</mt:if>
         <tbody>
     </mt:if>
     <tr class="<mt:if name="__odd__">odd<mt:else>even</mt:if>">
@@ -304,14 +287,4 @@
         </td>
     </tr>
 </mtapp:listing>
-<mt:if name="mt_version" ge="5">
-<mt:setvarblock name="jq_js_include" append="1">
-    jQuery('button.mt-<mt:var name="form_id">-action').mtDoPluginAction({
-        id: '<mt:var name="form_id">',
-        plural: '<mt:if name="object_label_plural"><mt:var name="object_label_plural" escape="js"></mt:if>',
-        args: {<mt:if name="search">'search': '<mt:var name="search" escape="js">'</mt:if>},
-        phrase: '<__trans phrase="to act upon" escape="js">'
-    });
-</mt:setvarblock>
-</mt:if>
 <mt:include name="include/footer.tmpl">

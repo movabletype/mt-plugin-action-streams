@@ -15,6 +15,7 @@ package ActionStreams::Tags;
 use strict;
 
 use MT::Util qw( offset_time_list epoch2ts ts2epoch );
+use ActionStreams::Init;
 use ActionStreams::Plugin;
 
 sub stream_action {
@@ -315,7 +316,7 @@ sub _build_about_event {
     my ($service, $stream_id) = split /_/, $type, 2;
     # TODO: find from the event which other_profile is really associated
     # instead of guessing it's the first one.
-    my $profiles = $author->other_profiles($service) || [];
+    my $profiles = get_author_profiles($author, $service) || [];
     local ($ctx->{__stash}{other_profile}) = @$profiles;
 
     my $vars = $ctx->{__stash}{vars} ||= {};
@@ -425,7 +426,7 @@ sub other_profiles {
     my $user = MT->model('author')->load($author_id)
         or return $ctx->error(MT->translate('No user [_1]', $author_id));
 
-    my @profiles = @{ $user->other_profiles() };
+    my @profiles = @{ get_author_profiles($user) };
     my $services = MT->app->registry('profile_services');
     if (my $filter_type = $args->{type}) {
         my $filter_except = $filter_type =~ s{ \A NOT \s+ }{}xmsi ? 1 : 0;
@@ -510,7 +511,7 @@ sub profile_services {
         @network_keys = grep { !$networks->{$_}->{deprecated} } @network_keys;
         my $author = $ctx->stash('author');
         if ( $author ) {
-            my $other_profiles = $author->other_profiles();
+            my $other_profiles = get_author_profiles($author);
             my %has_unique_profile;
             for my $profile ( @$other_profiles ) {
                 if ( !$networks->{$profile->{type}}->{can_many} ) {
