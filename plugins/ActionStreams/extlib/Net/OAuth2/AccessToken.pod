@@ -1,6 +1,6 @@
 =head1 NAME
 
-Net::OAuth2::AccessToken - OAuth2 bearer token
+ Net::OAuth2::AccessToken - OAuth2 bearer token
 
 =head1 SYNOPSIS
 
@@ -21,7 +21,8 @@ Net::OAuth2::AccessToken - OAuth2 bearer token
 
 =head1 DESCRIPTION
 
-This object represents a received bearer token, and offers ways to use it.
+This object represents a received (bearer) token, and offers ways to use it
+and maintain it.
 
 A "bearer token" is an abstract proof of your existence: different
 services or potentially different physical servers are able to exchange
@@ -91,6 +92,24 @@ Auto-refresh the token at each use.
 
 =back
 
+=item $obj-E<gt>B<session_thaw>(SESSION, OPTIONS)
+
+Pass in the output of a L<session_freeze()|Net::OAuth2::AccessToken/"Actions"> call in the past (maybe even
+for an older version of this module) and get the token object revived. This
+SESSION is a HASH.
+
+You may pass any of the parameters for L<new()|Net::OAuth2::AccessToken/"Constructors"> as OPTIONS, to overrule
+the values inside the SESSION.
+
+ -Option --Default
+  profile  <required>
+
+=over 2
+
+=item profile => L<Net::OAuth2::Profile|Net::OAuth2::Profile> object
+
+=back
+
 =back
 
 =head2 Accessors
@@ -106,13 +125,34 @@ or when L<new(auto_refresh)|Net::OAuth2::AccessToken/"Constructors"> is set.
 It does not matter that the token is base64 encoded or not: it will
 always need to be base64 encoded during transport.
 
-=item $obj-E<gt>B<auto_refresh>()
+=item $obj-E<gt>B<profile>()
+
+=item $obj-E<gt>B<scope>()
+
+=item $obj-E<gt>B<token_type>()
+
+=back
+
+=head3 errors
+
+When the token is received (hence this object created) it be the
+result of an error.  It is the way the original code was designed...
+
+=over 4
 
 =item $obj-E<gt>B<error>()
 
 =item $obj-E<gt>B<error_description>()
 
 =item $obj-E<gt>B<error_uri>()
+
+=back
+
+=head3 Expiration
+
+=over 4
+
+=item $obj-E<gt>B<auto_refresh>()
 
 =item $obj-E<gt>B<expired>([AFTER])
 
@@ -130,13 +170,7 @@ when it is not set.
 Returns the number of seconds left, before the token is expired.  That
 may be negative.
 
-=item $obj-E<gt>B<profile>()
-
 =item $obj-E<gt>B<refresh_token>()
-
-=item $obj-E<gt>B<scope>()
-
-=item $obj-E<gt>B<token_type>()
 
 =item $obj-E<gt>B<update_token>(TOKEN, TOKENTYPE, EXPIRES_AT)
 
@@ -144,7 +178,37 @@ Change the token.
 
 =back
 
-=head2 Action
+=head2 Actions
+
+=over 4
+
+=item $obj-E<gt>B<refresh>()
+
+Refresh the token, even if it has not expired yet.  Returned is the
+new access_token value.
+
+=item $obj-E<gt>B<session_freeze>(OPTIONS)
+
+This returns a SESSION (a flat HASH) containing all token parameters which
+needs to be saved to be able to restore this token later.  This SESSION
+can be passed to L<session_thaw()|Net::OAuth2::AccessToken/"Constructors"> to get revived.
+
+Be sure that your storage is character-set aware.  For instance, you
+probably want to set 'mysql_enable_utf8' when you store this in a
+MySQL database.  JSON
+
+=item $obj-E<gt>B<to_json>()
+
+Freeze this object into JSON.  The JSON syntax is also used by the OAuth2
+protocol, so a logical choice to provide.  However, generically, the
+L<session_freeze()|Net::OAuth2::AccessToken/"Actions"> method provided.
+
+=back
+
+=head3 HTTP
+
+The token can be encoded in transport protocol in different ways. Using
+these method will add the token to the HTTP messages sent.
 
 =over 4
 
@@ -156,30 +220,21 @@ Change the token.
 
 =item $obj-E<gt>B<put>(URI, [HEADER, [CONTENT]])
 
-=item $obj-E<gt>B<refresh>()
-
-Refresh the token, even if it has not expired yet.  Returned is the
-new access_token value.
-
 =item $obj-E<gt>B<request>(REQUEST)
-
-=item $obj-E<gt>B<to_string>()
-
-Serialize this object into JSON.
 
 =back
 
 =head1 SEE ALSO
 
-This module is part of Net-OAuth2 distribution version 0.50,
-built on January 07, 2013. Website: F<http://perl.overmeer.net>.
+This module is part of Net-OAuth2 distribution version 0.51,
+built on January 08, 2013. Website: F<http://perl.overmeer.net>.
 
 =head1 COPYRIGHTS
 
-Copyrights 2012-2013 on the perl code and the related documentation
- by [Mark Overmeer]. For other contributors see Changes.
+Copyrights 2013 on the perl code and the related documentation
+ by [Mark Overmeer] for SURFnet bv, The Netherlands.  For other contributors see Changes.
 
-Copyrights 2011 by Keith Grennan.
+Copyrights 2011-12 by Keith Grennan.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

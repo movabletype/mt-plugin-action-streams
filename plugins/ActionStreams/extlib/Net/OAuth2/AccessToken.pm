@@ -1,16 +1,23 @@
-# Copyrights 2012-2013 by [Mark Overmeer].
+# Copyrights 2013 by [Mark Overmeer].
 #  For other contributors see Changes.
 # See the manual pages for details on the licensing terms.
 # Pod stripped from pm file by OODoc 2.00.
 package Net::OAuth2::AccessToken;
 use vars '$VERSION';
-$VERSION = '0.50';
+$VERSION = '0.51';
 
 use warnings;
 use strict;
 
+our $VERSION;  # to be able to test in devel environment
+
 use JSON        qw/encode_json/;
 use URI::Escape qw/uri_escape/;
+use Encode      qw/find_encoding/;
+
+# Attributes to be saved to preserve the session.
+my @session = qw/access_token token_type refresh_token expires_at
+   scope state auto_refresh/;
 
 # This class name is kept for backwards compatibility: a better name
 # would have been: Net::OAuth2::BearerToken
@@ -26,34 +33,38 @@ sub new(@) { my $class = shift; (bless {}, $class)->init({@_}) }
 sub init($)
 {   my ($self, $args) = @_;
 
-    $self->{NOA_expires} = $args->{expires_at}
+    $self->{NOA_expires_at} = $args->{expires_at}
        || ($args->{expires_in} ? time()+$args->{expires_in} : undef);
 
     # client is the pre-v0.50 name
     my $profile = $self->{NOA_profile} = $args->{profile} || $args->{client}
-        or die "accesstoken needs profile object";
+        or die "::AccessToken needs profile object";
 
-    $self->{NOA_token}     = $args->{access_token};
-    $self->{NOA_refresh}   = $args->{refresh_token};
-    $self->{NOA_scope}     = $args->{scope};
-    $self->{NOA_type}      = $args->{token_type};
-    $self->{NOA_autofresh} = $args->{auto_refresh};
-    $self->{NOA_error}     = $args->{error};
-    $self->{NOA_error_uri} = $args->{error_uri};
-    $self->{NOA_error_descr} = $args->{error_description} || $args->{error};
+    $self->{NOA_access_token}  = $args->{access_token};
+    $self->{NOA_refresh_token} = $args->{refresh_token};
+    $self->{NOA_scope}         = $args->{scope};
+    $self->{NOA_token_type}    = $args->{token_type};
+    $self->{NOA_auto_refresh}  = $args->{auto_refresh};
+
+    $self->{NOA_error}         = $args->{error};
+    $self->{NOA_error_uri}     = $args->{error_uri};
+    $self->{NOA_error_descr}   = $args->{error_description} || $args->{error};
     $self;
+}
+
+
+sub session_thaw($%)
+{   my ($class, $session) = (shift, shift);
+    # we can use $session->{net_oauth2_version} to upgrade the info
+    $class->new(%$session, @_);
 }
 
 #--------------
 
-sub refresh_token() {shift->{NOA_refresh}}
-sub token_type()    {shift->{NOA_type}}
-sub scope()         {shift->{NOA_scope}}
-sub profile()       {shift->{NOA_profile}}
-sub auto_refresh()  {shift->{NOA_autofresh}}
-sub error()         {shift->{NOA_error}}
-sub error_uri()     {shift->{NOA_error_uri}}
-sub error_description() {shift->{NOA_error_descr}}
+
+sub token_type() {shift->{NOA_token_type}}
+sub scope()      {shift->{NOA_scope}}
+sub profile()    {shift->{NOA_profile}}
 
 
 sub access_token()
@@ -63,11 +74,22 @@ sub access_token()
         if  $self->auto_refresh
         || ($self->refresh_token && $self->expired);
 
-    $self->{NOA_token};
+    $self->{NOA_access_token};
 }
 
+#---------------
 
-sub expires_at() { shift->{NOA_expires} }
+sub error()      {shift->{NOA_error}}
+sub error_uri()  {shift->{NOA_error_uri}}
+sub error_description() {shift->{NOA_error_descr}}
+
+#---------------
+
+sub refresh_token() {shift->{NOA_refresh_token}}
+sub auto_refresh()  {shift->{NOA_auto_refresh}}
+
+
+sub expires_at() { shift->{NOA_expires_at} }
 
 
 sub expires_in() { shift->expires_at - time() }
@@ -83,10 +105,32 @@ sub expired(;$)
 
 sub update_token($$$)
 {   my ($self, $token, $type, $exp) = @_;
-    $self->{NOA_token}   = $token;
-    $self->{NOA_type}    = $type if $type;
-    $self->{NOA_expires} = $exp;
+    $self->{NOA_access_token}   = $token;
+    $self->{NOA_token_type}    = $type if $type;
+    $self->{NOA_expires_at} = $exp;
     $token;
+}
+
+#--------------
+
+sub to_json()
+{   my $self = shift;
+    encode_json $self->session_freeze;
+}
+*to_string = \&to_json;  # until v0.50
+
+
+sub freeze(%)
+{   my ($self, %args) = @_;
+    my %data    = (net_oauth2_version => $VERSION);
+    defined $self->{"NOA_$_"} && ($data{$_} = $self->{"NOA_$_"}) for @session;
+    \%data;
+}
+
+
+sub refresh()
+{   my $self = shift;
+    $self->profile->update_access_token($self);
 }
 
 #--------------
@@ -96,23 +140,5 @@ sub get    { my $s = shift; $s->profile->request_auth($s, 'GET',    @_) }
 sub post   { my $s = shift; $s->profile->request_auth($s, 'POST',   @_) }
 sub delete { my $s = shift; $s->profile->request_auth($s, 'DELETE', @_) }
 sub put    { my $s = shift; $s->profile->request_auth($s, 'PUT',    @_) }
-
-
-sub to_string()
-{   my $self = shift;
-    my %data;
-    @data{ qw/access_token token_type refresh_token  expires_at
-              scope        state      auto_refresh/ }
-  = @$self{qw/NOA_token    NOA_type   NOA_refresh    NOA_expires
-              NOA_scope    NOA_state  NOA_autofresh/ };
-
-    encode_json \%data;
-}
-
-
-sub refresh()
-{   my $self = shift;
-    $self->profile->update_access_token($self);
-}
 
 1;

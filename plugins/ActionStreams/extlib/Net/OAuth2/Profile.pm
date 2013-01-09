@@ -1,10 +1,10 @@
-# Copyrights 2012-2013 by [Mark Overmeer].
+# Copyrights 2013 by [Mark Overmeer].
 #  For other contributors see Changes.
 # See the manual pages for details on the licensing terms.
 # Pod stripped from pm file by OODoc 2.00.
 package Net::OAuth2::Profile;
 use vars '$VERSION';
-$VERSION = '0.50';
+$VERSION = '0.51';
 
 use warnings;
 use strict;
@@ -83,10 +83,10 @@ sub bearer_token_scheme() {shift->{NOP_scheme}}
 
 sub request($@)
 {   my ($self, $request) = (shift, shift);
-print $request->as_string;
+#print $request->as_string;
     my $response = $self->user_agent->request($request, @_);
-print $response->as_string;
-$response;
+#print $response->as_string;
+#$response;
 }
 
 
@@ -202,7 +202,7 @@ sub params_from_response($$)
     }
     else
     {   # application/json is often not correctly configured: is not
-        # an apache predefined.   :(
+        # (yet) an apache pre-configured extension   :(
         if(my $params = eval {decode_json $content} )
         {   # content is JSON
             return ref $params eq 'HASH' ? %$params : @$params;
@@ -221,7 +221,7 @@ sub params_from_response($$)
     die "failed oauth call $why: $error\n$content\n";
 }
 
-sub authorize_method()          {shift->{NOP_authorize_method} }
+sub authorize_method()          {panic}  # user must use autorize url
 sub access_token_method()       {shift->{NOP_access_token_method} }
 sub refresh_token_method()      {shift->{NOP_refresh_token_method} }
 sub protected_resource_method() {shift->{NOP_protected_resource_method} }

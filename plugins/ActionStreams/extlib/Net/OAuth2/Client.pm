@@ -1,17 +1,16 @@
-# Copyrights 2012-2013 by [Mark Overmeer].
+# Copyrights 2013 by [Mark Overmeer].
 #  For other contributors see Changes.
 # See the manual pages for details on the licensing terms.
 # Pod stripped from pm file by OODoc 2.00.
 package Net::OAuth2::Client;
 use vars '$VERSION';
-$VERSION = '0.50';
+$VERSION = '0.51';
 
 use warnings;
 use strict;
 
 use LWP::UserAgent ();
 use URI            ();
-use JSON           qw/decode_json/;
 
 use Net::OAuth2::Profile::WebServer;
 use Net::OAuth2::Profile::Password;

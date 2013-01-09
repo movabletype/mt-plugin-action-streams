@@ -9,7 +9,7 @@ Net::OAuth2::Profile::WebServer - OAuth2 for web-server use
 
 =head1 SYNOPSIS
 
-  my $google = Net::OAuth2::Profile::WebServer->new
+  my $auth = Net::OAuth2::Profile::WebServer->new
     ( name           => 'Google Contacts'
     , client_id      => $id
     , client_secret  => $secret
@@ -21,35 +21,24 @@ Net::OAuth2::Profile::WebServer - OAuth2 for web-server use
         =>  'https://www.google.com/m8/feeds/contacts/default/full'
     );
 
+  # Let user ask for a grant from the resource owner
+  print $auth->authorize_response->as_string;
+  # or, in Plack:   redirect $auth->authorize;
+
+  # Prove your identity at the authorization server
+  my $access_token  = $auth->get_access_token($info->{code});
+
+  # communicate with the resource serve
+  my $response      = $access_token->get('/me');
+  $response->is_success
+      or die "error: " . $response->status_line;
+
+  print "Yay, it worked: " . $response->decoded_content;
+
 =head1 DESCRIPTION
 
-Use OAuth2 in a WebServer context.  The client side of the process has
-three steps, nicely described in
-L<https://tools.ietf.org/html/rfc6749|RFC6749>
-
-=over 4
-
-=item 1. Send an authorization request to resource owner
-
-It needs a C<client_id>: usually the name of the service where you want
-get access to.  The answer is a redirect, based on the C<redirection_uri>
-which you usually pass on.  Additional C<scope> and C<state> parameters
-can be needed or useful.  The redirect will provide you with (amongst other
-things) a C<code> parameter.
-
-=item 2. Translate the code into an access token
-
-With the code, you go to an authorization server which will validate
-your existence.  An access token (and sometimes a refresh token) are
-returned.
-
-=item 3. Address the protected resource
-
-The access token, usually a 'bearer' token, is added to each request to
-the resource you want to address.  The token may refresh itself when
-needed.
-
-=back
+Use OAuth2 in a WebServer context.  Read the DETAILS section, far below
+this man-page before you start implementing this interface.
 
 =head1 METHODS
 
@@ -140,25 +129,14 @@ See L<Net::OAuth2::Profile/"Accessors">
 
 =over 4
 
-=item $obj-E<gt>B<request>(REQUEST, [MORE])
-
-See L<Net::OAuth2::Profile/"Actions">
-
-=item $obj-E<gt>B<request_auth>(TOKEN, (REQUEST | (METHOD, URI, [HEADER, CONTENT])))
-
-See L<Net::OAuth2::Profile/"Actions">
-
-=back
-
-=head2 Action
-
-=over 4
-
 =item $obj-E<gt>B<authorize>(OPTIONS)
 
-Request an authorization code for the session.  Only the most common
-OPTIONS are listed... there may be more: read the docs on what your
-server expects.
+On initial contact of a new user, you have to redirect to the resource
+owner.  Somewhere in the near future, your application will be contacted
+again by the same user but then with an authorization grant code.
+
+Only the most common OPTIONS are listed... there may be more: read the
+docs on what your server expects.
 
  -Option       --Default
   client_id      new(client_id)
@@ -177,6 +155,25 @@ server expects.
 =item state => STRING
 
 =back
+
+example: 
+
+  my $auth = Net::OAuth2::Profile::WebServer->new(...);
+
+  # From the Plack demo, included in this distribution (on CPAN)
+  get '/get' => sub { redirect $auth->authorize };
+
+  # In generic HTTP, see method authorize_response
+  use HTTP::Status 'HTTP_TEMPORARY_REDIRECT';   # 307
+  print HTTP::Response->new
+    ( HTTP_TEMPORARY_REDIRECT => 'Get authorization grant'
+    , [ Location => $auth->authorize ]
+    )->as_string;
+
+=item $obj-E<gt>B<authorize_response>([REQUEST])
+
+Convenience wrapper around L<authorize()|Net::OAuth2::Profile::WebServer/"Actions">, to produce a complete
+HTTP::Response object to be sent back.
 
 =item $obj-E<gt>B<get_access_token>(CODE, OPTIONS)
 
@@ -205,6 +202,20 @@ example:
 
 =back
 
+=head3 HTTP
+
+=over 4
+
+=item $obj-E<gt>B<request>(REQUEST, [MORE])
+
+See L<Net::OAuth2::Profile/"HTTP">
+
+=item $obj-E<gt>B<request_auth>(TOKEN, (REQUEST | (METHOD, URI, [HEADER, CONTENT])))
+
+See L<Net::OAuth2::Profile/"HTTP">
+
+=back
+
 =head2 Helpers
 
 =over 4
@@ -227,17 +238,60 @@ See L<Net::OAuth2::Profile/"Helpers">
 
 =back
 
+=head1 DETAILS
+
+=head2 The process
+
+The B<main complication> does not show in the example in the SYNOPSIS,
+not in the plack example included in the distribution: your client session
+can not survive the shown steps: your application behaves like a server,
+not a client.  You need to implement losely coupled server-server
+communication, which is less straight-forward.
+
+First, your application must implement a persistent session (in a database
+or file), which may get called on any weird moment to pass on information.
+Your application must be visible from "outside" and use https.  More than
+enough complications.  Full example needed ;-)
+
+The client side of the process has
+three steps, nicely described in
+L<https://tools.ietf.org/html/rfc6749|RFC6749>
+
+=over 4
+
+=item 1. Send an authorization request to resource owner
+
+It needs a C<client_id>: usually the name of the service where you want
+get access to.  The answer is a redirect, based on the C<redirection_uri>
+which you usually pass on.  Additional C<scope> and C<state> parameters
+can be needed or useful.  The redirect will provide you with (amongst other
+things) a C<code> parameter.
+
+=item 2. Translate the code into an access token
+
+With the code, you go to an authorization server which will validate
+your existence.  An access token (and sometimes a refresh token) are
+returned.
+
+=item 3. Address the protected resource
+
+The access token, usually a 'bearer' token, is added to each request to
+the resource you want to address.  The token may refresh itself when
+needed.
+
+=back
+
 =head1 SEE ALSO
 
-This module is part of Net-OAuth2 distribution version 0.50,
-built on January 07, 2013. Website: F<http://perl.overmeer.net>.
+This module is part of Net-OAuth2 distribution version 0.51,
+built on January 08, 2013. Website: F<http://perl.overmeer.net>.
 
 =head1 COPYRIGHTS
 
-Copyrights 2012-2013 on the perl code and the related documentation
- by [Mark Overmeer]. For other contributors see Changes.
+Copyrights 2013 on the perl code and the related documentation
+ by [Mark Overmeer] for SURFnet bv, The Netherlands.  For other contributors see Changes.
 
-Copyrights 2011 by Keith Grennan.
+Copyrights 2011-12 by Keith Grennan.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

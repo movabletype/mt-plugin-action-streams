@@ -74,15 +74,15 @@ passed with L<new()|Net::OAuth2::Client/"Constructors">, overruled/extended by t
 
 =head1 SEE ALSO
 
-This module is part of Net-OAuth2 distribution version 0.50,
-built on January 07, 2013. Website: F<http://perl.overmeer.net>.
+This module is part of Net-OAuth2 distribution version 0.51,
+built on January 08, 2013. Website: F<http://perl.overmeer.net>.
 
 =head1 COPYRIGHTS
 
-Copyrights 2012-2013 on the perl code and the related documentation
- by [Mark Overmeer]. For other contributors see Changes.
+Copyrights 2013 on the perl code and the related documentation
+ by [Mark Overmeer] for SURFnet bv, The Netherlands.  For other contributors see Changes.
 
-Copyrights 2011 by Keith Grennan.
+Copyrights 2011-12 by Keith Grennan.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

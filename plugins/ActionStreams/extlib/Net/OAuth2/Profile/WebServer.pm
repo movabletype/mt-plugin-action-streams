@@ -1,10 +1,10 @@
-# Copyrights 2012-2013 by [Mark Overmeer].
+# Copyrights 2013 by [Mark Overmeer].
 #  For other contributors see Changes.
 # See the manual pages for details on the licensing terms.
 # Pod stripped from pm file by OODoc 2.00.
 package Net::OAuth2::Profile::WebServer;
 use vars '$VERSION';
-$VERSION = '0.50';
+$VERSION = '0.51';
 
 use base 'Net::OAuth2::Profile';
 
@@ -12,8 +12,12 @@ use warnings;
 use strict;
 
 use Net::OAuth2::AccessToken;
-use HTTP::Request;
 use MIME::Base64  'encode_base64';
+use Scalar::Util  'blessed';
+
+use HTTP::Request     ();
+use HTTP::Response    ();
+use HTTP::Status      qw(HTTP_TEMPORARY_REDIRECT);
 
 
 sub init($)
@@ -35,20 +39,36 @@ sub referer(;$)
 
 sub authorize(@)
 {   my ($self, @req_params) = @_;
-    my $request = $self->build_request
-      ( $self->authorize_method
-      , $self->authorize_url
-      , $self->authorize_params(@req_params)
+
+    # temporary, for backward compatibility warning
+    my $uri_base = $self->SUPER::authorize_url;
+#   my $uri_base = $self->authorize_url;
+
+    my $uri      = blessed $uri_base && $uri_base->isa('URI')
+      ? $uri_base->clone : URI->new($uri_base);
+
+    my $params   = $self->authorize_params(@req_params);
+    $uri->query_form($uri->query_form, %$params);
+    $uri;
+}
+
+# Net::OAuth2 returned the url+params here, but this should return the
+# accessor to the parameter with this name.  The internals of that code
+# was so confused that it filled-in the params multiple times.
+sub authorize_url()
+{   require Carp;
+    Carp::confess("do not use authorize_url() but authorize()! (since v0.50)");
+}
+
+
+sub authorize_response(;$)
+{   my ($self, $request) = @_;
+    my $resp = HTTP::Response->new
+      ( HTTP_TEMPORARY_REDIRECT => 'Get authorization grant'
+      , [ Location => $self->authorize ]
       );
-
-    my $ua        = $self->user_agent;
-    my $old_redir = $ua->requests_redirectable;
-    $ua->requests_redirectable([]);
-
-    my $response  = $self->request($request);
-
-    $ua->requests_redirectable($old_redir);
-    $response;
+    $resp->request($request) if $request;
+    $resp;
 }
 
 
@@ -63,6 +83,7 @@ sub get_access_token($@)
       , $self->access_token_url
       , $params
       );
+
     my $basic = encode_base64 "$params->{client_id}:$params->{client_secret}";
     $request->headers->header(Authorization => "Basic $basic");
     my $response = $self->request($request);
@@ -101,7 +122,12 @@ sub authorize_params(%)
 {   my $self   = shift;
     my $params = $self->SUPER::authorize_params(@_);
     $params->{response_type} ||= 'code';
-    $params->{redirect_uri}  ||= $self->redirect_uri;
+
+    # should not be required: usually the related between client_id and
+    # redirect_uri is fixed to avoid security issues.
+    my $r = $self->redirect_uri;
+    $params->{redirect_uri}  ||= $r if $r;
+
     $params;
 }
 
@@ -131,5 +157,7 @@ sub build_request($$$)
 
     $request;
 }
+
+#--------------------
 
 1;
