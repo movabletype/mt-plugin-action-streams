@@ -86,7 +86,9 @@
             })
             .appendTo($div);
         $("#oauth_field").append($div);
-        $(".oauth_key,.oauth_secret",$div).mtPlaceholder();
+        <mt:if name="mt_version" ge="5">
+          $(".oauth_key,.oauth_secret",$div).mtPlaceholder();
+        </mt:if>
     }
     
     var num = 1;
