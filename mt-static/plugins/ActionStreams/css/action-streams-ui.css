@@ -25,17 +25,18 @@
 #oauth_field .text:-moz-placeholder { color: #999 }
 #oauth_field .text::-moz-placeholder { color: #999 }
 #oauth_field .text::-webkit-input-placeholder { color: #999 }
-#oauth_field .text::-ms-input-placeholder  { color: #999 }
+#oauth_field .text:-ms-input-placeholder  { color: #999 }
 
 
 .oauth-list-item .item-label {
-  line-height: 21px;
+  line-height: 23px;
   width: 22%;
   min-width: 59px;
   max-width: 134px;
   display: block;
   float: left;
   text-overflow: ellipsis;
+  background-position: left center;
 }
 
 .oauth-list-item {
@@ -84,7 +85,7 @@
 .cf:after { clear:both; }
 .cf { *zoom:1; }
 
-@media screen and (min-width:1280px){
+@media screen and (min-width:1290px){
   .item-buttons {
     margin-left: 0;
     padding:0;

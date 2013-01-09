@@ -42,7 +42,7 @@
         </mt:loop> };
 
     function isEnterKey(e){
-      return (e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)
+      return (e.which && e.which == 13) || (e.keyCode && e.keyCode == 13);
     }
     
     function buildOauthField(){
@@ -62,7 +62,7 @@
             }
           }
         }
-        var $div = $('<div>').on('keypress',keypressHandler);
+        var $div = $('<div>').on('keypress change',keypressHandler);
         var $select = $('<select></select>',{id:'oauth_form_select'}).appendTo($div);
         var $f_s = $('<option></option>',{text:'<__trans phrase="Select a service...">',value:'none'}).appendTo($select);
         $.each(oauth_networks, function(key, value){
@@ -70,9 +70,9 @@
             var $s = $('<option></option>',{value:key,text:value['label']}).appendTo($select);
           }
         });
-        var $in1 = $('<input></input>',{class:'oauth_key text',placeholder:'<__trans phrase="Application Key">'}).appendTo($div);
-        var $in2 = $('<input></input>',{class:'oauth_secret text',placeholder:'<__trans phrase="Application Secret">'}).appendTo($div);
-        var $button = $('<input></input>',{class:'button disabled',type:'button',value:'<__trans phrase="Add">',disabled:'disabled'})
+        var $in1 = $('<input></input>',{'class':'oauth_key text',placeholder:'<__trans phrase="Application Key">'}).appendTo($div);
+        var $in2 = $('<input></input>',{'class':'oauth_secret text',placeholder:'<__trans phrase="Application Secret">'}).appendTo($div);
+        var $button = $('<input></input>',{'class':'button disabled',type:'button',value:'<__trans phrase="Add">',disabled:'disabled'})
             .one('click',function(e){
               var oauth_network = oauth_networks[$select.val()];
               oauth_network['oauth_key'] = $in1.val();
@@ -91,15 +91,15 @@
         var label = oauth_network['label'];
         var key = oauth_network['oauth_key'];
         var secret = oauth_network['oauth_secret'];
-        var $div = $('<div></div>',{class:'oauth-list-item cf'});
+        var $div = $('<div></div>',{'class':'oauth-list-item cf'});
         $('<input />',{type:'hidden',name:'service-'+num,value:type}).appendTo($div);
         var $hiddenAppKey = $('<input />',{type:'hidden',name:'oauth-key-'+num,value:key}).appendTo($div);
         var $hiddenAppSecret = $('<input />',{type:'hidden',name:'oauth-secret-'+num,value:secret}).appendTo($div);
-        var $label = $('<span></span>',{class:'item-label service-icon service-'+type,text:label}).appendTo($div);
+        var $label = $('<span></span>',{'class':'item-label service-icon service-'+type,text:label}).appendTo($div);
         
         var $fields = $('<div />').appendTo($div);
-        var $appKey = $('<span></span>',{class:'item-key',text:key}).appendTo($fields);
-        var $appSecret = $('<span></span>',{class:'item-secret',text:secret}).appendTo($fields);
+        var $appKey = $('<span></span>',{'class':'item-key',text:key}).appendTo($fields);
+        var $appSecret = $('<span></span>',{'class':'item-secret',text:secret}).appendTo($fields);
         
         var editMode = function(e){
           $fields.hide();
@@ -119,11 +119,11 @@
               }
             }
           }
-          var $editForm = $('<div />').on('keypress',keypressHandler);
-          var $appKeyForm = $('<input />',{type:'text',value:$appKey.text(),class:'oauth_key text'}).appendTo($editForm);
-          var $appSecretForm = $('<input />',{type:'text',value:$appSecret.text(),class:'oauth_secret text'}).appendTo($editForm);
-          var $buttonDiv = $('<div />',{class:'item-buttons'}).appendTo($editForm);
-          var $updateButton = $('<input />',{type:'button',value:'<__trans phrase="Update">',class:'button'})
+          var $editForm = $('<div />').on('keypress change',keypressHandler);
+          var $appKeyForm = $('<input />',{type:'text',value:$appKey.text(),'class':'oauth_key text'}).appendTo($editForm);
+          var $appSecretForm = $('<input />',{type:'text',value:$appSecret.text(),'class':'oauth_secret text'}).appendTo($editForm);
+          var $buttonDiv = $('<div />',{'class':'item-buttons'}).appendTo($editForm);
+          var $updateButton = $('<input />',{type:'button',value:'<__trans phrase="Update">','class':'button'})
                             .one('click',function(){
                               var newKey = $appKeyForm.val();
                               var newSecret = $appSecretForm.val();
@@ -136,7 +136,7 @@
                               $editForm.remove();
                             })
                             .appendTo($buttonDiv);
-          var $cancelButton = $('<input />',{type:'button',value:'<__trans phrase="Cancel">',class:'button'})
+          var $cancelButton = $('<input />',{type:'button',value:'<__trans phrase="Cancel">','class':'button'})
                             .one('click',function(){
                               $fields.show();
                               $editForm.off('keypress',keypressHandler);
@@ -148,9 +148,9 @@
         
         var $edit = $('<a></a>',{href:'#'})
                     .on('click',editMode)
-                    .append($('<span></span>',{class:'item-edit',text:'<__trans phrase="Edit">'}))
+                    .append($('<span></span>',{'class':'item-edit',text:'<__trans phrase="Edit">'}))
                     .appendTo($fields);
-        var $button = $('<span></span>',{class:'item-delete'})
+        var $button = $('<span></span>',{'class':'item-delete'})
                       .append($('<img />',{
                         src:'<mt:var name="static_uri">images/status_icons/icon-delete.png',
                         alt:'<__trans phrase="Remove">'
