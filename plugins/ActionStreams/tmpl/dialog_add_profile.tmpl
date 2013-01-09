@@ -135,10 +135,10 @@
 
             last_network = service;
 
-            if (networks[service] && networks[service]['oauth']) {
+            if (networks[service] && (networks[service]['oauth'] == 1)) {
                 jQuery('button.primary-button')
-                    .attr('title', '<__trans phrase="Authentication Required" escape="js">')
-                    .text('<__trans phrase="Authentication Required" escape="js">');
+                    .attr('title', '<__trans phrase="Add Profile (Authentication Required)" escape="js">')
+                    .text('<__trans phrase="Add Profile (Authentication Required)" escape="js">');
             }
             else {
                 jQuery('button.primary-button')

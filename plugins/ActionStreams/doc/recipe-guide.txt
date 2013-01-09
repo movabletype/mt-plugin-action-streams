@@ -114,6 +114,53 @@ If not a URL, `icon` should be a path to the image relative to your plugin's
 `mt-static/plugins/ExampleService/example.png`, your `icon` setting should be
 `example.png`.
 
+## Defining an OAuth service ##
+
+The current implementation supports both OAuth 1.0A and OAuth 2.0
+
+An example to OAuth 2.0 service:
+
+    foursquare:
+        name: Foursquare
+        url: https://foursquare.com/user/{{ident}}
+        service_type: status
+        oauth:
+            version: 2.0
+            site: 'https://foursquare.com/'
+            authorize_path: '/oauth2/authorize'
+            access_token_path: '/oauth2/access_token'
+            protected_resource_url: 'https://api.foursquare.com/v2/'
+
+And for OAuth 1.0A:
+
+    twitterapi:
+        name: 'Twitter API'
+        url: http://twitter.com/{{ident}}
+        service_type: status
+        oauth:
+            version: '1.0A'
+            site: 'https://api.twitter.com/'
+            request_token_path: '/oauth/request_token'
+            authorize_path: '/oauth/authorize'
+            access_token_path: '/oauth/access_token'
+
+The fields are:
+
+### version ###
+
+OAuth version to use with this service. currently only '2.0' and '1.0A' are supported
+
+### site ###
+
+The host that we should authenticate with. usually it is the same host
+of the API, but sometimes it is not
+
+### The rest of the fields ###
+
+These are service-specific for the location of things for that server.
+For OAuth2 please see the documentation for the Net::OAuth2, as these
+are passed directly to the Net::OAuth2::Profile::WebServer constructor
+
 ## Defining stream recipes for a service ##
 
 Once a service is defined in `profile_services`, you can make recipes for
@@ -185,12 +232,12 @@ some extreme cases, you may even have to change what identifier your profile
 service uses in order to get the stream resource. Normally the same user name
 or ID is in the URL, though.
 
-### Three schools of collection ###
+### Four schools of collection ###
 
 Most services don't yet publish their members' actions as such, so even if you
 can collect from a nice standard web feed, the feed content will need some
 massaging. There are three main kinds of collectors at your disposal: XML
-feeds, HTML scrapers, and custom collectors.
+feeds, JSON APIs, HTML scrapers, and custom collectors.
 
 #### XML feeds ####
 
@@ -246,6 +293,29 @@ simply `1`, as in this recipe for Jaiku:
 
 The values of each entry's ID field (`guid` in RSS and `id` in Atom) are then
 used for actions' identifiers.
+
+#### JSON APIs ####
+
+The JSON format is pretty popular, especially with APIs. To collect data from
+json response we made an xpath-like syntax. 
+
+    foursquare:
+        checkins:
+            name: Checkins
+            # ....
+            url: 'https://api.foursquare.com/v2/users/{{ident}}/checkins'
+            json:
+                foreach: /response/checkins/items
+                get:
+                    url: '/venue/canonicalUrl'
+                    title: '/venue/name'
+
+The foreach starts from the root of the JSON tree, and expects to find an array
+when it reachs the target. The get elements each starts from one of the items
+in the found array, and work their way down to find the data.
+
+If there is an array in the way, enter the element number to go with. for example,
+"/response/3/items" will be translated to "$data->{response}->[3]->{items}"
 
 #### HTML pages ####
 
