@@ -93,6 +93,7 @@ callbacks:
     pre_update_action_streams_profile.oneup:                $ActionStreams::ActionStreams::Event::OneupPlaying::replace_ident
     post_update_action_streams_profile.oneup:               $ActionStreams::ActionStreams::Event::OneupPlaying::replace_back_ident
     save_config_filter.ActionStreams: $ActionStreams::ActionStreams::Plugin::save_oauth_keys
+    MT::PluginData::pre_save: $ActionStreams::ActionStreams::Plugin::plugin_data_pre_save
 object_types:
     profileevent: ActionStreams::Event
     as: ActionStreams::Event

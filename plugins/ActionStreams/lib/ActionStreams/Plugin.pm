@@ -985,8 +985,11 @@ sub system_config_template {
     return $plugin->load_tmpl("sys_config_template.tmpl");
 }
 
+our $mt_support_save_config_filter;
+
 sub save_oauth_keys {
     my ( $cb, $plugin, $data, $scope ) = @_;
+    $mt_support_save_config_filter = 1;
     return 1 if $scope and $scope ne 'system';
     my $app = MT->instance();
     my $oauth_data = {};
@@ -1005,5 +1008,17 @@ sub save_oauth_keys {
     $data->{oauth} = $oauth_data;
     return 1;
 }
+
+sub plugin_data_pre_save {
+    my ( $cb, $obj, $original ) = @_;
+
+    return 1 if $mt_support_save_config_filter;
+    local $mt_support_save_config_filter;
+    my $data = $obj->data;
+    save_oauth_keys($cb, undef, $data, undef);
+    $obj->data($data);
+    return 1;
+}
+
 
 1;
