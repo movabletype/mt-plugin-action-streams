@@ -1,0 +1,93 @@
+@import url('action-streams.css');
+
+#oauth_field {
+  margin-bottom: 3px;
+}
+
+#oauth_field select {
+  width: 27%;
+  min-width: 95px;
+  max-width: 162px;
+  display: block;
+  float: left;
+}
+
+#oauth_field .text,
+#oauth_list .text {
+  margin: 0 3px;
+  width: 27%;
+  min-width: 100px;
+  max-width: 180px
+}
+
+#oauth_list .text { width: 28%; }
+
+#oauth_field .text:-moz-placeholder { color: #999 }
+#oauth_field .text::-moz-placeholder { color: #999 }
+#oauth_field .text::-webkit-input-placeholder { color: #999 }
+#oauth_field .text::-ms-input-placeholder  { color: #999 }
+
+
+.oauth-list-item .item-label {
+  line-height: 21px;
+  width: 22%;
+  min-width: 59px;
+  max-width: 134px;
+  display: block;
+  float: left;
+  text-overflow: ellipsis;
+}
+
+.oauth-list-item {
+  position: relative;
+  border: 1px solid #C0C6C9;
+  margin-bottom: 5px;
+  padding: 0.62em;
+  position: relative;
+  background-color: #fff;
+  border-radius: 3px;
+}
+
+.item-key,.item-secret {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0 3px;
+  padding: 0 4px;
+  width: 27%;
+  min-width: 90px;
+  max-width: 180px;
+  overflow:hidden;
+  display:block;
+  float:left;
+  text-overflow: ellipsis;
+  line-height: 23px;
+}
+
+.item-edit {
+  line-height: 23px;
+}
+
+.item-delete {
+  line-height: 23px;
+  position: absolute;
+  right: 8px;
+}
+
+.item-buttons {
+  margin-left: 22%;
+  padding: 5px 0 0 24px;
+}
+
+.cf:before,
+.cf:after { content:""; display:table; }
+.cf:after { clear:both; }
+.cf { *zoom:1; }
+
+@media screen and (min-width:1280px){
+  .item-buttons {
+    margin-left: 0;
+    padding:0;
+    display:inline;
+  }
+}

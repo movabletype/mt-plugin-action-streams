@@ -12,7 +12,7 @@
     label="<__trans phrase="Expiration Interval">"
     hint="<__trans phrase="Specify the number of days to wait for events to expire.">"
     show_hint="1">
-    <label><input type="text" name="events_expire_interval" size="4" id="events_expire_interval" class="smaller-text" value="<mt:if name="events_expire_interval"><mt:var name="events_expire_interval"><mt:else>0</mt:if>" /> <__trans phrase="days"></label>
+    <label><input type="text" name="events_expire_interval" size="4" id="events_expire_interval" class="days" value="<mt:if name="events_expire_interval"><mt:var name="events_expire_interval"><mt:else>0</mt:if>" /> <__trans phrase="days"></label>
 </mtapp:setting>
 </div>
 
@@ -23,9 +23,8 @@
        hint=""
        show_hint="0">
       <input type="hidden" name="oauth_data" id="oauth_data" value="<mt:var name="oauth_data">" />
-      <p><a href="#" id="add_oath_link" class="icon-left icon-create"><__trans phrase="Add OAuth Service"></a></p>
-      <div id="oath_listing" class="listing hide_actions hidden">
-      </div>
+      <div id="oauth_field" class="cf"></div>
+      <div id="oauth_list" class="cf"></div>
     </mtapp:setting>
 <mt:else>
     <mtapp:statusmsg class="info zero-state"><__trans phrase="Perl SSL modules modules (Crypt::SSLeay or IO::Socket::SSL) are required for OAuth services"></mtapp:statusmsg>
@@ -35,61 +34,164 @@
 ;(function($) {
     var oauth_networks = { 
         <mt:loop name="oauth_networks">
-            '<mt:var name="type" escape="js">': { 
+            '<mt:var name="type" escape="js">': {
+                'type': '<mt:var name="type" escape="js">',
                 'oauth_key': '<mt:var name="oauth_key" escape="js">',
                 'oauth_secret': '<mt:var name="oauth_secret" escape="js">',
                 'label': '<mt:var name="label" escape="js">' }<mt:unless var="__last__">,</mt:unless>
         </mt:loop> };
 
-    var num = 1;
-    function add_oauth_field( type ) {
-        var $div = $('<div class="auto_keys_container"></div>');
-        var $select = $('<select></select>')
-            .attr('name', 'service-'+num)
-            .appendTo($div);
-        var $f_s = $('<option></option>')
-            .text('Select a service...')
-            .appendTo($select);
-        if (!type) {
-            $f_s.attr("selected", "selected");
-        }
-        $.each(oauth_networks, function(key, value){
-            var $s = $('<option></option>')
-                .attr('value', key)
-                .text(value['label'])
-                .appendTo($select);
-            if (type && (key === type)) {
-                $s.attr("selected", "selected");
+    function isEnterKey(e){
+      return (e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)
+    }
+    
+    function buildOauthField(){
+        var keypressHandler = function(e){
+          if($select.val() != 'none' && $in1.val() && $in2.val() ){
+            $button.removeAttr('disabled');
+            $button.removeClass('disabled');
+            if(isEnterKey(e)){
+              $button.trigger('click');
+              return false;
             }
-        });
-        var $in1 = $('<input></input>')
-            .addClass('oauth_key')
-            .attr('name', 'oauth-key-'+num)
-            .appendTo($div);
-        var $in2 = $('<input></input>')
-            .addClass('oauth_secret')
-            .attr('name', 'oauth-secret-'+num)
-            .appendTo($div);
-        if (type) {
-            $in1.val(oauth_networks[type]['oauth_key']);
-            $in2.val(oauth_networks[type]['oauth_secret']);
+          } else {
+            $button.attr({disabled:'disabled'});
+            $button.addClass('disabled');
+            if(isEnterKey(e)){
+              return false;
+            }
+          }
         }
-        $('<button></button>')
-            .html('<img src="<mt:var NAME="STATIC_URI">images/nav_icons/mini/delete.gif" alt="<__trans phrase="Remove">">')
-            .click(function(e) { $div.remove() })
+        var $div = $('<div>').on('keypress',keypressHandler);
+        var $select = $('<select></select>',{id:'oauth_form_select'}).appendTo($div);
+        var $f_s = $('<option></option>',{text:'<__trans phrase="Select a service...">',value:'none'}).appendTo($select);
+        $.each(oauth_networks, function(key, value){
+          if(value && value['oauth_key'].length <= 0){
+            var $s = $('<option></option>',{value:key,text:value['label']}).appendTo($select);
+          }
+        });
+        var $in1 = $('<input></input>',{class:'oauth_key text',placeholder:'<__trans phrase="Application Key">'}).appendTo($div);
+        var $in2 = $('<input></input>',{class:'oauth_secret text',placeholder:'<__trans phrase="Application Secret">'}).appendTo($div);
+        var $button = $('<input></input>',{class:'button disabled',type:'button',value:'<__trans phrase="Add">',disabled:'disabled'})
+            .one('click',function(e){
+              var oauth_network = oauth_networks[$select.val()];
+              oauth_network['oauth_key'] = $in1.val();
+              oauth_network['oauth_secret'] = $in2.val();
+              addOauthListItem(oauth_network);
+              $div.off('keypress',keypressHandler);
+              refreshOauthField();
+            })
             .appendTo($div);
-        $('#oath_listing')
-            .append($div)
-            .removeClass('hidden');
+        $("#oauth_field").append($div);
+    }
+    
+    var num = 1;
+    function addOauthListItem(oauth_network){
+        var type = oauth_network['type'];
+        var label = oauth_network['label'];
+        var key = oauth_network['oauth_key'];
+        var secret = oauth_network['oauth_secret'];
+        var $div = $('<div></div>',{class:'oauth-list-item cf'});
+        $('<input />',{type:'hidden',name:'service-'+num,value:type}).appendTo($div);
+        var $hiddenAppKey = $('<input />',{type:'hidden',name:'oauth-key-'+num,value:key}).appendTo($div);
+        var $hiddenAppSecret = $('<input />',{type:'hidden',name:'oauth-secret-'+num,value:secret}).appendTo($div);
+        var $label = $('<span></span>',{class:'item-label service-icon service-'+type,text:label}).appendTo($div);
+        
+        var $fields = $('<div />').appendTo($div);
+        var $appKey = $('<span></span>',{class:'item-key',text:key}).appendTo($fields);
+        var $appSecret = $('<span></span>',{class:'item-secret',text:secret}).appendTo($fields);
+        
+        var editMode = function(e){
+          $fields.hide();
+          var keypressHandler = function(e){
+            if($appKeyForm.val() && $appSecretForm.val()){
+              $updateButton.removeAttr('disabled');
+              $updateButton.removeClass('disabled');
+              if(isEnterKey(e)){
+                $updateButton.trigger('click');
+                return false;
+              }
+            } else {
+              $updateButton.attr({disabled:'disabled'});
+              $updateButton.addClass('disabled');
+              if(isEnterKey(e)){
+                return false;
+              }
+            }
+          }
+          var $editForm = $('<div />').on('keypress',keypressHandler);
+          var $appKeyForm = $('<input />',{type:'text',value:$appKey.text(),class:'oauth_key text'}).appendTo($editForm);
+          var $appSecretForm = $('<input />',{type:'text',value:$appSecret.text(),class:'oauth_secret text'}).appendTo($editForm);
+          var $buttonDiv = $('<div />',{class:'item-buttons'}).appendTo($editForm);
+          var $updateButton = $('<input />',{type:'button',value:'<__trans phrase="Update">',class:'button'})
+                            .one('click',function(){
+                              var newKey = $appKeyForm.val();
+                              var newSecret = $appSecretForm.val();
+                              $hiddenAppKey.val(newKey);
+                              $hiddenAppSecret.val(newSecret);
+                              $appKey.text(newKey);
+                              $appSecret.text(newSecret);
+                              $fields.show();
+                              $editForm.off('keypress',keypressHandler);
+                              $editForm.remove();
+                            })
+                            .appendTo($buttonDiv);
+          var $cancelButton = $('<input />',{type:'button',value:'<__trans phrase="Cancel">',class:'button'})
+                            .one('click',function(){
+                              $fields.show();
+                              $editForm.off('keypress',keypressHandler);
+                              $editForm.remove();
+                            })
+                            .appendTo($buttonDiv);
+          $div.append($editForm);
+        }
+        
+        var $edit = $('<a></a>',{href:'#'})
+                    .on('click',editMode)
+                    .append($('<span></span>',{class:'item-edit',text:'<__trans phrase="Edit">'}))
+                    .appendTo($fields);
+        var $button = $('<span></span>',{class:'item-delete'})
+                      .append($('<img />',{
+                        src:'<mt:var name="static_uri">images/status_icons/icon-delete.png',
+                        alt:'<__trans phrase="Remove">'
+                      }))
+                      .one('click',function(){
+                        oauth_networks[type]['oauth_key'] = '';
+                        oauth_networks[type]['oauth_secret'] = '';
+                        refreshOauthField();
+                        refreshOauthList();
+                      })
+                      .appendTo($fields);
+        $('#oauth_list').append($div);
         num += 1;
     }
 
-    $('#add_oath_link').click(function (){ add_oauth_field(); });
-    $.each(oauth_networks, function(key, value){
-        if (value['oauth_key'].length > 0) {
-            add_oauth_field(key);
+    function refreshOauthField(){
+      $('#oauth_field').children().remove();
+      buildOauthField();      
+    }
+    
+    function buildOauthList(){
+      $.each(oauth_networks,
+        function(key,value){
+          if(value && value['oauth_key'].length > 0){
+            addOauthListItem(value);
+          }
         }
-    });
+      );      
+    }
+    
+    function refreshOauthList(){
+      num = 1;
+      $('#oauth_list').children().remove();
+      buildOauthList();
+    }
+    
+    $(function(){
+      $('head').append('<link rel="stylesheet" href="<mt:var name="static_uri">plugins/ActionStreams/css/action-streams-ui.css">');
+      buildOauthField();
+      buildOauthList();
+    });    
 })(jQuery);
 
 </script>
