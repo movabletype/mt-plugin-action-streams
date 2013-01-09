@@ -915,7 +915,7 @@ sub save_oauth_keys {
     my $oauth_data = {};
     my %params = $app->param_hash();
     my @nums = 
-        map { s/^service-// }
+        map { s/^service-//; $_ }
         grep { m/^service-\d+$/ and $app->param($_) } 
         keys %params;
     foreach my $num ( @nums ) {
