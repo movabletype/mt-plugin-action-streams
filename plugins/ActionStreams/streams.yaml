@@ -233,6 +233,7 @@ foursquare:
             - url
             - title
         url: 'https://api.foursquare.com/v2/users/{{ident}}/checkins'
+        identifier: url
         json:
             foreach: /response/checkins/items
             get:

@@ -455,7 +455,7 @@ sub fetch_json {
 
 
     require JSON;
-    my $data = JSON->new->decode($content);
+    my $data = JSON::decode_json($content);
     my $root = $json_route->($data, $params{foreach});
     return [] unless $root;
 

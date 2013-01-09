@@ -81,6 +81,9 @@ flickr:
 foursquare:
     name: Foursquare
     url: https://foursquare.com/user/{{ident}}
+    ident_hint: |-
+        You can find your Foursquare user ID in your profile URL. For example: https://foursquare.com/user/123456
+    ident_example: 123456
     service_type: status
     oauth:
         version: 2.0
@@ -319,6 +322,7 @@ twitterapi:
     url: http://twitter.com/{{ident}}
     service_type: status
     oauth:
+        version: '1.0A'
         site: 'https://api.twitter.com/'
         request_token_path: '/oauth/request_token'
         authorize_path: '/oauth/authorize'
