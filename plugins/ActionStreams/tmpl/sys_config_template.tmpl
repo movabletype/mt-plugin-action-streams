@@ -70,8 +70,8 @@
             var $s = $('<option></option>',{value:key,text:value['label']}).appendTo($select);
           }
         });
-        var $in1 = $('<input></input>',{'class':'oauth_key text',placeholder:'<__trans phrase="Application Key">'}).appendTo($div);
-        var $in2 = $('<input></input>',{'class':'oauth_secret text',placeholder:'<__trans phrase="Application Secret">'}).appendTo($div);
+        var $in1 = $('<input></input>',{'class':'oauth_key text',type:'text',placeholder:'<__trans phrase="Application Key">'}).appendTo($div);
+        var $in2 = $('<input></input>',{'class':'oauth_secret text',type:'text',placeholder:'<__trans phrase="Application Secret">'}).appendTo($div);
         var $button = $('<input></input>',{'class':'button disabled',type:'button',value:'<__trans phrase="Add">',disabled:'disabled'})
             .one('click',function(e){
               var oauth_network = oauth_networks[$select.val()];
@@ -83,6 +83,7 @@
             })
             .appendTo($div);
         $("#oauth_field").append($div);
+        $(".oauth_key,.oauth_secret",$div).mtPlaceholder();
     }
     
     var num = 1;

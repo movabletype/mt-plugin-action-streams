@@ -1,5 +1,9 @@
 @import url('action-streams.css');
 
+#header {
+    position: relative;
+}
+
 #oauth_field {
   margin-bottom: 3px;
 }
