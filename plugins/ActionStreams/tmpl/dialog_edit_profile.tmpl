@@ -1,6 +1,9 @@
 <mt:setvarblock name="page_title"><__trans phrase="Edit Profile"></mt:setvarblock>
 <mt:setvarblock name="html_head" append="1">
     <link rel="stylesheet" type="text/css" href="<mt:var name="static_uri">plugins/ActionStreams/css/action-streams.css" />
+    <mt:if name="mt_version" lt="5">
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    </mt:if>
 
     <mt:loop name="service_styles">
     <mt:if name="__first__">
