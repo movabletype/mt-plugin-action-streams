@@ -539,17 +539,9 @@ sub add_other_profile {
     $profile->{streams} = \%streams if %streams;
 
     if ($network->{oauth}) {
-
         my $oauth = create_oauth_client($app, $network, $profile);
-        my $oauth_token = $app->param('oauth_token');
-        my $oauth_verifier = $app->param('oauth_verifier');
-
-        if (not $oauth_token) {
-            return $app->redirect( $oauth->authorize_url );
-        }
-        my $access_token = $oauth->get_access_token($oauth_token, $oauth_verifier);
-        $profile->{oauth_token}  = $access_token->token();
-        $profile->{oauth_secret} = $access_token->token_secret();
+        create_oauth_access_token($app, $oauth, $network, $profile)
+            or return;
     }
 
     $app->run_callbacks('pre_add_profile.'  . $type, $app, $author, $profile);
@@ -563,15 +555,30 @@ sub add_other_profile {
     ));
 }
 
+sub create_oauth_access_token {
+    my ($app, $oauth, $network, $profile) = @_;
+
+    if (my $oauth_token = $app->param('oauth_token')) {
+        my $oauth_verifier = $app->param('oauth_verifier');
+        my $access_token = $oauth->get_access_token($oauth_token, $oauth_verifier);
+        $profile->{oauth_token}  = $access_token->token();
+        $profile->{oauth_secret} = $access_token->token_secret();
+    }
+    elsif (my $oauth_code = $app->param('code')) {
+        my $access_token = $oauth->get_access_token($oauth_code);
+        $profile->{oauth_token}  = $access_token->freeze();
+    }
+    elsif ($network->{oauth}->{version} eq '2.0') {
+        return $app->redirect( $oauth->authorize );
+    }
+    else {
+        return $app->redirect( $oauth->authorize_url );
+    }
+
+}
+
 sub create_oauth_client {
     my ($app, $network, $profile) = @_;
-
-    require Net::OAuth::Client;
-    # fixing a bug in Net::OAuth 0.28 - it errorly requests token_secret for 
-    # AccessTokenRequest V1.0A. which it should not.
-    require Net::OAuth::V1_0A::AccessTokenRequest;
-    my $ats_api = Net::OAuth::V1_0A::AccessTokenRequest->required_api_params();
-    @$ats_api = grep { $_ ne 'token_secret' } @$ats_api;
 
     my $a_params = $network->{oauth};
     my %cb_args = 
@@ -582,21 +589,44 @@ sub create_oauth_client {
             $cb_args{'stream_'.$key} = 1;
         }
     }
+    my $cb_url = $app->base . $app->app_uri(mode => 'add_other_profile', args => \%cb_args);
     my $plugin = MT->component('ActionStreams');
     my $pdata = $plugin->get_config_obj()->data();
     my $keys = $pdata->{oauth}->{ $profile->{type} };
     return $app->errtrans("OAuth App keys where not set for [_1]", $network->{name})
         unless defined $keys;
-    my $oauth = Net::OAuth::Client->new(
-        $keys->{key}, # app key
-        $keys->{secret}, # app secret
-        site => $a_params->{site},,
-        request_token_path => $a_params->{request_token_path},
-        authorize_path => $a_params->{authorize_path},
-        access_token_path => $a_params->{access_token_path},
-        callback => $app->base . $app->app_uri(mode => 'add_other_profile', args => \%cb_args),
-    );
-    return $oauth;
+
+    if ($a_params->{version} eq '1.0A') {
+        require Net::OAuth::Client;
+        # fixing a bug in Net::OAuth 0.28 - it errorly requests token_secret for 
+        # AccessTokenRequest V1.0A. which it should not.
+        require Net::OAuth::V1_0A::AccessTokenRequest;
+        my $ats_api = Net::OAuth::V1_0A::AccessTokenRequest->required_api_params();
+        @$ats_api = grep { $_ ne 'token_secret' } @$ats_api;
+
+        my $oauth = Net::OAuth::Client->new(
+            $keys->{key}, # app key
+            $keys->{secret}, # app secret
+            site => $a_params->{site},
+            request_token_path => $a_params->{request_token_path},
+            authorize_path => $a_params->{authorize_path},
+            access_token_path => $a_params->{access_token_path},
+            callback => $cb_url,
+        );
+        return $oauth;
+    }
+    elsif ($a_params->{version} eq '2.0') {
+        require Net::OAuth2::Profile::WebServer;
+        my %site_params = %$a_params;
+        delete $site_params{version};
+        my $client = Net::OAuth2::Profile::WebServer->new( 
+            client_id     => $keys->{key},
+            client_secret => $keys->{secret},
+            %site_params,
+            redirect_uri  => $cb_url,
+        );
+        return $client;
+    }
 }
 
 sub remove_other_profile {

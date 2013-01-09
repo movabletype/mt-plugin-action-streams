@@ -78,6 +78,16 @@ flickr:
     ident_example: 36381329@N00
     service_type: photos
     ident_hint: Enter your Flickr user ID that has a "@" in it. Your Flickr user ID is NOT the username in the URL of your photo stream.
+foursquare:
+    name: Foursquare
+    url: https://foursquare.com/user/{{ident}}
+    service_type: status
+    oauth:
+        version: 2.0
+        site: 'https://foursquare.com/'
+        authorize_path: '/oauth2/authorize'
+        access_token_path: '/oauth2/access_token'
+        protected_resource_url: 'https://api.foursquare.com/v2/'
 friendfeed:
     name: FriendFeed
     url: http://friendfeed.com/{{ident}}

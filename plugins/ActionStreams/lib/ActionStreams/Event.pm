@@ -379,11 +379,21 @@ sub fetch_url {
     my $reg = $app->registry('profile_services');
     my $network = $reg->{$params{type}};
     my $oauth = ActionStreams::Plugin::create_oauth_client($app, $network, \%params);
-    require Net::OAuth::AccessToken;
-    my $token = Net::OAuth::AccessToken->new(
-        token => $params{oauth_token},
-        token_secret => $params{oauth_secret}, 
-        client => $oauth);
+    my $token;
+    if ($network->{oauth}->{version} eq '2.0') {
+        require Net::OAuth2::AccessToken;
+        $token = Net::OAuth2::AccessToken->session_thaw(
+            $params{oauth_token},
+            profile => $oauth,
+        );
+    }
+    else {
+        require Net::OAuth::AccessToken;
+        $token = Net::OAuth::AccessToken->new(
+            token => $params{oauth_token},
+            token_secret => $params{oauth_secret}, 
+            client => $oauth);
+    }
     return $token->get($url);
 }
 

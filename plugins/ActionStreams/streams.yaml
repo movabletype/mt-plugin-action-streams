@@ -224,6 +224,20 @@ flickr:
         url: 'http://api.flickr.com/services/feeds/photos_public.gne?id={{ident}}&lang=en-us&format=atom_10'
         atom:
             thumbnail: content
+foursquare:
+    checkins:
+        name: Checkins
+        description: Places you checkedin
+        html_form: '[_1] checked-in <a href="[_2]">[_3]</a>'
+        html_params:
+            - url
+            - title
+        url: 'https://api.foursquare.com/v2/users/{{ident}}/checkins'
+        json:
+            foreach: /response/checkins/items
+            get:
+                url: '/venue/canonicalUrl'
+                title: '/venue/name'
 friendfeed:
     likes:
         name: Likes
