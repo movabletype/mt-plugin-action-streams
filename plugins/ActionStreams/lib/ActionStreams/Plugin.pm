@@ -384,7 +384,12 @@ sub _build_service_data {
         $has_profiles{$_->{type}} = 1 for @$other_profiles;
     }
 
-    my @network_keys = sort { lc $networks->{$a}->{name} cmp lc $networks->{$b}->{name} }
+    my $plugin = MT->component('ActionStreams');
+    my $a_data = $plugin->get_config_obj()->data()->{oauth};
+
+    my @network_keys = 
+        sort { lc $networks->{$a}->{name} cmp lc $networks->{$b}->{name} }
+        grep { not exists $networks->{$_}->{oauth} or exists $a_data->{$_} }
         keys %$networks;
     for my $type (@network_keys) {
         my $ndata = $networks->{$type}
