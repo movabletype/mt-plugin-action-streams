@@ -150,7 +150,7 @@ sub update_events_loggily {
 sub update_events {
     my $class = shift;
     my %profile = @_;
-    my $author = delete $profile{author};
+    my $author = $profile{author};
 
     my $stream = $class->registry_entry or return;
     my $fetch = $stream->{fetch} || {};
@@ -250,6 +250,7 @@ sub update_events {
     }
     return if !$items;
 
+    delete $profile{author};
     $class->build_results(
         items   => $items,
         stream  => $stream,
@@ -379,22 +380,34 @@ sub fetch_url {
     my $reg = $app->registry('profile_services');
     my $network = $reg->{$params{type}};
     my $oauth = ActionStreams::Plugin::create_oauth_client($app, $network, \%params);
-    my $token;
     if ($network->{oauth}->{version} eq '2.0') {
         require Net::OAuth2::AccessToken;
-        $token = Net::OAuth2::AccessToken->session_thaw(
+        my $token = Net::OAuth2::AccessToken->session_thaw(
             $params{oauth_token},
             profile => $oauth,
         );
+        my $res = $token->get($url);
+        # should be done only if the token have changed in the operation
+        {
+            my $author = $params{author};
+            my $profiles = $author->meta( 'other_profiles' ) || [];
+            foreach my $profile (@$profiles) {
+                next unless $profile->{type} eq $params{type};
+                $profile->{oauth_token} = $token->freeze();
+            }
+            $author->meta( 'other_profiles', $profiles );
+            $author->save();
+        }
+        return $res;
     }
     else {
         require Net::OAuth::AccessToken;
-        $token = Net::OAuth::AccessToken->new(
+        my $token = Net::OAuth::AccessToken->new(
             token => $params{oauth_token},
             token_secret => $params{oauth_secret}, 
             client => $oauth);
+        return $token->get($url);
     }
-    return $token->get($url);
 }
 
 sub fetch_json {
