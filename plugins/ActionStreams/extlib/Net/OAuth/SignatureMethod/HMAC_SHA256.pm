@@ -1,15 +1,16 @@
-package Net::OAuth::SignatureMethod::HMAC_SHA1;
+package Net::OAuth::SignatureMethod::HMAC_SHA256;
 use warnings;
 use strict;
-use Digest::HMAC_SHA1;
-use MIME::Base64;
+use Digest::SHA  ();
+use MIME::Base64 ();
 
 sub sign {
     my $self = shift;
     my $request = shift;
-    my $hmac = Digest::HMAC_SHA1->new($request->signature_key);
-    $hmac->add($request->signature_base_string);
-    return encode_base64($hmac->digest, '');
+    my $hmac_digest = Digest::SHA::hmac_sha256(
+        $request->signature_base_string, $request->signature_key
+    );
+    return MIME::Base64::encode_base64($hmac_digest, '');
 }
 
 sub verify {
@@ -20,7 +21,7 @@ sub verify {
 
 =head1 NAME
 
-Net::OAuth::SignatureMethod::HMAC_SHA1 - HMAC_SHA1 Signature Method for OAuth protocol
+Net::OAuth::SignatureMethod::HMAC_SHA256 - HMAC_SHA256 Signature Method for OAuth protocol
 
 =head1 SEE ALSO
 
@@ -32,7 +33,7 @@ Keith Grennan, C<< <kgrennan at cpan.org> >>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2007 Keith Grennan, all rights reserved.
+Copyright 2012 Keith Grennan, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
