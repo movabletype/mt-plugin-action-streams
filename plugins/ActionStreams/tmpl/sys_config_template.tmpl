@@ -50,22 +50,39 @@
     
     function buildOauthField(){
         var keypressHandler = function(e){
-          if($select.val() != 'none' && $in1.val() && $in2.val() ){
-            $button.removeAttr('disabled');
-            $button.removeClass('disabled');
-            if(isEnterKey(e)){
-              $button.trigger('click');
-              return false;
+          setTimeout(function(){
+            var isEnable = function(){
+              var bool = $select.val() != 'none' && $in1.val() && $in2.val();
+              <mt:if name="mt_version" ge="5">
+                if(!bool){ return bool; }
+                if( 'placeholder' in $('<input />').get(0) ){
+                  return bool;
+                } else {
+                  var bool2 = $in1.val()!=$in1.attr('placeholder') && $in2.val()!=$in2.attr('placeholder');
+                  return bool && bool2;
+                }
+              <mt:else>
+                return bool;
+              </mt:else>
+              </mt:if>
             }
-          } else {
-            $button.attr({disabled:'disabled'});
-            $button.addClass('disabled');
-            if(isEnterKey(e)){
-              return false;
+            if(isEnable()){
+              $button.removeAttr('disabled');
+              $button.removeClass('disabled');
+              if(isEnterKey(e)){
+                $button.trigger('click');
+                return false;
+              }
+            } else {
+              $button.attr({disabled:'disabled'});
+              $button.addClass('disabled');
+              if(isEnterKey(e)){
+                return false;
+              }
             }
-          }
+          },10);
         }
-        var $div = $('<div>').on('keypress change',keypressHandler);
+        var $div = $('<div>').on('keypress change paste focus',keypressHandler);
         var $select = $('<select></select>',{id:'oauth_form_select'}).appendTo($div);
         var $f_s = $('<option></option>',{text:'<__trans phrase="Select a service...">',value:'none'}).appendTo($select);
         $.each(oauth_networks, function(key, value){
@@ -110,22 +127,24 @@
         var editMode = function(e){
           $fields.hide();
           var keypressHandler = function(e){
-            if($appKeyForm.val() && $appSecretForm.val()){
-              $updateButton.removeAttr('disabled');
-              $updateButton.removeClass('disabled');
-              if(isEnterKey(e)){
-                $updateButton.trigger('click');
-                return false;
+              setTimeout(function(){
+              if($appKeyForm.val() && $appSecretForm.val()){
+                $updateButton.removeAttr('disabled');
+                $updateButton.removeClass('disabled');
+                if(isEnterKey(e)){
+                  $updateButton.trigger('click');
+                  return false;
+                }
+              } else {
+                $updateButton.attr({disabled:'disabled'});
+                $updateButton.addClass('disabled');
+                if(isEnterKey(e)){
+                  return false;
+                }
               }
-            } else {
-              $updateButton.attr({disabled:'disabled'});
-              $updateButton.addClass('disabled');
-              if(isEnterKey(e)){
-                return false;
-              }
-            }
+            },10);
           }
-          var $editForm = $('<div />').on('keypress change',keypressHandler);
+          var $editForm = $('<div />').on('keypress change paste focus',keypressHandler);
           var $appKeyForm = $('<input />',{type:'text',value:$appKey.text(),'class':'oauth_key text'}).appendTo($editForm);
           var $appSecretForm = $('<input />',{type:'text',value:$appSecret.text(),'class':'oauth_secret text'}).appendTo($editForm);
           var $buttonDiv = $('<div />',{'class':'item-buttons'}).appendTo($editForm);
