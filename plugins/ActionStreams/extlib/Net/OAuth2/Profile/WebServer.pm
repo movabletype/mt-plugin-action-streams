@@ -1,10 +1,10 @@
 # Copyrights 2013 by [Mark Overmeer].
 #  For other contributors see Changes.
 # See the manual pages for details on the licensing terms.
-# Pod stripped from pm file by OODoc 2.00.
+# Pod stripped from pm file by OODoc 2.01.
 package Net::OAuth2::Profile::WebServer;
 use vars '$VERSION';
-$VERSION = '0.51';
+$VERSION = '0.52';
 
 use base 'Net::OAuth2::Profile';
 
@@ -26,6 +26,8 @@ sub init($)
     $self->SUPER::init($args);
     $self->{NOPW_redirect} = $args->{redirect_uri};
     $self->{NOPW_referer}  = $args->{referer};
+    $self->{NOPW_save}     = $args->{auto_save}
+      || sub { my $token = shift; $token->changed(1) };
     $self;
 }
 
@@ -34,6 +36,7 @@ sub init($)
 sub redirect_uri() {shift->{NOPW_redirect}}
 sub referer(;$)
 {   my $s = shift; @_ ? $s->{NOPW_referer} = shift : $s->{NOPW_referer} }
+sub auto_save()    {shift->{NOPW_auto_save}}
 
 #--------------------
 
@@ -88,8 +91,11 @@ sub get_access_token($@)
     $request->headers->header(Authorization => "Basic $basic");
     my $response = $self->request($request);
 
-    Net::OAuth2::AccessToken->new(client => $self
-      , $self->params_from_response($response, 'access token'));
+    Net::OAuth2::AccessToken->new
+      ( profile      => $self
+      , auto_refresh => !!$self->auto_save
+      , $self->params_from_response($response, 'access token')
+      );
 }
 
 

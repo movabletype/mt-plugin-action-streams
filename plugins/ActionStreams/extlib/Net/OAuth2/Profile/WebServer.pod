@@ -49,6 +49,7 @@ this man-page before you start implementing this interface.
 =item Net::OAuth2::Profile::WebServer-E<gt>B<new>(OPTIONS)
 
  -Option       --Defined in          --Default
+  auto_save                            <set token's changed flag>
   client_id      Net::OAuth2::Profile  <required>
   client_secret  Net::OAuth2::Profile  <required>
   grant_type     Net::OAuth2::Profile  'authorization_code'
@@ -60,6 +61,13 @@ this man-page before you start implementing this interface.
   user_agent     Net::OAuth2::Profile  <created internally>
 
 =over 2
+
+=item auto_save => CODE
+
+When a new token is received or refreshed, it usually needs to get
+save into a database or file.  The moment you receive a new token is
+clear, but being aware of refreshes in your main program is a hassle.
+Read more about configuring this in the L</DETAILS> section below.
 
 =item client_id => STRING
 
@@ -90,6 +98,8 @@ link was found.
 =head2 Accessors
 
 =over 4
+
+=item $obj-E<gt>B<auto_save>()
 
 =item $obj-E<gt>B<bearer_token_scheme>()
 
@@ -240,18 +250,14 @@ See L<Net::OAuth2::Profile/"Helpers">
 
 =head1 DETAILS
 
+OAuth2 is a server-server protocol, not the usual client-server
+set-up. The consequence is that the protocol handlers on both sides will
+not wait for another during the communication: the remote uses callback
+urls to pass on the response.  Your side of the communication, your
+webservice, needs to re-group these separate processing steps into
+logical sessions.
+
 =head2 The process
-
-The B<main complication> does not show in the example in the SYNOPSIS,
-not in the plack example included in the distribution: your client session
-can not survive the shown steps: your application behaves like a server,
-not a client.  You need to implement losely coupled server-server
-communication, which is less straight-forward.
-
-First, your application must implement a persistent session (in a database
-or file), which may get called on any weird moment to pass on information.
-Your application must be visible from "outside" and use https.  More than
-enough complications.  Full example needed ;-)
 
 The client side of the process has
 three steps, nicely described in
@@ -281,10 +287,59 @@ needed.
 
 =back
 
+=head2 Saving the token
+
+Your application must implement a persistent session, probably
+in a database or file.  The session information is kept in an
+L<Net::OAuth2::AccessToken|Net::OAuth2::AccessToken> object, and does contain more facts than
+just the access token.
+
+Let's discuss the three approaches.
+
+=head3 no saving
+
+The Plack example contained in the CPAN distribution of this module
+is a single process server.  The tokens are administered in the memory
+of the process.  It is nice to test your settings, but probably not
+realistic for any real-life application.
+
+=head3 automatic saving
+
+When your own code is imperative:
+
+  my $auth = Net::OAuth2::Profile::WebServer->new
+    ( ...
+    , auto_save => \&save_session
+    );
+
+  sub save_session($$)
+  {   my ($profile, $token) = @_;
+      ...
+  }
+
+When your own code is object oriented:
+
+  sub init(...)
+  {  my ($self, ...) = @_;
+     my $auth = Net::OAuth2::Profile::WebServer->new
+       ( ...
+       , auto_save => sub { $self->save_session(@_) }
+       );
+  }
+
+  sub save_session($$)
+  {   my ($self, $profile, $token) = @_;
+      ...
+  }
+
+=head3 explicit saving
+
+In this case, do not use L<new(auto_save)|Net::OAuth2::Profile::WebServer/"Constructors">.
+
 =head1 SEE ALSO
 
-This module is part of Net-OAuth2 distribution version 0.51,
-built on January 08, 2013. Website: F<http://perl.overmeer.net>.
+This module is part of Net-OAuth2 distribution version 0.52,
+built on January 15, 2013. Website: F<http://perl.overmeer.net>.
 
 =head1 COPYRIGHTS
 

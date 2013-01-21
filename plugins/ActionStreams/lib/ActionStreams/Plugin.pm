@@ -618,7 +618,7 @@ sub create_oauth_access_token {
     }
     elsif (my $oauth_code = $app->param('code')) {
         my $access_token = $oauth->get_access_token($oauth_code);
-        $profile->{oauth_token}  = $access_token->freeze();
+        $profile->{oauth_token}  = $access_token->session_freeze();
     }
     elsif ($network->{oauth}->{version} eq '2.0') {
         return $app->redirect( $oauth->authorize );

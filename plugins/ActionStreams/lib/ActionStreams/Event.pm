@@ -388,12 +388,12 @@ sub fetch_url {
         );
         my $res = $token->get($url);
         # should be done only if the token have changed in the operation
-        {
+        if ( $token->changed() ) {
             my $author = $params{author};
             my $profiles = $author->meta( 'other_profiles' ) || [];
             foreach my $profile (@$profiles) {
                 next unless $profile->{type} eq $params{type};
-                $profile->{oauth_token} = $token->freeze();
+                $profile->{oauth_token} = $token->session_freeze();
             }
             $author->meta( 'other_profiles', $profiles );
             $author->save();

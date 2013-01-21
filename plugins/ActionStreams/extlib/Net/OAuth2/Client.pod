@@ -74,8 +74,8 @@ passed with L<new()|Net::OAuth2::Client/"Constructors">, overruled/extended by t
 
 =head1 SEE ALSO
 
-This module is part of Net-OAuth2 distribution version 0.51,
-built on January 08, 2013. Website: F<http://perl.overmeer.net>.
+This module is part of Net-OAuth2 distribution version 0.52,
+built on January 15, 2013. Website: F<http://perl.overmeer.net>.
 
 =head1 COPYRIGHTS
 
