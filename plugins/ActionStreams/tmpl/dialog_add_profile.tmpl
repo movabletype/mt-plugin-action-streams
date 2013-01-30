@@ -121,14 +121,14 @@
             if (last_network) {
                 var $streams = jQuery('#streams-' + last_network);
                 $streams.hide();
-                $streams.find('input:checkbox').attr('checked', false);
+                $streams.find('input:checkbox').prop('checked', false);
             }
             var $streams = jQuery('#streams-' + service);
             $streams
                 .show()
                 .removeClass('hidden')
                 .find('input:checkbox')
-                .attr('checked', true);
+                .prop('checked', true);
 
             var $icon = jQuery('#profile-id-service-icon');
             if (last_network) {
